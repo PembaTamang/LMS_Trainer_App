@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/dash_board"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Dashboard" />
+        <item
+            android:id="@+id/batch_creation"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Batch Creation" />
+        <item
+            android:id="@+id/student"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Student" />
+        <item
+            android:id="@+id/course"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Course" />
+
+        <item
+            android:id="@+id/assignment"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Assignment" />
+        <item
+            android:id="@+id/assessment"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Assessment" />
+        <item
+            android:id="@+id/feedback"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Traning Feedback" />
+        <item
+            android:id="@+id/manual"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Manual" />
+    </group>
+
+
+
+</menu>
