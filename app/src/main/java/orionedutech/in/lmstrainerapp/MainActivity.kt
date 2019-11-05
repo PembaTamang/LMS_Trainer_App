@@ -9,7 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -26,8 +28,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .setAction("Action", null).show()
         }
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-
-
+        val toggle  = ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.navigation_drawer_open,R.string.navigation_drawer_close)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.isDrawerIndicatorEnabled = true
+        toggle.syncState()
+        nav_view.setNavigationItemSelectedListener {true}
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
