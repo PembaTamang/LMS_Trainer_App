@@ -13,4 +13,9 @@
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
+
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="demo_user">monami@gmail.com</string>
+    <string name="demo_user_pass">123456</string>
 </resources>

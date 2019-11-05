@@ -6,37 +6,41 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/dash_board"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_dashboard_icon"
             android:title="Dashboard" />
         <item
             android:id="@+id/batch_creation"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_batch_creation_icon"
             android:title="Batch Creation" />
         <item
             android:id="@+id/student"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_student"
             android:title="Student" />
         <item
             android:id="@+id/course"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Course" />
+            android:icon="@drawable/ic_course_icon"
+            android:title="Course"/>
 
         <item
             android:id="@+id/assignment"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_assignment"
             android:title="Assignment" />
         <item
-            android:id="@+id/assessment"
-            android:icon="@drawable/ic_menu_manage"
+                android:id="@+id/assessment"
+            android:icon="@drawable/ic_assessment"
             android:title="Assessment" />
         <item
             android:id="@+id/feedback"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_traning_feedback_icon"
             android:title="Traning Feedback" />
         <item
             android:id="@+id/manual"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_manual_icon"
             android:title="Manual" />
+        <item
+            android:id="@+id/logout"
+            android:icon="@drawable/ic_logout_sidemenu"
+            android:title="Log Out (Version 1.0)"/>
     </group>
 
 
