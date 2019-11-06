@@ -9,4 +9,5 @@ public class mLog {
                 Log.i(TAG, String.format("%s : %s", cls, s));
             }
     }
+
 }

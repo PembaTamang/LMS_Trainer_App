@@ -1,5 +1,6 @@
 package orionedutech.`in`.lmstrainerapp.database.entities
 
+import androidx.annotation.Nullable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -16,7 +17,8 @@ val adminType:String,
 val batchID:String,
 val centerID:String,
 val batchName:String,
-val centerName:String
+val centerName:String,
+val password:String?
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0

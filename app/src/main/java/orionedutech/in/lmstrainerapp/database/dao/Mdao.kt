@@ -6,14 +6,23 @@ import orionedutech.`in`.lmstrainerapp.database.entities.User
 @Dao
 interface MDao {
 
+    //user
+
     @Insert
     suspend fun insert(user: User)
 
     @Query("select userID from user_table")
-    suspend fun getuserID():String
+    suspend fun getuserID(): String
+
+    @Query("select * from user_table")
+    suspend fun getuserDetails(): User
+
 
     @Query("select adminID from user_table")
-    suspend fun getadminID():String
+    suspend fun getadminID(): String
+
+    @Query("select name from user_table")
+    suspend fun getadminName(): String
 
     @Delete
     suspend fun deleteUser(user: User)
@@ -23,11 +32,18 @@ interface MDao {
 
 
     @Query("select count(*) from user_table")
-    suspend fun getUserTableCount() : Int
+    suspend fun getUserTableCount(): Int
 
     @Transaction
-    suspend fun insertUser(user: User){
+    suspend fun insertUser(user: User) {
         deleteUserTable()
         insert(user)
     }
+
+    @Transaction
+    suspend fun userDataExists(): Boolean {
+        return getUserTableCount()>0
+    }
+
+
 }

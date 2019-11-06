@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/root"
+    tools:context=".fragments.TrainerAssessmentFragment"
+    app:cardElevation="0dp"
+    tools:ignore="MissingPrefix">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp">
+
+
+        <TextView
+            android:id="@+id/sl"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="1dp"
+            android:text="SL"
+            android:paddingStart="8dp"
+            android:textAlignment="textStart"
+            android:textSize="12sp"
+            android:textAppearance="@style/OpenSansRegular"
+            app:layout_constraintEnd_toStartOf="@+id/name"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_weight="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/upload" />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:paddingStart="8dp"
+            android:textSize="12sp"
+            android:textAppearance="@style/OpenSansRegular"
+            android:textAlignment="textStart"
+            android:layout_marginEnd="1dp"
+            app:layout_constraintEnd_toStartOf="@+id/type"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/sl"
+            app:layout_constraintTop_toTopOf="@+id/sl" />
+
+        <TextView
+            android:id="@+id/type"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Question Type"
+            android:paddingStart="8dp"
+            android:textSize="12sp"
+            android:textAppearance="@style/OpenSansRegular"
+            android:textAlignment="textStart"
+            android:layout_marginEnd="1dp"
+            app:layout_constraintEnd_toStartOf="@+id/centers"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_weight="2"
+            app:layout_constraintStart_toEndOf="@+id/name"
+            app:layout_constraintTop_toTopOf="@+id/name" />
+
+        <TextView
+            android:id="@+id/centers"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Centers"
+            android:paddingStart="8dp"
+            android:textSize="12sp"
+            android:textAppearance="@style/OpenSansRegular"
+            android:layout_marginEnd="1dp"
+            android:textAlignment="textStart"
+            app:layout_constraintEnd_toStartOf="@+id/batches"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/type"
+            app:layout_constraintTop_toTopOf="@+id/type" />
+
+        <TextView
+            android:id="@+id/batches"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="Batches"
+            android:textSize="12sp"
+            android:paddingStart="8dp"
+            android:textAppearance="@style/OpenSansRegular"
+            android:textAlignment="textStart"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/centers"
+            app:layout_constraintTop_toTopOf="@+id/centers" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

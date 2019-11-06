@@ -1,10 +1,13 @@
 package orionedutech.`in`.lmstrainerapp.activities
 
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 
@@ -19,20 +22,20 @@ import orionedutech.`in`.lmstrainerapp.network.Urls
 import orionedutech.`in`.lmstrainerapp.network.response
 import orionedutech.`in`.lmstrainerapp.mLog.TAG;
 import com.google.gson.Gson
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.launch
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.database.dao.MDao
-import orionedutech.`in`.lmstrainerapp.database.dao.mDatabase
+import orionedutech.`in`.lmstrainerapp.database.dao.MDatabase
 import orionedutech.`in`.lmstrainerapp.database.entities.User
 import orionedutech.`in`.lmstrainerapp.network.dataModels.UserModel
 import orionedutech.`in`.lmstrainerapp.network.dataModels.Userdata
 import orionedutech.`in`.lmstrainerapp.showToast
 
 
-class LoginActivity : BaseClass() {
+class LoginActivity : BaseActivity() {
     private lateinit var email: EditText
     private lateinit var password: EditText
-    private lateinit var signup: MaterialButton
     private lateinit var login: MaterialButton
     private var emailText: String = ""
     private var passwordText: String = ""
@@ -42,7 +45,6 @@ class LoginActivity : BaseClass() {
         setContentView(R.layout.activity_login)
         email = findViewById(R.id.editText)
         password = findViewById(R.id.editText2)
-        signup = findViewById(R.id.signup)
         login = findViewById(R.id.login)
         val ok: Drawable = ContextCompat.getDrawable(
             this,
@@ -97,10 +99,6 @@ class LoginActivity : BaseClass() {
 
             }
         })
-        signup.setOnClickListener {
-            //signup
-
-        }
         login.setOnClickListener {
             if (!TextUtils.isEmpty(emailText) && !TextUtils.isEmpty(passwordText)) {
                 //login
@@ -115,43 +113,70 @@ class LoginActivity : BaseClass() {
         val data = JSONObject()
         data.put("user_name", emailText)
         data.put("user_password", passwordText)
+        progress.visibility = View.VISIBLE
+        login.isEnabled = false
+        login.text = ""
+        email.isEnabled = false
+        password.isEnabled = false
         NetworkOps.post(Urls.LOGINURL, data.toString(), this, email, object : response {
             override fun onrespose(string: String) {
-                
+
                 val gson = Gson()
                 val userModel = gson.fromJson(string, UserModel::class.java)
                 if (userModel.success == "1") {
                     mLog.i(TAG, "success")
                     val userData: Userdata = userModel.userdata
                     launch {
-
-                        val user = User(
-                            userData.userid,
-                            userData.userName,
-                            userData.userRoleName,
-                            userData.userAdminId,
-                            userData.userFullname,
-                            userData.useremail,
-                            userData.userPhoneNo,
-                            userData.userAdminType,
-                            userData.batchId,
-                            userData.centerId,
-                            userData.batchName,
-                            userData.centerName
-                        )
                         applicationContext?.let {
-                            val dao: MDao = mDatabase(it).getDao()
-                            dao.insertUser(user)
-                            showToast("admin ID : ${dao.getadminID()}")
+                            val dao: MDao = MDatabase(it).getDao()
+                            val user = User(
+                                userData.userid,
+                                userData.userName,
+                                userData.userRoleName,
+                                userData.userAdminId,
+                                userData.userFullname,
+                                userData.useremail,
+                                userData.userPhoneNo,
+                                userData.userAdminType,
+                                userData.batchId,
+                                userData.centerId,
+                                userData.batchName,
+                                userData.centerName,
+                                userData.userPassword
+                            )
+                            if (dao.userDataExists()) {
+                                mLog.i(TAG, "user data exists")
+                                if (user == dao.getuserDetails()) {
+                                    mLog.i(TAG, "same user enter it")
+                                    goToMainActivity(user.name)
+                                } else {
+                                    mLog.i(TAG, "different user")
+                                    dao.insertUser(user)
+                                    goToMainActivity(user.name)
+                                }
+                            } else {
+                                mLog.i(TAG, "new user")
+                                dao.insertUser(user)
+                                goToMainActivity(user.name)
+                            }
+
                         }
+
+
                     }
                 } else {
                     showToast("error")
+                    runOnUiThread {
+                      loginFailed()
+                    }
                 }
+
             }
 
-            override fun onfailure() {
 
+            override fun onfailure() {
+                showToast("Error")
+               loginFailed()
             }
 
             override fun internetFailure() {
@@ -166,12 +191,27 @@ class LoginActivity : BaseClass() {
         }
     }
 
-    override fun finish() {
-        super.finish()
-        overridePendingTransition(
-            R.anim.enter_from_left,
-            R.anim.exit_to_right
-        )
+    private fun loginFailed() {
+        login.text = "Log In"
+        progress.cancelAnimation()
+        progress.visibility = View.GONE
+        login.isEnabled = true
+        email.isEnabled = true
+        password.isEnabled = true
+    }
+
+    private fun goToMainActivity(name: String) {
+        progress.cancelAnimation()
+        progress.visibility = View.GONE
+        login.text = "welcome $name"
+        Handler().postDelayed({
+            startActivity(Intent(this, MainActivity::class.java))
+            overridePendingTransition(
+                R.anim.enter_from_right, R.anim.exit_to_left
+            )
+            finish()
+        }, 1000)
+
     }
 
 }

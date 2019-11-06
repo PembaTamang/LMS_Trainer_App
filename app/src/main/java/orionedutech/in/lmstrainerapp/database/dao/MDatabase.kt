@@ -10,13 +10,13 @@ import androidx.room.migration.Migration
 
 
 
-@Database(entities = [User::class], version = 1)
-abstract class mDatabase : RoomDatabase() {
+@Database(entities = [User::class], version = 2,exportSchema = false)
+abstract class MDatabase : RoomDatabase() {
     abstract fun getDao(): MDao
 
     companion object {
         @Volatile
-        private var instance: mDatabase? = null
+        private var instance: MDatabase? = null
         private val Lock = Any()
         operator fun invoke(c: Context) = instance ?: synchronized(Lock) {
             instance ?: buildDB(c).also {
@@ -24,16 +24,16 @@ abstract class mDatabase : RoomDatabase() {
             }
         }
 
-        private fun buildDB(c: Context): mDatabase {
+        private fun buildDB(c: Context): MDatabase {
             val dbName = "lms_database.db"
-            return Room.databaseBuilder(c.applicationContext, mDatabase::class.java, dbName)
+            return Room.databaseBuilder(c.applicationContext, MDatabase::class.java, dbName)
                 .addMigrations(migration)
                 .build()
         }
 
         private val migration: Migration = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                // Since we didn't alter the table, there's nothing else to do here.
+                database.execSQL("ALTER TABLE user_table  ADD COLUMN password TEXT")
             }
         }
     }
