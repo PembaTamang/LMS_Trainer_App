@@ -28,8 +28,7 @@ import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.database.dao.MDao
 import orionedutech.`in`.lmstrainerapp.database.dao.MDatabase
 import orionedutech.`in`.lmstrainerapp.database.entities.User
-import orionedutech.`in`.lmstrainerapp.network.dataModels.UserModel
-import orionedutech.`in`.lmstrainerapp.network.dataModels.Userdata
+import orionedutech.`in`.lmstrainerapp.network.dataModels.DCUserData
 import orionedutech.`in`.lmstrainerapp.showToast
 
 
@@ -102,13 +101,12 @@ class LoginActivity : BaseActivity() {
         login.setOnClickListener {
             if (!TextUtils.isEmpty(emailText) && !TextUtils.isEmpty(passwordText)) {
                 //login
-                loginUser(emailText, passwordText)
+               loginUser(emailText, passwordText)
             } else {
                 Toast.makeText(this, "please fill both fields", Toast.LENGTH_SHORT).show()
             }
         }
     }
-
     private fun loginUser(emailText: String, passwordText: String) {
         val data = JSONObject()
         data.put("user_name", emailText)
@@ -118,70 +116,64 @@ class LoginActivity : BaseActivity() {
         login.text = ""
         email.isEnabled = false
         password.isEnabled = false
-        NetworkOps.post(Urls.LOGINURL, data.toString(), this, email, object : response {
+        NetworkOps.post(Urls.loginUrl, data.toString(), this, email, object : response {
             override fun onrespose(string: String) {
-
+                mLog.i(TAG,"res : $string")
                 val gson = Gson()
-                val userModel = gson.fromJson(string, UserModel::class.java)
+                val userModel = gson.fromJson(string, DCUserData::class.java)
                 if (userModel.success == "1") {
                     mLog.i(TAG, "success")
-                    val userData: Userdata = userModel.userdata
+                    val userData = userModel.userdata
                     launch {
                         applicationContext?.let {
                             val dao: MDao = MDatabase(it).getDao()
                             val user = User(
                                 userData.userid,
-                                userData.userName,
-                                userData.userRoleName,
-                                userData.userAdminId,
-                                userData.userFullname,
+                                userData.user_name,
+                                userData.user_role_name,
+                                userData.user_admin_id,
+                                userData.user_fullname,
                                 userData.useremail,
-                                userData.userPhoneNo,
-                                userData.userAdminType,
-                                userData.batchId,
-                                userData.centerId,
-                                userData.batchName,
-                                userData.centerName,
-                                userData.userPassword
+                                userData.user_phone_no,
+                                userData.user_admin_type,
+                                userData.batch_id,
+                                userData.center_id,
+                                userData.batch_name,
+                                userData.center_name,
+                                userData.user_password
                             )
                             if (dao.userDataExists()) {
                                 mLog.i(TAG, "user data exists")
                                 if (user == dao.getuserDetails()) {
                                     mLog.i(TAG, "same user enter it")
-                                    goToMainActivity(user.name)
+                                    goToMainActivity(user.name!!)
                                 } else {
                                     mLog.i(TAG, "different user")
                                     dao.insertUser(user)
-                                    goToMainActivity(user.name)
+                                    goToMainActivity(user.name!!)
                                 }
                             } else {
                                 mLog.i(TAG, "new user")
                                 dao.insertUser(user)
-                                goToMainActivity(user.name)
+                                goToMainActivity(user.name!!)
                             }
 
                         }
 
 
                     }
+
                 } else {
-                    showToast("error")
-                    runOnUiThread {
-                      loginFailed()
-                    }
+
+                    loginFailed()
                 }
 
             }
-
-
             override fun onfailure() {
-                showToast("Error")
-               loginFailed()
+
+                loginFailed()
             }
 
-            override fun internetFailure() {
-
-            }
         }) { progress, speed, secs ->
 
             mLog.i(TAG, "progress :$progress")
@@ -189,15 +181,19 @@ class LoginActivity : BaseActivity() {
             mLog.i(TAG, "progress :$secs")
 
         }
+
     }
 
-    private fun loginFailed() {
-        login.text = "Log In"
-        progress.cancelAnimation()
-        progress.visibility = View.GONE
-        login.isEnabled = true
-        email.isEnabled = true
-        password.isEnabled = true
+    fun loginFailed() {
+        runOnUiThread {
+            showToast("Error")
+            login.text = "Log In"
+            progress.cancelAnimation()
+            progress.visibility = View.GONE
+            login.isEnabled = true
+            email.isEnabled = true
+            password.isEnabled = true
+        }
     }
 
     private fun goToMainActivity(name: String) {

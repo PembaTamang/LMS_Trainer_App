@@ -6,7 +6,7 @@ import orionedutech.`in`.lmstrainerapp.database.entities.User
 @Dao
 interface MDao {
 
-    //user
+    //user table
 
     @Insert
     suspend fun insert(user: User)
@@ -19,7 +19,7 @@ interface MDao {
 
 
     @Query("select adminID from user_table")
-    suspend fun getadminID(): String
+    suspend fun getTrainerID(): String
 
     @Query("select name from user_table")
     suspend fun getadminName(): String
@@ -44,6 +44,5 @@ interface MDao {
     suspend fun userDataExists(): Boolean {
         return getUserTableCount()>0
     }
-
 
 }

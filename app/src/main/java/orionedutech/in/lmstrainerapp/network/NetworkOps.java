@@ -55,7 +55,7 @@ public class NetworkOps {
             }
         });
     }else{
-            resp.internetFailure();
+
             noInternetSnackBar(context,view);
         }
     }
@@ -106,7 +106,7 @@ public class NetworkOps {
                 }
             });
         }else{
-            myres.internetFailure();
+
            noInternetSnackBar(context,view);
         }
 
@@ -156,7 +156,7 @@ public class NetworkOps {
                }
            });
        }else{
-           onRes.internetFailure();
+
            noInternetSnackBar(context,view);
        }
    }
@@ -221,7 +221,7 @@ public class NetworkOps {
                 }
             });
         }else{
-            onRes.internetFailure();
+
             noInternetSnackBar(context,view);
         }
     }

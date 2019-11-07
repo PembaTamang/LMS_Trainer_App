@@ -25,13 +25,11 @@ import kotlinx.android.synthetic.main.nav_header_main.view.*
 import kotlinx.coroutines.launch
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.database.dao.MDatabase
-import orionedutech.`in`.lmstrainerapp.fragments.DashFragment
-import orionedutech.`in`.lmstrainerapp.fragments.PasswordResetFragment
-import orionedutech.`in`.lmstrainerapp.fragments.TrainerAssessmentFragment
-import orionedutech.`in`.lmstrainerapp.fragments.TrainerAssignmentFragment
+import orionedutech.`in`.lmstrainerapp.fragments.*
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.showToast
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
+import kotlin.math.log
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
     DrawerLayout.DrawerListener {
@@ -100,9 +98,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             R.anim.fadein,
             R.anim.fadeout
         )
-        ft.replace(R.id.mainContainer, DashFragment())
+        ft.add(R.id.mainContainer, DashFragment())
+        ft.addToBackStack(null)
         ft.commit()
         lastFrag = DashFragment().javaClass.simpleName
+        mLog.i(TAG, "first dash frag count ${supportFragmentManager.backStackEntryCount} ")
         checkDashBoard()
 
         val headerView = nav_view.getHeaderView(0)
@@ -138,11 +138,15 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                     R.anim.enter_from_left,
                     R.anim.exit_to_right
                 )
-                ft.replace(R.id.mainContainer, fragment)
-                ft.addToBackStack(lastFrag)
+                ft.add(R.id.mainContainer, fragment)
+                ft.addToBackStack(null)
                 ft.commit()
                 lastpop = false
-
+                lastFrag = PasswordResetFragment().javaClass.simpleName
+                mLog.i(
+                    TAG,
+                    "backstack count password change ${supportFragmentManager.backStackEntryCount} "
+                )
                 return true
             }
             R.id.logout -> {
@@ -185,7 +189,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
             R.id.feedback -> {
 
-
+                changeFragment(FeedbackFragment())
             }
             R.id.manual -> {
 
@@ -221,10 +225,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     private fun changeFragment(fragment: Fragment) {
 
-        lastFrag = supportFragmentManager.findFragmentById(R.id.mainContainer)?.javaClass?.simpleName!!
-        mLog.i(TAG, "last fragname $lastFrag")
+        lastFrag =
+            supportFragmentManager.findFragmentById(R.id.mainContainer)?.javaClass?.simpleName!!
         if (lastFrag != fragment.javaClass.simpleName) {
-            lastFrag = fragment.javaClass.simpleName
             ft = supportFragmentManager.beginTransaction()
             ft.setCustomAnimations(
                 R.anim.fadein,
@@ -235,7 +238,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             ft.replace(R.id.mainContainer, fragment)
             ft.commit()
             lastpop = false
+            lastFrag = fragment.javaClass.simpleName
         }
+        mLog.i(TAG, "backstack count on change ${supportFragmentManager.backStackEntryCount} ")
     }
 
 
@@ -243,8 +248,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         if (drawer_layout.isDrawerOpen(nav_view)) {
             drawer_layout.closeDrawer(nav_view)
         } else {
-            if (supportFragmentManager.backStackEntryCount <= 0) {
-                if(lastFrag==DashFragment().javaClass.simpleName){
+            mLog.i(
+                TAG,
+                " backstack count backpressed ${supportFragmentManager.backStackEntryCount}"
+            )
+            if (supportFragmentManager.backStackEntryCount > 1) {
+                supportFragmentManager.popBackStack()
+            } else {
+                if (getlastFrag() == DashFragment().javaClass.simpleName) {
                     if (!exit) {
                         showToast("press back again to exit")
                         Handler().postDelayed({ exit = false }, 2000)
@@ -252,27 +263,21 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                     } else {
                         finish()
                     }
-                }else{
+                } else {
                     if (!lastpop) {
                         changeFragment(DashFragment())
                         lastpop = true
                     }
-                    if (!exit) {
-                        showToast("press back again to exit")
-                        Handler().postDelayed({ exit = false }, 2000)
-                        exit = true
-                    } else {
-                        finish()
-                    }
+
                 }
 
-            } else {
-                supportFragmentManager.popBackStack()
-                lastFrag = supportFragmentManager.findFragmentById(R.id.mainContainer)?.javaClass?.simpleName!!
-                mLog.i(TAG,"last from from pop $lastFrag")
-              }
+            }
 
         }
+    }
+
+    private fun getlastFrag(): String {
+        return supportFragmentManager.findFragmentById(R.id.mainContainer)?.javaClass?.simpleName!!
     }
 
     override fun finish() {

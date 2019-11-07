@@ -32,6 +32,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/materialCardView6"
+        android:layout_width="0dp"
+        android:layout_height="?actionBarSize"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/date">
+
+        <Spinner
+            android:id="@+id/batch_spinner"
+            android:layout_width="match_parent"
+            android:background="@drawable/spinner_bg"
+            android:layout_height="?actionBarSize" />
+    </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/materialCardView5"
@@ -44,11 +62,12 @@
         app:cardElevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/date">
+        app:layout_constraintTop_toBottomOf="@+id/materialCardView6">
 
         <Spinner
             android:id="@+id/course_spinner"
             android:layout_width="match_parent"
+            android:background="@drawable/spinner_bg"
             android:layout_height="?actionBarSize" />
     </com.google.android.material.card.MaterialCardView>
 

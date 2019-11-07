@@ -1,4 +1,4 @@
-package orionedutech.`in`.lmstrainerapp.adapters
+package orionedutech.`in`.lmstrainerapp.adapters.recyclerviews
 
 import android.content.Context
 import android.view.LayoutInflater

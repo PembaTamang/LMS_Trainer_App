@@ -7,12 +7,14 @@ import androidx.room.RoomDatabase
 import orionedutech.`in`.lmstrainerapp.database.entities.User
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.room.migration.Migration
+import orionedutech.`in`.lmstrainerapp.database.entities.Batch
 
 
-
-@Database(entities = [User::class], version = 2,exportSchema = false)
+@Database(entities = [User::class,Batch::class], version = 1,exportSchema = false)
 abstract class MDatabase : RoomDatabase() {
     abstract fun getDao(): MDao
+
+    abstract fun getDao1():BatchDao
 
     companion object {
         @Volatile
@@ -33,7 +35,6 @@ abstract class MDatabase : RoomDatabase() {
 
         private val migration: Migration = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("ALTER TABLE user_table  ADD COLUMN password TEXT")
             }
         }
     }

@@ -89,4 +89,11 @@
         <item name="android:overlapAnchor">false</item>
         <item name="android:dropDownVerticalOffset">?actionBarSize</item>
     </style>
+
+    <style name="MyEditText" parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="hintTextColor">?attr/colorPrimary</item>
+       <!-- <item name="android:textColorHint">@color/selector_text_color</item>-->
+        <item name="boxStrokeColor">@color/selector_stroke_color</item>
+
+    </style>
 </resources>

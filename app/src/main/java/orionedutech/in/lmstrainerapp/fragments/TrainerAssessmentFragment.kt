@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_trainer_assessment.view.*
 import orionedutech.`in`.lmstrainerapp.R
-import orionedutech.`in`.lmstrainerapp.adapters.TrainerAssessmentAdapter
+import orionedutech.`in`.lmstrainerapp.adapters.recyclerviews.TrainerAssessmentAdapter
 import orionedutech.`in`.lmstrainerapp.interfaces.RecyclerItemClick
 import orionedutech.`in`.lmstrainerapp.model.TrainerAssessmentModel
 import java.util.ArrayList
@@ -112,7 +112,11 @@ class TrainerAssessmentFragment : Fragment(), RecyclerItemClick {
 
 
         view.recycler.layoutManager = LinearLayoutManager(context)
-        val adapter = TrainerAssessmentAdapter(arrayList, this)
+        val adapter =
+            TrainerAssessmentAdapter(
+                arrayList,
+                this
+            )
         view.recycler.adapter = adapter
 
         for (i in 0..49) {
