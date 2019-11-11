@@ -4,7 +4,7 @@ import androidx.room.*
 import orionedutech.`in`.lmstrainerapp.database.entities.User
 
 @Dao
-interface MDao {
+interface UserDao {
 
     //user table
 
@@ -18,7 +18,7 @@ interface MDao {
     suspend fun getuserDetails(): User
 
 
-    @Query("select adminID from user_table")
+    @Query("select userID from user_table")
     suspend fun getTrainerID(): String
 
     @Query("select name from user_table")

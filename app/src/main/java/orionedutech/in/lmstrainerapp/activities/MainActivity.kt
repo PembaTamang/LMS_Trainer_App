@@ -29,7 +29,6 @@ import orionedutech.`in`.lmstrainerapp.fragments.*
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.showToast
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
-import kotlin.math.log
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
     DrawerLayout.DrawerListener {
@@ -109,7 +108,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         headerView.profile_image
         launch {
             applicationContext?.let {
-                val dao = MDatabase(it).getDao()
+                val dao = MDatabase(it).getUserDao()
                 headerView.name.text = dao.getadminName()
             }
         }

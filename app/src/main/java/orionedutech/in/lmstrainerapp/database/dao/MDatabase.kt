@@ -12,9 +12,9 @@ import orionedutech.`in`.lmstrainerapp.database.entities.Batch
 
 @Database(entities = [User::class,Batch::class], version = 1,exportSchema = false)
 abstract class MDatabase : RoomDatabase() {
-    abstract fun getDao(): MDao
+    abstract fun getUserDao(): UserDao
 
-    abstract fun getDao1():BatchDao
+    abstract fun getBatchDao():BatchDao
 
     companion object {
         @Volatile

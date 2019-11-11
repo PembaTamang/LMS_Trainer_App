@@ -15,7 +15,7 @@ class SplashActivity : BaseActivity() {
         setContentView(R.layout.activity_splash)
         launch {
             applicationContext?.let {
-                val hasdata = MDatabase(it).getDao().userDataExists()
+                val hasdata = MDatabase(it).getUserDao().userDataExists()
                 mLog.i("mTrainer","has user $hasdata")
                 startActivity(Intent(it,if(hasdata) MainActivity::class.java else LoginActivity::class.java ))
                 overridePendingTransition(

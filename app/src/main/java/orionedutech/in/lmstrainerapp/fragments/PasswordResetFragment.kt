@@ -2,19 +2,17 @@ package orionedutech.`in`.lmstrainerapp.fragments
 
 
 import android.os.Bundle
-import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_password_reset.view.*
 import kotlinx.coroutines.launch
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.database.dao.MDatabase
-import orionedutech.`in`.lmstrainerapp.showToast
+
 /**
  * A simple [Fragment] subclass.
  */
@@ -86,7 +84,7 @@ class PasswordResetFragment : BaseFragment() {
 
             launch {
                context?.let {
-                   val dao = MDatabase(it).getDao()
+                   val dao = MDatabase(it).getUserDao()
 
                }
            }

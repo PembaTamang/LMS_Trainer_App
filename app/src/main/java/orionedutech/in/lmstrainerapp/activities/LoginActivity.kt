@@ -25,7 +25,7 @@ import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.launch
 import orionedutech.`in`.lmstrainerapp.R
-import orionedutech.`in`.lmstrainerapp.database.dao.MDao
+import orionedutech.`in`.lmstrainerapp.database.dao.UserDao
 import orionedutech.`in`.lmstrainerapp.database.dao.MDatabase
 import orionedutech.`in`.lmstrainerapp.database.entities.User
 import orionedutech.`in`.lmstrainerapp.network.dataModels.DCUserData
@@ -126,7 +126,7 @@ class LoginActivity : BaseActivity() {
                     val userData = userModel.userdata
                     launch {
                         applicationContext?.let {
-                            val dao: MDao = MDatabase(it).getDao()
+                            val dao: UserDao = MDatabase(it).getUserDao()
                             val user = User(
                                 userData.userid,
                                 userData.user_name,

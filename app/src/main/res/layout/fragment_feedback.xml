@@ -16,9 +16,27 @@
         android:text="Training Feedback"
         android:textColor="@color/white"
         android:textSize="22sp"
+        android:paddingTop="4dp"
+        android:textAppearance="@style/Baloo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/batchAnimation"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:elevation="3dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/feedback"
+        app:layout_constraintEnd_toEndOf="@+id/feedback"
+        app:layout_constraintStart_toStartOf="@+id/feedback"
+        app:layout_constraintTop_toTopOf="@+id/feedback"
+        app:lottie_autoPlay="false"
+        app:lottie_loop="true"
+        app:lottie_colorFilter="@color/white"
+        app:lottie_fileName="loading.json" />
+
 
     <TextView
         android:id="@+id/date"
@@ -47,8 +65,8 @@
         <Spinner
             android:id="@+id/batch_spinner"
             android:layout_width="match_parent"
-            android:background="@drawable/spinner_bg"
-            android:layout_height="?actionBarSize" />
+            android:layout_height="?actionBarSize"
+            android:background="@drawable/spinner_bg" />
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
@@ -67,8 +85,8 @@
         <Spinner
             android:id="@+id/course_spinner"
             android:layout_width="match_parent"
-            android:background="@drawable/spinner_bg"
-            android:layout_height="?actionBarSize" />
+            android:layout_height="?actionBarSize"
+            android:background="@drawable/spinner_bg" />
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.button.MaterialButton

@@ -18,10 +18,20 @@ interface BatchDao{
     @Query(" select * from batch_table ")
     suspend fun getAllBatches() :List<Batch>
 
+    @Query("select batch_name from batch_table where batch_id = :batch_id")
+    suspend fun getBatchName(batch_id:String) : String
+
+    @Query("select count(*) from batch_table")
+    suspend fun getTableCount(): Int
+
     @Transaction
     suspend fun insertBatches(batch: MutableList<Batch>){
         deleteBatchTable()
         insert(batch)
     }
 
+    @Transaction
+    suspend fun batchDataExists(): Boolean {
+        return getTableCount()>0
+    }
 }
