@@ -15,9 +15,7 @@ class SplashActivity : BaseActivity() {
         setContentView(R.layout.activity_splash)
         launch {
             applicationContext?.let {
-                val hasdata = MDatabase(it).getUserDao().userDataExists()
-                mLog.i("mTrainer","has user $hasdata")
-                startActivity(Intent(it,if(hasdata) MainActivity::class.java else LoginActivity::class.java ))
+                startActivity(Intent(it,if(MDatabase(it).getUserDao().userDataExists()) MainActivity::class.java else LoginActivity::class.java ))
                 overridePendingTransition(
                     R.anim.enter_from_right,
                     R.anim.exit_to_left
