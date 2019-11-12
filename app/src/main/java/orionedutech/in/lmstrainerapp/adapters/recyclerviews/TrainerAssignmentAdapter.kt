@@ -14,10 +14,10 @@ import java.util.ArrayList
 
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.interfaces.RecyclerItemClick
-import orionedutech.`in`.lmstrainerapp.model.TrainerAssignmentModel
+import orionedutech.`in`.lmstrainerapp.network.dataModels.DCAssignment
 
 class TrainerAssignmentAdapter(
-    private val arrayList: ArrayList<TrainerAssignmentModel>,
+    private val arrayList: ArrayList<DCAssignment>,
     private val click: RecyclerItemClick
 ) : RecyclerView.Adapter<TrainerAssignmentAdapter.TVH>() {
     private var context: Context? = null
@@ -37,9 +37,9 @@ class TrainerAssignmentAdapter(
         val model = arrayList[position]
         holder.cardView.setCardBackgroundColor(if (position % 2 == 0) context?.let { ContextCompat.getColor(it,R.color.white) }!! else context?.let { ContextCompat.getColor(it,R.color.light_grey) }!!)
         holder.sl.text = (position + 1).toString()
-        holder.name.text = model.name
-        holder.batch.text = model.batch
-        holder.course.text = model.course
+        holder.name.text = model.assignment_name
+        holder.batch.text = model.batch_name
+        holder.course.text = model.course_name
 
     }
 

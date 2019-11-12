@@ -1,5 +1,6 @@
 package orionedutech.`in`.lmstrainerapp.activities
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
@@ -39,6 +40,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private var lastpop = false
     private var lastFrag: String = ""
     private var viewID: Int = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -280,6 +282,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     override fun finish() {
+        val dashPref = getSharedPreferences("dash", Context.MODE_PRIVATE)
+        dashPref.edit().clear().apply()
         super.finish()
         overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right)
     }

@@ -19,7 +19,14 @@ interface UserDao {
 
 
     @Query("select userID from user_table")
-    suspend fun getTrainerID(): String
+    suspend fun getUserID(): String
+
+    @Query("select adminID from user_table")
+    suspend fun getAdminID(): String
+
+    @Query("select centerID from user_table")
+    suspend fun getCenterID(): String
+
 
     @Query("select name from user_table")
     suspend fun getadminName(): String

@@ -9,6 +9,7 @@
         <item name="android:actionOverflowButtonStyle">@style/MyActionButtonOverflow</item>
         <item name="popupMenuStyle">@style/PopupMenu</item>
         <item name="android:popupMenuStyle">@style/PopupMenu</item>
+       <item name="android:textAppearance">@style/OpenSansRegular</item>
     </style>
     <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
@@ -32,25 +33,25 @@
         <item name="android:fontFamily">@font/baloobhai_regular</item>
     </style>
     <style name="OpenSansBold" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">12sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/default_text</item>
         <item name="android:fontFamily">@font/opensans_bold</item>
     </style>
     <style name="OpenSansExtra" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">12sp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/default_text</item>
         <item name="android:fontFamily">@font/opensans_extrabold</item>
     </style>
     <style name="OpenSansRegular" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">12sp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/default_text</item>
         <item name="android:fontFamily">@font/opensans_regular</item>
     </style>
     <style name="OpenSansSemiBold" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">12sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/default_text</item>
         <item name="android:fontFamily">@font/opensans_semibold</item>
@@ -95,5 +96,9 @@
        <!-- <item name="android:textColorHint">@color/selector_text_color</item>-->
         <item name="boxStrokeColor">@color/selector_stroke_color</item>
 
+    </style>
+    <style name="NarrowDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="windowFixedWidthMajor">70%</item>
+        <item name="windowFixedWidthMinor">70%</item>
     </style>
 </resources>

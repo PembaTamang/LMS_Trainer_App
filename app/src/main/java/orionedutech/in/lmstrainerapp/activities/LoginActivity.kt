@@ -15,8 +15,6 @@ import androidx.core.content.ContextCompat
 
 import com.google.android.material.button.MaterialButton
 import org.json.JSONObject
-import orionedutech.`in`.lmstrainerapp.BuildConfig
-import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.network.NetworkOps
 import orionedutech.`in`.lmstrainerapp.network.Urls
 import orionedutech.`in`.lmstrainerapp.network.response
@@ -24,12 +22,11 @@ import orionedutech.`in`.lmstrainerapp.mLog.TAG;
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.launch
-import orionedutech.`in`.lmstrainerapp.R
+import orionedutech.`in`.lmstrainerapp.*
 import orionedutech.`in`.lmstrainerapp.database.dao.UserDao
 import orionedutech.`in`.lmstrainerapp.database.dao.MDatabase
 import orionedutech.`in`.lmstrainerapp.database.entities.User
 import orionedutech.`in`.lmstrainerapp.network.dataModels.DCUserData
-import orionedutech.`in`.lmstrainerapp.showToast
 
 
 class LoginActivity : BaseActivity() {
@@ -116,7 +113,11 @@ class LoginActivity : BaseActivity() {
         login.text = ""
         email.isEnabled = false
         password.isEnabled = false
-        NetworkOps.post(Urls.loginUrl, data.toString(), this, email, object : response {
+        NetworkOps.post(Urls.loginUrl, data.toString(), this, object : response {
+            override fun onInternetfailure() {
+            mToast.noInternetSnackBar(this@LoginActivity)
+            }
+
             override fun onrespose(string: String) {
                 mLog.i(TAG,"res : $string")
                 val gson = Gson()

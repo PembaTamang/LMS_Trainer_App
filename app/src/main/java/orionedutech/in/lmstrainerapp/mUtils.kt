@@ -16,17 +16,19 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 
+
+
 @SuppressLint("InflateParams")
-fun Context.showToast(message: String) {
-    val view = LayoutInflater.from(this).inflate(R.layout.custom_toast, null, false)
-    val text = view.findViewById<TextView>(R.id.textView)
-    text.text = message
-    val toast = Toast(this)
-    toast.setGravity(Gravity.BOTTOM, 0, 50)
-    toast.duration = Toast.LENGTH_SHORT
-    toast.view = view
-    toast.show()
-}
+    fun Context.showToast(message: String) {
+        val view = LayoutInflater.from(this).inflate(R.layout.custom_toast, null, false)
+        val text = view.findViewById<TextView>(R.id.textView)
+        text.text = message
+        val toast = Toast(this)
+        toast.setGravity(Gravity.BOTTOM, 0, 50)
+        toast.duration = Toast.LENGTH_SHORT
+        toast.view = view
+        toast.show()
+    }
 @Suppress("DEPRECATION")
 fun Context.isConnected():Boolean {
     var result = false
@@ -80,6 +82,5 @@ fun Context.noInternetSnackBar(view: View) {
         }
         snackbar.show()
     }
-
 
 

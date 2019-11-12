@@ -16,7 +16,6 @@ import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_feedback.*
 import kotlinx.android.synthetic.main.fragment_feedback.view.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import org.json.JSONObject
@@ -27,31 +26,31 @@ import orionedutech.`in`.lmstrainerapp.database.dao.MDatabase
 import orionedutech.`in`.lmstrainerapp.database.entities.Batch
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
+import orionedutech.`in`.lmstrainerapp.mToast
 import orionedutech.`in`.lmstrainerapp.network.NetworkOps
 import orionedutech.`in`.lmstrainerapp.network.Urls
-import orionedutech.`in`.lmstrainerapp.network.dataModels.Course
-import orionedutech.`in`.lmstrainerapp.network.dataModels.DCBatches
 import orionedutech.`in`.lmstrainerapp.network.dataModels.DCCourse
+import orionedutech.`in`.lmstrainerapp.network.dataModels.DCBatches
+import orionedutech.`in`.lmstrainerapp.network.dataModels.DCCourseList
 import orionedutech.`in`.lmstrainerapp.network.response
 import java.util.*
 import java.util.concurrent.CountDownLatch
-import kotlin.coroutines.Continuation
 
 /**
  * A simple [Fragment] subclass.
  */
 class FeedbackFragment : BaseFragment() {
 
-    var courseListSpinner = ArrayList<Course>()
+    var courseListSpinner = ArrayList<DCCourse>()
     lateinit var courseAdapter: CourseSpinAdapter
 
     var batchListSpinner = ArrayList<Batch>()
     lateinit var batchAdapter: BatchSpinAdapter
 
-    lateinit var selectedCourseID: String
+    lateinit var selectedBatchID: String
 
-    lateinit var button: MaterialButton
-    var busy: Boolean = false
+    private lateinit var button: MaterialButton
+    private var busy: Boolean = false
     lateinit var ft: FragmentTransaction
     var json: JSONObject = JSONObject()
     override fun onCreateView(
@@ -74,7 +73,7 @@ class FeedbackFragment : BaseFragment() {
             context!!,
             android.R.layout.simple_list_item_1,
             batchListSpinner
-        )
+        ,0)
         view.batch_spinner.adapter = batchAdapter
 
         view.batch_spinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -84,30 +83,30 @@ class FeedbackFragment : BaseFragment() {
 
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 val batch = batchListSpinner[p2]
-                selectedCourseID = batch.batch_id.toString()
-                  CoroutineScope(IO).launch {
-                      getCourseData(selectedCourseID)
-                  }
+                selectedBatchID = batch.batch_id.toString()
+                CoroutineScope(IO).launch {
+                    getCourseData(selectedBatchID)
+                }
             }
 
         }
 
 
-         CoroutineScope(IO).launch {
-             context?.let {
-                 val dao = MDatabase(it).getBatchDao()
-                 if (dao.batchDataExists()) {
-                     batchListSpinner.addAll(dao.getAllBatches())
-                     withContext(Main) {
-                         batchAdapter.notifyDataSetChanged()
-                     }
-                 } else {
-                     showAnimation()
-                     hideAnimations(getBatchData())
-                 }
-             }
+        CoroutineScope(IO).launch {
+            context?.let {
+                val dao = MDatabase(it).getBatchDao()
+                if (dao.batchDataExists()) {
+                    batchListSpinner.addAll(dao.getAllBatches())
+                    withContext(Main) {
+                        batchAdapter.notifyDataSetChanged()
+                    }
+                } else {
+                    showAnimation()
+                    hideAnimations(getBatchData())
+                }
+            }
 
-         }
+        }
 
 
         button = view.feedback
@@ -140,9 +139,9 @@ class FeedbackFragment : BaseFragment() {
         busy = false
         mLog.i(TAG, "hiding : $b ")
         activity?.runOnUiThread {
-            if(b) {
+            if (b) {
                 button.text = "give feedback"
-            }else{
+            } else {
                 button.text = "retry"
             }
             batchAnimation.visibility = View.GONE
@@ -183,10 +182,13 @@ class FeedbackFragment : BaseFragment() {
                     Urls.courseUrl,
                     json.toString(),
                     context,
-                    view!!.feedback,
                     object : response {
+                        override fun onInternetfailure() {
+                            mToast.noInternetSnackBar(activity!!)
+                        }
+
                         override fun onrespose(string: String?) {
-                            val courses = Gson().fromJson(string, DCCourse::class.java)
+                            val courses = Gson().fromJson(string, DCCourseList::class.java)
                             if (courses.success == "1") {
 
                                 val courseList = courses.courses
@@ -235,7 +237,6 @@ class FeedbackFragment : BaseFragment() {
     }
 
 
-
     suspend fun getBatchData(): Boolean {
         var a = false
         val countDownLatch = CountDownLatch(1)
@@ -243,17 +244,20 @@ class FeedbackFragment : BaseFragment() {
         launch {
             context?.let {
                 val dao = MDatabase(it).getUserDao()
-                val trainerID = dao.getTrainerID()
+                val trainerID = dao.getUserID()
                 mLog.i(TAG, "trainer id $trainerID")
                 json.put("trainer_id", trainerID)
                 NetworkOps.post(
                     Urls.batchUrl,
                     json.toString(),
                     context,
-                    view!!.feedback,
                     object : response {
+                        override fun onInternetfailure() {
+                        mToast.noInternetSnackBar(activity!!)
+                        }
+
                         override fun onrespose(string: String?) {
-                           
+
                             val batches = Gson().fromJson(string, DCBatches::class.java)
                             if (batches.success == "1") {
                                 val batchlist = batches.batches
@@ -284,13 +288,13 @@ class FeedbackFragment : BaseFragment() {
                             } else {
                                 countDownLatch.countDown()
 
-                               // failedBatch()
+                                // failedBatch()
                             }
                         }
 
                         override fun onfailure() {
                             countDownLatch.countDown()
-                           // failedBatch()
+                            // failedBatch()
 
 
                         }

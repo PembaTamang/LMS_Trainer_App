@@ -56,7 +56,7 @@ public class NetworkOps {
         });
     }else{
 
-            noInternetSnackBar(context,view);
+         resp.onInternetfailure();
         }
     }
     public static void post1(String url, String json, String mediaType, final Context context,View view, final response myres) {
@@ -107,12 +107,12 @@ public class NetworkOps {
             });
         }else{
 
-           noInternetSnackBar(context,view);
+          myres.onInternetfailure();
         }
 
 
     }
-   public static void post(String url, String json, final Context context,View view, final response onRes,final progress prog){
+   public static void post(String url, String json, final Context context, final response onRes,final progress prog){
        if(isConnected(context)) {
            OkHttpClient okHttpClient;
            OkHttpClient.Builder build = new OkHttpClient.Builder();
@@ -152,12 +152,16 @@ public class NetworkOps {
 
                @Override
                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                   onRes.onrespose(response.body().string());
+                  if(response.body()!=null) {
+                      onRes.onrespose(Objects.requireNonNull(response.body()).string());
+                  }else{
+                      onRes.onfailure();
+                  }
                }
            });
        }else{
 
-           noInternetSnackBar(context,view);
+          onRes.onInternetfailure();
        }
    }
     public static void postMultipart(String UPLOAD_URL, HashMap<String, String> data, Context context, View view, final response onRes, final progress prog) {
@@ -222,7 +226,7 @@ public class NetworkOps {
             });
         }else{
 
-            noInternetSnackBar(context,view);
+           onRes.onInternetfailure();
         }
     }
     private static String getMimetype(String filepath) {
