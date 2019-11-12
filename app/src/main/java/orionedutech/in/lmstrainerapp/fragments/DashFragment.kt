@@ -246,10 +246,10 @@ class DashFragment : BaseFragment() {
         xAxis.labelRotationAngle = 45f
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.setDrawGridLines(false)
-        chart.data = bardata
         chart.canScrollHorizontally(1)
         chart.isScaleXEnabled = true
         chart.isClickable = false
+        chart.data = bardata
         chart.invalidate()
     }
 
