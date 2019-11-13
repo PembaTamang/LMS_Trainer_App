@@ -8,15 +8,20 @@ import orionedutech.`in`.lmstrainerapp.database.entities.User
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.room.migration.Migration
 import orionedutech.`in`.lmstrainerapp.database.dao.BatchDao
+import orionedutech.`in`.lmstrainerapp.database.dao.FileDao
 import orionedutech.`in`.lmstrainerapp.database.dao.UserDao
+import orionedutech.`in`.lmstrainerapp.database.entities.AppFiles
 import orionedutech.`in`.lmstrainerapp.database.entities.Batch
 
 
-@Database(entities = [User::class,Batch::class], version = 1,exportSchema = false)
+@Database(entities = [User::class,Batch::class,AppFiles::class], version = 1,exportSchema = false)
 abstract class MDatabase : RoomDatabase() {
+
     abstract fun getUserDao(): UserDao
 
     abstract fun getBatchDao(): BatchDao
+
+    abstract fun getFilesDao() : FileDao
 
     companion object {
         @Volatile

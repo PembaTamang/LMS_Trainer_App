@@ -155,7 +155,7 @@ object MDownloader {
         val builder = NotificationCompat.Builder(context, channelId)
             .setVibrate(longArrayOf(0, 100, 100, 100, 100, 100))
             .setSound(sound)
-            .setSmallIcon(R.drawable.notification)
+            .setSmallIcon(R.drawable.ic_batch_creation_icon)
             .setContent(fcmNotificationView)
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)

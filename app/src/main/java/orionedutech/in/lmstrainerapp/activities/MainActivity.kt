@@ -278,6 +278,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 } else {
                     if (!lastpop) {
                         changeFragment(DashFragment())
+                        checkDashBoard()
                         lastpop = true
                     }
 

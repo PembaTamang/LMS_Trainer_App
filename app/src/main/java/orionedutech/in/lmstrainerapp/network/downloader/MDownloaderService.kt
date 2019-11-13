@@ -83,13 +83,13 @@ class MDownloaderService : Service() {
         }
         notificationBuilder = NotificationCompat.Builder(this, channelId)
         forgroundNotification = notificationBuilder.setOngoing(true)
-            .setSmallIcon(R.drawable.notification)
+            .setSmallIcon(R.drawable.ic_course_icon)
             .setSound(sound)
             .setContentTitle("Downloading file $fileName")
             .setTicker("ticker")
-            .addAction(R.drawable.stop,"cancel download",cancelPendingIntent)
-            /*.setContent(downloadView)*/
-            .setProgress(100,0,false)
+          /*  .addAction(R.drawable.stop,"cancel download",cancelPendingIntent)
+            .setProgress(100,0,false)*/
+            .setContent(downloadView)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCategory(Notification.CATEGORY_SERVICE)
             .build()
@@ -104,14 +104,14 @@ class MDownloaderService : Service() {
         MDownloader.downloadFile(applicationContext, url, fileName, fileName, object : progress {
             override fun progress(progress: Double, speed: Float, secs: Long) {
 
-               /* downloadView!!.setProgressBar(R.id.progress, 100, progress.toInt(), false)
+                downloadView!!.setProgressBar(R.id.progress, 100, progress.toInt(), false)
                 downloadView!!.setTextViewText(
                     R.id.time_speed,
                     String.format("%s / %s ", getSecs(secs), getSpeed(speed))
-                )*/
-                notificationBuilder.setProgress(100,progress.toInt(),false)
+                )
+              /*  notificationBuilder.setProgress(100,progress.toInt(),false)
                 notificationBuilder.setSubText(String.format("%s / %s ", getSecs(secs), getSpeed(speed)))
-                notificationBuilder.setTicker("ticker ")
+                notificationBuilder.setTicker("ticker ")*/
                 refreshNotification()
             }
 
@@ -240,6 +240,8 @@ class MDownloaderService : Service() {
     }
 
     private fun refreshNotification() {
-        notificationManager.notify(foreground_notificationID, notificationBuilder.build())
+       forgroundNotification = notificationBuilder.build()
+        forgroundNotification!!.flags=NotificationCompat.FLAG_ONLY_ALERT_ONCE
+        notificationManager.notify(foreground_notificationID, forgroundNotification!!)
     }
 }

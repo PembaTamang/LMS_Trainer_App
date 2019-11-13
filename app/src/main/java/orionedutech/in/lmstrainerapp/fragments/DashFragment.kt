@@ -24,6 +24,7 @@ import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_dash.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -54,6 +55,7 @@ class DashFragment : BaseFragment() {
     private lateinit var studentCount: TextView
     private lateinit var name : TextView
     private lateinit var dashPref : SharedPreferences
+    private lateinit var batchName : TextView
     //variables
     var batchListSpinner = java.util.ArrayList<Batch>()
     lateinit var batchAdapter: BatchSpinAdapter
@@ -75,6 +77,7 @@ class DashFragment : BaseFragment() {
         batchCount = view.batchCount
         studentCount = view.studentCount
         name = view.name
+        batchName = view.batchName
         dashPref = activity!!.getSharedPreferences("dash",Context.MODE_PRIVATE)
         batchAdapter = BatchSpinAdapter(
             context!!,
@@ -107,7 +110,13 @@ class DashFragment : BaseFragment() {
 
         CoroutineScope(Dispatchers.IO).launch {
             context?.let {
-                val dao = MDatabase(it).getBatchDao()
+                val database = MDatabase(it)
+                val userDao = database.getUserDao()
+                val bName = userDao.getBatchName()
+                withContext(Main){
+                    batchName.text = bName
+                }
+                val dao = database.getBatchDao()
                 if (dao.batchDataExists()) {
                     batchListSpinner.addAll(dao.getAllBatches())
                     withContext(Dispatchers.Main) {
@@ -117,6 +126,8 @@ class DashFragment : BaseFragment() {
                     showAnimation()
                     hideAnimations(getBatchData())
                 }
+
+
             }
 
         }

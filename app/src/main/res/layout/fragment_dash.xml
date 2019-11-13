@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:background="@color/blue"
         android:gravity="bottom"
-        android:minHeight="0dp"
         android:paddingStart="16dp"
         android:text="Welcome"
         android:textAlignment="gravity"
@@ -37,24 +36,8 @@
         app:layout_constraintTop_toBottomOf="@+id/textView3"
         tools:layout_editor_absoluteX="0dp" />
 
-    <TextView
-        android:id="@+id/currentBatch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/round_rect_white"
-        android:padding="4dp"
-        android:text="current batch \n    batch name"
-        android:textAllCaps="true"
-        android:textAppearance="@style/OpenSansRegular"
-        android:textColor="@color/default_text"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/name" />
 
-    <View
+  <View
         android:id="@+id/view"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
@@ -73,6 +56,44 @@
         app:layout_constraintBottom_toBottomOf="@+id/materialCardView"
         app:layout_constraintEnd_toEndOf="@+id/materialCardView"
         app:layout_constraintStart_toStartOf="@+id/materialCardView" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/round_rect_white"
+        android:orientation="vertical"
+        android:padding="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/name"
+        app:layout_constraintEnd_toEndOf="@+id/name"
+        app:layout_constraintTop_toTopOf="@+id/name">
+        <TextView
+            android:id="@+id/currentBatch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="0dp"
+            android:includeFontPadding="false"
+            android:text="current batch"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:textAllCaps="true"
+            android:textAppearance="@style/OpenSansRegular"
+            android:textColor="@color/default_text"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/batchName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="batch name"
+            android:minHeight="0dp"
+            android:layout_gravity="center"
+            android:includeFontPadding="false"
+            android:gravity="top"
+            android:textStyle="bold"
+            android:textAppearance="@style/OpenSansRegular" />
+    </LinearLayout>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/materialCardView"
@@ -129,6 +150,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/textView5"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/textView4" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
@@ -286,15 +308,16 @@
         android:id="@+id/animation1"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:lottie_autoPlay="false"
-        app:lottie_loop="true"
-        app:lottie_colorFilter="@color/white"
-        app:lottie_fileName="loading.json"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/dashSpinner"
         app:layout_constraintEnd_toEndOf="@+id/dashSpinner"
         app:layout_constraintStart_toStartOf="@+id/dashSpinner"
-        app:layout_constraintTop_toTopOf="@+id/dashSpinner" />
+        app:layout_constraintTop_toTopOf="@+id/dashSpinner"
+        app:lottie_autoPlay="false"
+        app:lottie_colorFilter="@color/white"
+        app:lottie_fileName="loading.json"
+        app:lottie_loop="true" />
+
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/bar"
         android:layout_width="0dp"
@@ -313,5 +336,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_navigation_menu"/>
+        app:menu="@menu/bottom_navigation_menu" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

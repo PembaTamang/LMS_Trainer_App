@@ -24,7 +24,7 @@
         android:id="@+id/time_speed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/loading"
+        android:text="@string/time_speed"
         android:layout_below="@id/file"
         android:layout_marginStart="8dp"
         android:textAppearance="@style/OpenSansRegular"/>
@@ -34,9 +34,9 @@
         android:layout_width="match_parent"
         android:layout_height="4dp"
         android:progress="50"
+        android:progressTint="@color/blue"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:progressDrawable="@drawable/curved_progress_bar"
         android:layout_below="@id/time_speed"
         android:layout_toStartOf="@id/cancel"/>
 
