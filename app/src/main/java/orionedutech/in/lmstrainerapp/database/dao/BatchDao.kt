@@ -24,6 +24,7 @@ interface BatchDao{
     @Query("select count(*) from batch_table")
     suspend fun getTableCount(): Int
 
+
     @Transaction
     suspend fun insertBatches(batch: MutableList<Batch>){
         deleteBatchTable()

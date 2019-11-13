@@ -1,4 +1,4 @@
-package orionedutech.`in`.lmstrainerapp.database.dao
+package orionedutech.`in`.lmstrainerapp.database
 
 import android.content.Context
 import androidx.room.Database
@@ -7,6 +7,8 @@ import androidx.room.RoomDatabase
 import orionedutech.`in`.lmstrainerapp.database.entities.User
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.room.migration.Migration
+import orionedutech.`in`.lmstrainerapp.database.dao.BatchDao
+import orionedutech.`in`.lmstrainerapp.database.dao.UserDao
 import orionedutech.`in`.lmstrainerapp.database.entities.Batch
 
 
@@ -14,14 +16,16 @@ import orionedutech.`in`.lmstrainerapp.database.entities.Batch
 abstract class MDatabase : RoomDatabase() {
     abstract fun getUserDao(): UserDao
 
-    abstract fun getBatchDao():BatchDao
+    abstract fun getBatchDao(): BatchDao
 
     companion object {
         @Volatile
         private var instance: MDatabase? = null
         private val Lock = Any()
-        operator fun invoke(c: Context) = instance ?: synchronized(Lock) {
-            instance ?: buildDB(c).also {
+        operator fun invoke(c: Context) = instance
+            ?: synchronized(Lock) {
+            instance
+                ?: buildDB(c).also {
                 instance = it
             }
         }

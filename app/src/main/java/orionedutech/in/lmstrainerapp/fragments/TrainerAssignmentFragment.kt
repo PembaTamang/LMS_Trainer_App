@@ -2,6 +2,8 @@ package orionedutech.`in`.lmstrainerapp.fragments
 
 
 import android.animation.ObjectAnimator
+import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.custom_alert.view.*
 import kotlinx.android.synthetic.main.fragment_trainer_assignment.view.*
@@ -20,7 +23,7 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.adapters.recyclerviews.TrainerAssignmentAdapter
-import orionedutech.`in`.lmstrainerapp.database.dao.MDatabase
+import orionedutech.`in`.lmstrainerapp.database.MDatabase
 import orionedutech.`in`.lmstrainerapp.interfaces.RecyclerItemClick
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
@@ -29,6 +32,8 @@ import orionedutech.`in`.lmstrainerapp.network.NetworkOps
 import orionedutech.`in`.lmstrainerapp.network.Urls
 import orionedutech.`in`.lmstrainerapp.network.dataModels.DCAssignment
 import orionedutech.`in`.lmstrainerapp.network.dataModels.DCAssignmentList
+import orionedutech.`in`.lmstrainerapp.network.downloader.MActions
+import orionedutech.`in`.lmstrainerapp.network.downloader.MDownloaderService
 import orionedutech.`in`.lmstrainerapp.network.response
 import java.util.ArrayList
 import java.util.concurrent.atomic.AtomicBoolean
@@ -59,10 +64,6 @@ class TrainerAssignmentFragment : BaseFragment(), RecyclerItemClick {
             //upload code here
         }
 
-        view.download.setOnClickListener {
-            //put download code here
-
-        }
         giveMarks.setOnClickListener {
 
 
@@ -138,27 +139,26 @@ class TrainerAssignmentFragment : BaseFragment(), RecyclerItemClick {
         }*/
         recyclerView.layoutManager = LinearLayoutManager(context)
         adapter = TrainerAssignmentAdapter(arrayList,
-            RecyclerItemClick {
-                mLog.i(TAG, "$it")
-                val dialogueBuilder = AlertDialog.Builder(context!!)
-                val dview: View = mToast.inflateView(context, R.layout.custom_alert)
-                dialogueBuilder.setView(dview)
-                val ok = dview.ok
-                ok.text = "Download Pdf"
-                val textview = dview.text
-                textview.text = "Do you want to download the PDF ?"
-                val dialogue = dialogueBuilder.create()
+            RecyclerItemClick { i ->
+                val model = arrayList[i]
+                MaterialAlertDialogBuilder(context)
+                    .setTitle("Alert")
+                    .setMessage("do want to download ${model.media_org_name} ?")
+                    .setPositiveButton("download") { dialogInterface, i ->
+                        dialogInterface.dismiss()
+                        //add download code here
 
-                dview.cancel.setOnClickListener {
-                    dialogue.dismiss()
-                }
-                ok.setOnClickListener {
-                    //launch download
+                        val intent = Intent(context, MDownloaderService::class.java)
+                       // intent.putExtra("url", model.media_disk_path_relative)
+                        intent.putExtra("url","http://maxdb.sap.com/training/expert_sessions/MaxDB_LowTCO.pdf")
+                        intent.putExtra("name", model.media_org_name)
+                        intent.action = MActions.start
+                        context!!.startService(intent)
 
-                    dialogue.dismiss()
-                }
-                dialogue.window?.setBackgroundDrawableResource(R.drawable.round_rect)
-                dialogue.show()
+                    }.setNegativeButton("cancel") { dialogInterface, i ->
+                        dialogInterface.dismiss()
+                    }.create().show()
+
             })
         recyclerView.adapter = adapter
         swipeRefreshLayout.setOnRefreshListener {

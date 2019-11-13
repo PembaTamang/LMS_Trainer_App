@@ -22,7 +22,7 @@ import org.json.JSONObject
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.adapters.spinners.BatchSpinAdapter
 import orionedutech.`in`.lmstrainerapp.adapters.spinners.CourseSpinAdapter
-import orionedutech.`in`.lmstrainerapp.database.dao.MDatabase
+import orionedutech.`in`.lmstrainerapp.database.MDatabase
 import orionedutech.`in`.lmstrainerapp.database.entities.Batch
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
@@ -200,7 +200,8 @@ class FeedbackFragment : BaseFragment() {
                                         hideAnimations()
                                     }
                                 } else {
-                                    val dao1 = MDatabase(it).getBatchDao()
+                                    val dao1 = MDatabase(it)
+                                        .getBatchDao()
                                     CoroutineScope(IO).launch {
                                         showToast(
                                             "There is no course for ${dao1.getBatchName(
@@ -265,7 +266,9 @@ class FeedbackFragment : BaseFragment() {
                                     mLog.i(TAG, "list length ${batchlist.size}")
                                     launch {
                                         context?.let { it ->
-                                            val dao1 = MDatabase(it).getBatchDao()
+                                            val dao1 = MDatabase(
+                                                it
+                                            ).getBatchDao()
                                             dao1.insertBatches(batchlist.toMutableList())
                                         }
 

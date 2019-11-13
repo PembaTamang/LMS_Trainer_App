@@ -31,12 +31,18 @@ interface UserDao {
     @Query("select name from user_table")
     suspend fun getadminName(): String
 
+    @Query("select password from user_table")
+    suspend fun getadminPassword(): String
+
     @Delete
     suspend fun deleteUser(user: User)
 
     @Query("delete from user_table")
     suspend fun deleteUserTable()
 
+
+    @Query( "update user_table set password = :pwd ")
+    suspend fun updatePassword(pwd : String)
 
     @Query("select count(*) from user_table")
     suspend fun getUserTableCount(): Int

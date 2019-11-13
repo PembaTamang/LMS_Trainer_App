@@ -4,8 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import kotlinx.coroutines.launch
 import orionedutech.`in`.lmstrainerapp.R
-import orionedutech.`in`.lmstrainerapp.database.dao.MDatabase
-import orionedutech.`in`.lmstrainerapp.mLog
+import orionedutech.`in`.lmstrainerapp.database.MDatabase
 
 
 class SplashActivity : BaseActivity() {

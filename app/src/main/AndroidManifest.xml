@@ -4,6 +4,11 @@
     package="orionedutech.in.lmstrainerapp">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
@@ -11,7 +16,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:requestLegacyExternalStorage="true"
+        android:usesCleartextTraffic="true"
+        tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
         <activity android:name=".activities.LoginActivity">
 
         </activity>
@@ -31,7 +39,13 @@
 
         </activity>
 
-        <service android:name=".network.downloader.MDownloader" />
+        <service android:name=".network.downloader.MDownloaderService" />
+
+    <receiver android:name=".network.downloader.CancelDownloadListener">
+        <intent-filter>
+            <action android:name="orionedutech.in.lmstrainerapp.stop" />
+        </intent-filter>
+    </receiver>
     </application>
 
 </manifest>

@@ -2,6 +2,7 @@ package orionedutech.`in`.lmstrainerapp.activities
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
@@ -14,6 +15,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
@@ -25,7 +27,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
 import kotlinx.coroutines.launch
 import orionedutech.`in`.lmstrainerapp.R
-import orionedutech.`in`.lmstrainerapp.database.dao.MDatabase
+import orionedutech.`in`.lmstrainerapp.database.MDatabase
 import orionedutech.`in`.lmstrainerapp.fragments.*
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.showToast
@@ -41,6 +43,12 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private var lastFrag: String = ""
     private var viewID: Int = 0
 
+    val permissioncode = 100
+    var PERMISSIONS  = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE,android.Manifest.permission.CAMERA)
+
+    fun hasPermissions(context: Context, vararg permissions: String): Boolean = permissions.all {
+        ActivityCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -113,6 +121,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 val dao = MDatabase(it).getUserDao()
                 headerView.name.text = dao.getadminName()
             }
+        }
+        if(!hasPermissions(this, *PERMISSIONS)){
+            ActivityCompat.requestPermissions(this, PERMISSIONS, permissioncode)
         }
     }
 

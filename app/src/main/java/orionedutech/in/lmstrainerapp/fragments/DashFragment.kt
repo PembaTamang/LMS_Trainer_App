@@ -29,7 +29,7 @@ import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.adapters.spinners.BatchSpinAdapter
-import orionedutech.`in`.lmstrainerapp.database.dao.MDatabase
+import orionedutech.`in`.lmstrainerapp.database.MDatabase
 import orionedutech.`in`.lmstrainerapp.database.entities.Batch
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
@@ -153,13 +153,15 @@ class DashFragment : BaseFragment() {
 
 
         setUpChart()
+        mLog.i(TAG,"pref value : ${dashPref.getBoolean("data",false)}")
         if(!dashPref.getBoolean("data",false)){
             getDashboardData()
         }else{
-           courseCount.text =  " ${dashPref.getInt("course",0)} COURSE(S)"
-           batchCount.text = " ${dashPref.getInt("batch",0)} BATCH(S)"
-           studentCount.text = " ${dashPref.getInt("student",0)} STUDENT(S)"
+           courseCount.text = String.format(" %d COURSE(S)", dashPref.getInt("course",0))
+           batchCount.text = String.format("%d BATCHE(S", dashPref.getInt("batch",0))
+           studentCount.text = String.format("%d STUDENT(S)", dashPref.getInt("student",0))
             name.text = dashPref.getString("name","error")
+            String.format("%02d", 10)
         }
 
         return view
@@ -187,12 +189,9 @@ class DashFragment : BaseFragment() {
                         val dash = Gson().fromJson(string, DCDash::class.java)
                         if (dash != null) {
                             activity!!.runOnUiThread {
-                                val count = " ${dash.total_courses} COURSE(S)"
-                                val batches = " ${dash.total_batches} BATCHE(S)"
-                                val students = " ${dash.total_students} STUDENT(S)"
-                                courseCount.text = count
-                                batchCount.text = batches
-                                studentCount.text = students
+                                courseCount.text = String.format(" %d COURSE(S)", dash.total_courses)
+                                batchCount.text = String.format("%d BATCHE(S",dash.total_batches)
+                                studentCount.text = String.format("%d STUDENT(S)",dash.total_students)
                                 dashPref.edit().putInt("student",dash.total_students)
                                     .putInt("course",dash.total_courses)
                                     .putInt("batch",dash.total_batches)
@@ -301,7 +300,9 @@ class DashFragment : BaseFragment() {
                                     mLog.i(TAG, "list length ${batchlist.size}")
                                     launch {
                                         context?.let { it ->
-                                            val dao1 = MDatabase(it).getBatchDao()
+                                            val dao1 = MDatabase(
+                                                it
+                                            ).getBatchDao()
                                             dao1.insertBatches(batchlist.toMutableList())
                                         }
 
