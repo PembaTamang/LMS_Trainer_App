@@ -16,8 +16,8 @@
 
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="demo_user">monami@gmail.com</string>
+    <string name="demo_user">pratip@contentgrill.com</string>
     <string name="demo_user_pass">123456</string>
-    <string name="loading">loading...</string>
-    <string name="time_speed">loading time and speed data...</string>
+    <string name="loading">loading…</string>
+    <string name="time_speed">loading time/speed…</string>
 </resources>

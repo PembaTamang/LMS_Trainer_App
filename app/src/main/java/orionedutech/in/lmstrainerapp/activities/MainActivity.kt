@@ -205,7 +205,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
             R.id.manual -> {
 
-
+                changeFragment(ManualFragment())
             }
             R.id.logout -> {
                 showLogOutAlert()

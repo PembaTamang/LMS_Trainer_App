@@ -79,7 +79,7 @@ object MDownloader {
                                     (numBytes.toDouble() / totalBytes * 100).roundToInt().toDouble()
                                 mLog.i(TAG, "$numBytes of $totalBytes & download percentage  $per")
                                 progress.progress(per, speed, remainingTime)
-                                if (totalBytes == numBytes) {
+                                if (totalBytes <= numBytes) {
                                     mLog.i(TAG,"progress from byte comparison")
                                     progress.completed(totalBytes)
                                 }
@@ -133,7 +133,7 @@ object MDownloader {
 
     }
 
-    fun showNotification(context: Context, title: String, body: String, success: Boolean) {
+    fun  showNotification(context: Context, title: String, body: String, success: Boolean) {
 
         val id = 112312312
         val channelId = "my_notification_channel"
@@ -155,7 +155,7 @@ object MDownloader {
         val builder = NotificationCompat.Builder(context, channelId)
             .setVibrate(longArrayOf(0, 100, 100, 100, 100, 100))
             .setSound(sound)
-            .setSmallIcon(R.drawable.ic_batch_creation_icon)
+            .setSmallIcon(R.drawable.notification)
             .setContent(fcmNotificationView)
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)

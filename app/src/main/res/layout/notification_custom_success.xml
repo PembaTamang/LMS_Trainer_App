@@ -17,9 +17,9 @@
     <TextView
         android:id="@+id/text"
         android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:text="titleasdfsdafsadfsadfasdfsadfsadfsadfsadfsadfsdafsadfsadfsdafsdafsdf"
-        android:maxLines="1"
+        android:layout_height="wrap_content"
+        android:text="titleasdfsdafsadfsadfasdfsadfsadfsadfsadfsadfsdafsadfsadfsdafdafsadfsadfasdfsadfsadfsadfsadfsadfsdafsadfsadfsdafsdafsdf"
+        android:maxLines="3"
         android:ellipsize="end"
         android:layout_marginEnd="8dp"
         android:layout_toEndOf="@id/icon"

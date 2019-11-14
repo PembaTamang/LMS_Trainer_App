@@ -18,7 +18,7 @@ import orionedutech.`in`.lmstrainerapp.network.dataModels.DCAssignment
 
 class TrainerAssignmentAdapter(
     private val arrayList: ArrayList<DCAssignment>,
-    private val click: RecyclerItemClick
+    private val itemClick: RecyclerItemClick
 ) : RecyclerView.Adapter<TrainerAssignmentAdapter.TVH>() {
     private var context: Context? = null
 
@@ -60,7 +60,7 @@ class TrainerAssignmentAdapter(
             name = itemView.findViewById(R.id.name)
             batch = itemView.findViewById(R.id.batch)
             course = itemView.findViewById(R.id.course)
-            itemView.setOnClickListener { view -> click.click(adapterPosition) }
+            itemView.setOnClickListener { view -> itemClick.click(adapterPosition) }
         }
     }
 }

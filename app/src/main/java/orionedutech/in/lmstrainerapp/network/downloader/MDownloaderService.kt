@@ -23,15 +23,21 @@ import orionedutech.`in`.lmstrainerapp.mLog.TAG
 import java.util.*
 import java.util.concurrent.TimeUnit
 import orionedutech.`in`.lmstrainerapp.R
+import orionedutech.`in`.lmstrainerapp.database.MDatabase
+import orionedutech.`in`.lmstrainerapp.database.entities.AppFiles
+import orionedutech.`in`.lmstrainerapp.interfaces.PDFDownloadComplete
 import java.io.*
 
 
 class MDownloaderService : Service() {
     private var downloadView: RemoteViews? = null
     private val foreground_notificationID = 12312
-    private var forgroundNotification: Notification? = null
+
+    private var pdfDownload : Boolean = false
+    private var url : String = ""
     private lateinit var notificationManager: NotificationManagerCompat
     private lateinit var notificationBuilder : NotificationCompat.Builder
+    private var forgroundNotification: Notification? = null
     override fun onBind(p0: Intent?): IBinder? {
         return null
     }
@@ -39,8 +45,9 @@ class MDownloaderService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val action = intent!!.action
         if (action.equals(MActions.start)) {
-            val url = intent.getStringExtra("url")!!
+             url = intent.getStringExtra("url")!!
             val fileName = intent.getStringExtra("name")!!
+            pdfDownload = intent.getBooleanExtra("pdf",false)
             forgroundNotification = getForegroundNotification(fileName)
             startForeground(foreground_notificationID, forgroundNotification)
             download(url, fileName)
@@ -83,10 +90,8 @@ class MDownloaderService : Service() {
         }
         notificationBuilder = NotificationCompat.Builder(this, channelId)
         forgroundNotification = notificationBuilder.setOngoing(true)
-            .setSmallIcon(R.drawable.ic_course_icon)
+            .setSmallIcon(R.drawable.notification)
             .setSound(sound)
-            .setContentTitle("Downloading file $fileName")
-            .setTicker("ticker")
           /*  .addAction(R.drawable.stop,"cancel download",cancelPendingIntent)
             .setProgress(100,0,false)*/
             .setContent(downloadView)
@@ -127,64 +132,39 @@ class MDownloaderService : Service() {
             }
 
             override fun completed(totalBytes: Long) {
-                mLog.i(TAG,"completed")
+                mLog.i(TAG,"refreshData")
+                MDownloader.showNotification(
+                    applicationContext,
+                    "$fileName has been downloaded",
+                    "Tap to view",
+                    true
+                )
+                if(pdfDownload){
+                    //call interface here
+                  PDFDownloadComplete.instance.refresh()
+                }
+                CoroutineScope(IO).launch {
+                    applicationContext?.let {
+                        val dao = MDatabase(it).getFilesDao()
+                        val path = it.filesDir.path+"/"+fileName.trim()
+                        val appFile  = AppFiles(path,"",url,fileName)
+                        dao.insertFileData(appFile)
+                    }
+                }
+                stopService()
 
-                val path = applicationContext.filesDir.path + "/" + fileName.trim()
+              /*
+               val path = applicationContext.filesDir.path + "/" + fileName.trim()
                CoroutineScope(IO).launch {
                    copyToExternalStorage(path,totalBytes)
-               }
+               }*/
 
             }
 
         })
     }
 
-    private suspend fun copyToExternalStorage(path:String,totalBytes: Long) {
-        val sourceFile = File(path)
-        if(sourceFile.exists()){
-            val destinationFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath + "/"+sourceFile.name)
-                mLog.i(TAG,"destination path : ${destinationFile.absolutePath}")
-                destinationFile.parentFile!!.mkdirs()
-                destinationFile.createNewFile()
-             //   file.copyTo(to,true)
-                val inp = FileInputStream(sourceFile)
-                val out = FileOutputStream(destinationFile)
-            var percentage : Long
-            notificationBuilder.setContentTitle("Please wait")
-            notificationBuilder.setSubText("copying file")
-            notificationBuilder.setTicker("ticker ")
-            notificationBuilder.setProgress(100,0,true)
-            refreshNotification()
-            inp.copyTo(out){ current, _ ->
-              /*  percentage = ((current.toFloat()/totalBytes.toFloat())*100).toLong()
-                notificationBuilder.setProgress(100,percentage.toInt(),false)*/
 
-            }
-            MDownloader.showNotification(
-                applicationContext,
-                " ${destinationFile.name} has been downloaded ",
-                "tap to view",
-                true
-            )
-                mLog.i(TAG,"copy complete")
-
-        }else{
-            mLog.i(TAG,"file does not exist")
-        }
-        stopService()
-    }
-    fun InputStream.copyTo(out: OutputStream, onCopy: (Long, Int) -> Unit): Long {
-        var bytesCopied: Long = 0
-        val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
-        var bytes = read(buffer)
-        while (bytes >= 0) {
-            out.write(buffer, 0, bytes)
-            bytesCopied += bytes
-            onCopy(bytesCopied, bytes)
-            bytes = read(buffer)
-        }
-        return bytesCopied
-    }
     private fun stopService() {
         MDownloader.cancelAllDownloads()
         stopForeground(true)
@@ -240,7 +220,7 @@ class MDownloaderService : Service() {
     }
 
     private fun refreshNotification() {
-       forgroundNotification = notificationBuilder.build()
+        forgroundNotification = notificationBuilder.build()
         forgroundNotification!!.flags=NotificationCompat.FLAG_ONLY_ALERT_ONCE
         notificationManager.notify(foreground_notificationID, forgroundNotification!!)
     }

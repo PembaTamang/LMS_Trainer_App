@@ -2,22 +2,21 @@ package orionedutech.`in`.lmstrainerapp.fragments
 
 
 import android.animation.ObjectAnimator
-import android.content.DialogInterface
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.dialog.MaterialDialogs
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.custom_alert.view.*
 import kotlinx.android.synthetic.main.fragment_trainer_assignment.view.*
 import kotlinx.coroutines.launch
 import org.json.JSONObject
@@ -138,28 +137,26 @@ class TrainerAssignmentFragment : BaseFragment(), RecyclerItemClick {
             arrayList.add(model)
         }*/
         recyclerView.layoutManager = LinearLayoutManager(context)
-        adapter = TrainerAssignmentAdapter(arrayList,
-            RecyclerItemClick { i ->
+        adapter = TrainerAssignmentAdapter(arrayList, object : RecyclerItemClick{
+            override fun click(i: Int) {
                 val model = arrayList[i]
-                MaterialAlertDialogBuilder(context)
-                    .setTitle("Alert")
-                    .setMessage("do want to download ${model.media_org_name} ?")
-                    .setPositiveButton("download") { dialogInterface, i ->
-                        dialogInterface.dismiss()
-                        //add download code here
+                val url = model.media_disk_path_relative
+                //todo check with room
+                launch {
+                    context?.let {
+                        val dao = MDatabase(it).getFilesDao()
+                        if(dao.urlExists(url)){
+                            exportViewAlert(dao.getInternalPath(url),model.media_org_name)
+                        }else{
+                            downloadAlert(url,model.media_org_name)
+                        }
+                    }
+                }
 
-                        val intent = Intent(context, MDownloaderService::class.java)
-                       // intent.putExtra("url", model.media_disk_path_relative)
-                        intent.putExtra("url","http://maxdb.sap.com/training/expert_sessions/MaxDB_LowTCO.pdf")
-                        intent.putExtra("name", model.media_org_name)
-                        intent.action = MActions.start
-                        context!!.startService(intent)
 
-                    }.setNegativeButton("cancel") { dialogInterface, i ->
-                        dialogInterface.dismiss()
-                    }.create().show()
+            }
 
-            })
+        })
         recyclerView.adapter = adapter
         swipeRefreshLayout.setOnRefreshListener {
             if (!busy) {
@@ -171,6 +168,58 @@ class TrainerAssignmentFragment : BaseFragment(), RecyclerItemClick {
         getData()
 
         return view
+    }
+
+    private fun exportViewAlert(path : String,name :String) {
+   val builder =  MaterialAlertDialogBuilder(context)
+        .setTitle("Alert")
+        .setMessage("choose an option")
+        .setPositiveButton("view"){dialogInterface, i ->
+            dialogInterface.dismiss()
+
+        val ft = activity!!.supportFragmentManager.beginTransaction()
+            ft.setCustomAnimations(
+                R.anim.enter_from_right,
+                R.anim.exit_to_left,
+                R.anim.enter_from_left,
+                R.anim.exit_to_right
+            )
+            val fragment = PDFFragment()
+            val bundle  = Bundle()
+            mLog.i(TAG,"path $path")
+            bundle.putString("path",path)
+            bundle.putString("name",name)
+            fragment.arguments = bundle
+            ft.add(R.id.mainContainer, fragment)
+            ft.addToBackStack(null)
+            ft.commit()
+        }
+        .setNegativeButton("export"){dialogInterface, i ->
+            dialogInterface.dismiss()
+        }
+        val dialog = builder.create()
+        dialog.show()
+
+    }
+
+    private fun downloadAlert(url:String,name:String) {
+        MaterialAlertDialogBuilder(context)
+            .setTitle("Alert")
+            .setMessage("do want to download $name ?")
+            .setPositiveButton("download") { dialogInterface, i ->
+                dialogInterface.dismiss()
+                //add download code here
+
+                val intent = Intent(context, MDownloaderService::class.java)
+                // intent.putExtra("url", model.media_disk_path_relative)
+                intent.putExtra("url",url)
+                intent.putExtra("name", name)
+                intent.putExtra("pdf",false)
+                intent.action = MActions.start
+                context!!.startService(intent)
+            }.setNegativeButton("cancel") { dialogInterface, _ ->
+                dialogInterface.dismiss()
+            }.create().show()
     }
 
     private fun getData() {

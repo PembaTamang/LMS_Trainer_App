@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -43,16 +44,19 @@ class FeedbackFragment : BaseFragment() {
 
     var courseListSpinner = ArrayList<DCCourse>()
     lateinit var courseAdapter: CourseSpinAdapter
-
+    lateinit var courseSpinner: Spinner
     var batchListSpinner = ArrayList<Batch>()
     lateinit var batchAdapter: BatchSpinAdapter
+    lateinit var batchSpinner: Spinner
 
     lateinit var selectedBatchID: String
+    lateinit var selectedCourseID: String
 
     private lateinit var button: MaterialButton
     private var busy: Boolean = false
     lateinit var ft: FragmentTransaction
     var json: JSONObject = JSONObject()
+    var userID : String = ""
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -60,23 +64,25 @@ class FeedbackFragment : BaseFragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_feedback, container, false)
-
+        courseSpinner = view.course_spinner
         courseAdapter = CourseSpinAdapter(
             context!!,
             android.R.layout.simple_list_item_1,
             courseListSpinner
         )
 
-        view.course_spinner.adapter = courseAdapter
+        courseSpinner.adapter = courseAdapter
 
+        batchSpinner = view.batch_spinner
         batchAdapter = BatchSpinAdapter(
             context!!,
             android.R.layout.simple_list_item_1,
             batchListSpinner
-        ,0)
-        view.batch_spinner.adapter = batchAdapter
+            , 0
+        )
+        batchSpinner.adapter = batchAdapter
 
-        view.batch_spinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        batchSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(p0: AdapterView<*>?) {
 
             }
@@ -91,10 +97,23 @@ class FeedbackFragment : BaseFragment() {
 
         }
 
+        courseSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+            }
+
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+               val course = courseListSpinner[p2]
+                selectedCourseID = course.course_id
+            }
+
+        }
+
 
         CoroutineScope(IO).launch {
             context?.let {
                 val dao = MDatabase(it).getBatchDao()
+                val userDao = MDatabase(it).getUserDao()
+                userID = userDao.getUserID()
                 if (dao.batchDataExists()) {
                     batchListSpinner.addAll(dao.getAllBatches())
                     withContext(Main) {
@@ -124,7 +143,12 @@ class FeedbackFragment : BaseFragment() {
                         R.anim.enter_from_left,
                         R.anim.exit_to_right
                     )
-                    ft.add(R.id.mainContainer, FeedbackListFragment())
+                    val fragment = FeedbackListFragment()
+                    val bundle = Bundle()
+                    bundle.putString("course_id",selectedCourseID)
+                    bundle.putString("user_id",userID)
+                    fragment.arguments = bundle
+                    ft.add(R.id.mainContainer, fragment)
                     ft.addToBackStack(null)
                     ft.commit()
                 } else {
@@ -254,7 +278,7 @@ class FeedbackFragment : BaseFragment() {
                     context,
                     object : response {
                         override fun onInternetfailure() {
-                        mToast.noInternetSnackBar(activity!!)
+                            mToast.noInternetSnackBar(activity!!)
                         }
 
                         override fun onrespose(string: String?) {
