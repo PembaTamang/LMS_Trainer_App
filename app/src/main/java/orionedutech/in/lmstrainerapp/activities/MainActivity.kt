@@ -43,10 +43,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private var lastFrag: String = ""
     private var viewID: Int = 0
 
-    val permissioncode = 100
-    var PERMISSIONS  = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE,android.Manifest.permission.CAMERA)
+    val permission_code = 100
+    var permissions  = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE,android.Manifest.permission.CAMERA)
 
-    fun hasPermissions(context: Context, vararg permissions: String): Boolean = permissions.all {
+    private fun hasPermissions(context: Context, vararg permissions: String): Boolean = permissions.all {
         ActivityCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
     }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -122,8 +122,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 headerView.name.text = dao.getadminName()
             }
         }
-        if(!hasPermissions(this, *PERMISSIONS)){
-            ActivityCompat.requestPermissions(this, PERMISSIONS, permissioncode)
+        if(!hasPermissions(this, *permissions)){
+            ActivityCompat.requestPermissions(this, permissions, permission_code)
         }
     }
 
