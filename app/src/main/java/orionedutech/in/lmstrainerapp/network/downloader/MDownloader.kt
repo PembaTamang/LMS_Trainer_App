@@ -11,6 +11,8 @@ import android.graphics.Color
 import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -24,8 +26,10 @@ import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.activities.MainActivity
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
+import orionedutech.`in`.lmstrainerapp.mToast
 import java.io.File
 import java.io.IOException
+import java.net.SocketTimeoutException
 import kotlin.math.roundToInt
 
 object MDownloader {
@@ -49,13 +53,18 @@ object MDownloader {
 
         val fileDownloadCall = filedownloadClient!!.newCall(builder.build())
         fileDownloadCall.enqueue(object : Callback {
+
+
             override fun onFailure(call: Call, e: IOException) {
                 progress.failed()
                 isFileDownloading = false
             }
 
             override fun onResponse(call: Call, response: Response) {
+
                 if (response.isSuccessful) {
+                    try {
+
 
                     mLog.i(TAG, "request headers:" + response.request.headers)
                     mLog.i(TAG, "response headers:" + response.headers)
@@ -98,6 +107,16 @@ object MDownloader {
                     source.readAll(sink)
                     sink.flush()
                     source.close()
+
+                    }catch (ste:SocketTimeoutException){
+                        mLog.i(TAG,"socket timeout exception")
+                        Handler(Looper.getMainLooper()).post {
+                            mToast.showToast(context,"SLOW INTERNET : server timed out")
+                        }
+                        progress.failed()
+                    }
+
+
                 } else {
                     progress.failed()
                     isFileDownloading = false
@@ -156,11 +175,9 @@ object MDownloader {
             .setVibrate(longArrayOf(0, 100, 100, 100, 100, 100))
             .setSound(sound)
             .setSmallIcon(R.drawable.notification)
-            .setContent(fcmNotificationView)
-            .setContentIntent(pendingIntent)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCustomBigContentView(fcmNotificationView)
-
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setCustomHeadsUpContentView(fcmNotificationView)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
                 channelId,
@@ -189,6 +206,7 @@ object MDownloader {
         val notification = builder.build()
         notification.flags = Notification.FLAG_AUTO_CANCEL
         notificationManager.notify(id, notification)
+
     }
 
 }

@@ -101,6 +101,7 @@ class FeedbackListFragment : Fragment(), FeedBackInterface {
                             animation.visibility = GONE
                            button.text = "submit success"
                             Handler().postDelayed({
+                                mToast.showToast(context,"feedback submitted successfully")
                                 activity!!.onBackPressed()
                             },1500)
                         }
@@ -157,6 +158,7 @@ class FeedbackListFragment : Fragment(), FeedBackInterface {
                     if (feedbackList.isEmpty()) {
                         activity?.runOnUiThread {
                             mToast.showToast(context, "no questions found")
+                            activity?.onBackPressed()
                         }
                         return
                     }
@@ -197,7 +199,8 @@ class FeedbackListFragment : Fragment(), FeedBackInterface {
         activity?.runOnUiThread {
             busy = false
             button.text = "submit"
-            mToast.showToast(context, "failed")
+            mToast.showToast(context, "failed to get questions")
+            activity?.onBackPressed()
         }
     }
 

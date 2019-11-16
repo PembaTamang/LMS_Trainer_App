@@ -1,92 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:paddingBottom="4dp">
 
     <ImageView
         android:id="@+id/icon"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:minHeight="0dp"
+        android:layout_alignParentTop="true"
         android:layout_marginEnd="4dp"
-        android:src="@mipmap/ic_launcher_round"
-        android:layout_alignParentTop="true"/>
+        android:minHeight="0dp"
+        android:src="@mipmap/ic_launcher_round" />
 
     <TextView
         android:id="@+id/file"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="2dp"
         android:layout_toEndOf="@id/icon"
         android:text="FileName :"
         android:textAppearance="@style/OpenSansRegular" />
     <TextView
+        android:id="@+id/ts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="2dp"
+        android:layout_marginTop="4dp"
+        android:layout_toEndOf="@id/icon"
+        android:layout_below="@id/file"
+        android:text="Time / Speed :"
+        android:textAppearance="@style/OpenSansRegular" />
+
+    <TextView
         android:id="@+id/fileName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:layout_toEndOf="@id/file"
-        android:text="@string/loading"
         android:layout_marginStart="4dp"
-        android:textAppearance="@style/OpenSansRegular"/>
+        android:layout_toEndOf="@id/file"
+        android:ellipsize="end"
+        android:layout_marginTop="8dp"
+        android:maxLines="1"
+        android:text="@string/loading"
+        android:textAppearance="@style/OpenSansRegular" />
+
     <TextView
         android:id="@+id/time_speed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/time_speed"
         android:layout_below="@id/file"
-        android:layout_alignStart="@id/file"
-        android:textAppearance="@style/OpenSansRegular"/>
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_toEndOf="@+id/ts"
+        android:text="@string/loading"
+        android:textAppearance="@style/OpenSansRegular" />
+
     <ProgressBar
         android:id="@+id/progress"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="match_parent"
         android:layout_height="4dp"
-        android:progress="20"
-        android:progressDrawable="@drawable/curved_progress_bar"
-        android:progressTint="@color/blue"
-        android:layout_marginTop="4dp"
         android:layout_below="@id/time_speed"
-        android:layout_alignStart="@id/time_speed"
-        android:layout_toStartOf="@id/cancel"/>
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:layout_toEndOf="@+id/icon"
+        android:progress="20"
+        android:layout_alignStart="@id/ts"
+        android:progressDrawable="@drawable/curved_progress_bar"
+        android:progressTint="@color/blue" />
 
     <TextView
         android:id="@+id/cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="    cancel    "
-        android:drawableStart="@drawable/ic_stop_svg"
-        android:textColor="@color/white"
+        android:layout_below="@+id/progress"
+        android:layout_alignStart="@+id/progress"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:minHeight="0dp"
+        android:drawablePadding="16dp"
         android:padding="8dp"
         android:background="@drawable/round_rect_blue"
-        android:layout_margin="8dp"
-        android:layout_alignParentEnd="true"
-       android:layout_alignParentBottom="true"
-        />
+        android:textAppearance="@style/OpenSansRegular"
+        android:text="CANCEL DOWNLOAD"
+        android:textColor="@color/white"
+        android:gravity="center" />
+
     <TextView
         android:id="@+id/slow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/orange"
-        android:text="slow connection"
         android:layout_marginEnd="4dp"
-        android:visibility="invisible"
+        android:layout_toStartOf="@id/exclaim"
+        android:text="slow connection"
         android:textAppearance="@style/OpenSansRegular"
-        android:layout_toStartOf="@id/exclaim"/>
+        android:textColor="@color/orange"
+        android:visibility="invisible" />
+
     <ImageView
         android:id="@+id/exclaim"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/error_svg"
-        android:tint="@color/orange"
-        android:layout_marginEnd="8dp"
-        android:visibility="invisible"
+        android:layout_above="@id/cancel"
         android:layout_alignTop="@id/slow"
         android:layout_alignBottom="@id/slow"
         android:layout_alignParentEnd="true"
-        android:layout_above="@id/cancel"
-        />
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/error_svg"
+        android:tint="@color/orange"
+        android:visibility="invisible" />
 </RelativeLayout>

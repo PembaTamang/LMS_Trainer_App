@@ -62,7 +62,6 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
         animation = view.animation1
         waitText = view.wait
         view.export.setOnClickListener {
-            //todo add copy code
             MaterialAlertDialogBuilder(context).setTitle("Alert")
                 .setMessage("Do you want to export the file to storage?")
                 .setPositiveButton("export"){dialogInterface, i ->

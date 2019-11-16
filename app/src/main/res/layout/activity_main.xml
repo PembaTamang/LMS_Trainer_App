@@ -23,6 +23,7 @@
         android:layout_marginTop="?actionBarSize"
         android:fitsSystemWindows="true"
         android:paddingBottom="16dp"
+        app:itemShapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Nav"
         app:itemTextAppearance="@font/opensans_regular"
         app:itemIconTint="@color/nav_text_colors"
         app:itemTextColor="@color/nav_text_colors"

@@ -288,14 +288,12 @@ class FeedbackFragment : BaseFragment() {
                                 val batchlist = batches.batches
                                 if (batchlist.isNotEmpty()) {
                                     mLog.i(TAG, "list length ${batchlist.size}")
-                                    launch {
-                                        context?.let { it ->
-                                            val dao1 = MDatabase(
-                                                it
-                                            ).getBatchDao()
-                                            dao1.insertBatches(batchlist.toMutableList())
-                                        }
-
+                                    CoroutineScope(IO).launch{
+                                        val dao1 = MDatabase(
+                                            it
+                                        ).getBatchDao()
+                                        mLog.i(TAG,"inserting")
+                                        dao1.insertBatches(batchlist.toMutableList())
                                     }
 
                                     batchListSpinner.clear()

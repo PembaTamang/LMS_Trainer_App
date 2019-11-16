@@ -11,5 +11,5 @@ data class Batch(
     val user_profile_id: String?
 ){
     @PrimaryKey(autoGenerate = true)
-    var id1: Int? = 0
+    var id1: Int = 0
 }

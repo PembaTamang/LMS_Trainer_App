@@ -11,14 +11,25 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:background="@color/blue"
-        android:text=" "
+        android:text=" pdf name"
         android:paddingStart="8dp"
+        android:gravity="center|start"
         android:textAppearance="@style/Baloo"
         android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageButton
+        android:id="@+id/export"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:paddingEnd="8dp"
+        android:src="@drawable/ic_share"
+        app:layout_constraintBottom_toBottomOf="@+id/pdfName"
+        app:layout_constraintEnd_toEndOf="@+id/pdfName"
+        app:layout_constraintTop_toTopOf="parent" />
     <com.github.barteksc.pdfviewer.PDFView
         android:id="@+id/pdfView"
         android:layout_width="0dp"

@@ -8,8 +8,10 @@ data class AppFiles(
     val internal_Path: String? ,
     val external_Path : String?,
     val serverUrl : String?,
-    val file_name: String?
+    val file_name: String?,
+    val uuid : String?
+
 ){
     @PrimaryKey(autoGenerate = true)
-    var id1: Int? = 0
+    var id1: Int = 0
 }

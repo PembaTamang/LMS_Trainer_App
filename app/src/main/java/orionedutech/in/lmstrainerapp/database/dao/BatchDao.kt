@@ -5,12 +5,14 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import orionedutech.`in`.lmstrainerapp.database.entities.Batch
+import orionedutech.`in`.lmstrainerapp.mLog
+import orionedutech.`in`.lmstrainerapp.mLog.TAG
 
 @Dao
 interface BatchDao{
 
     @Insert
-    suspend fun insert(batch : MutableList<Batch>)
+    suspend fun insert(batch : MutableList<Batch>) : List<Long>
 
     @Query("delete from batch_table")
     suspend fun deleteBatchTable()
@@ -28,7 +30,8 @@ interface BatchDao{
     @Transaction
     suspend fun insertBatches(batch: MutableList<Batch>){
         deleteBatchTable()
-        insert(batch)
+       val values =  insert(batch)
+       mLog.i(TAG,"insert value" + values.size )
     }
 
     @Transaction

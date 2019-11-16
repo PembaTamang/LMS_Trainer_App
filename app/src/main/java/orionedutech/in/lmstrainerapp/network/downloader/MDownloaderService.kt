@@ -94,7 +94,7 @@ class MDownloaderService : Service() {
             .setSound(sound)
           /*  .addAction(R.drawable.stop,"cancel download",cancelPendingIntent)
             .setProgress(100,0,false)*/
-            .setContent(downloadView)
+            .setCustomBigContentView(downloadView)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCategory(Notification.CATEGORY_SERVICE)
             .build()
@@ -136,7 +136,7 @@ class MDownloaderService : Service() {
                 MDownloader.showNotification(
                     applicationContext,
                     "$fileName has been downloaded",
-                    "Tap to view",
+                    "swipe to dismiss",
                     true
                 )
                 if(pdfDownload){
@@ -147,7 +147,7 @@ class MDownloaderService : Service() {
                     applicationContext?.let {
                         val dao = MDatabase(it).getFilesDao()
                         val path = it.filesDir.path+"/"+fileName.trim()
-                        val appFile  = AppFiles(path,"",url,fileName)
+                        val appFile  = AppFiles(path,"",url,fileName,UUID.randomUUID().toString())
                         dao.insertFileData(appFile)
                     }
                 }
@@ -220,8 +220,6 @@ class MDownloaderService : Service() {
     }
 
     private fun refreshNotification() {
-        forgroundNotification = notificationBuilder.build()
-        forgroundNotification!!.flags=NotificationCompat.FLAG_ONLY_ALERT_ONCE
         notificationManager.notify(foreground_notificationID, forgroundNotification!!)
     }
 }

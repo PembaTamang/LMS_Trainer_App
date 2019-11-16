@@ -97,12 +97,14 @@ class FeedbackAdapter(val arraylist: ArrayList<FeedbackModel>, private val feedB
     }
 
     inner class FVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
         var sl: TextView = itemView.findViewById(R.id.sl)
         var question: TextView = itemView.findViewById(R.id.question)
         var one: CheckBox = itemView.findViewById(R.id.happy)
         var two: CheckBox = itemView.findViewById(R.id.confused)
         var three: CheckBox = itemView.findViewById(R.id.sad)
         var four: CheckBox = itemView.findViewById(R.id.angry)
+
 
     }
 }

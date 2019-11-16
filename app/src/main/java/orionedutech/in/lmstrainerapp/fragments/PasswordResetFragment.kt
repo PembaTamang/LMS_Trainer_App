@@ -132,11 +132,17 @@ class PasswordResetFragment : BaseFragment() {
                 busy = true
                 val dao = MDatabase(it).getUserDao()
                 val userID = dao.getUserID()
+                if(oldpassword.isBlank()||newPassword.isBlank()||newPassword1.isBlank()){
+                    mToast.showToast(context,"please fill all fields")
+                  return@launch
+                }
+
                 if (newPassword != newPassword1) {
                     newTil.error = "passwords do not match"
                     newTil1.error = "passwords do not match"
-                    return@let
+                    return@launch
                 }
+
                 val json = JSONObject()
                 json.put("user_id", userID)
                 json.put("user_old_password", oldpassword)
@@ -160,6 +166,7 @@ class PasswordResetFragment : BaseFragment() {
                                     animation.cancelAnimation()
                                     button.text = password.updated
                                     Handler().postDelayed({
+                                        mToast.showToast(context,"password updated successfully")
                                         activity!!.onBackPressed()
                                     },1000)
                                 }

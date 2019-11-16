@@ -112,4 +112,16 @@
         <item name="windowFixedWidthMajor">70%</item>
         <item name="windowFixedWidthMinor">70%</item>
     </style>
+
+    <style name="AlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+    </style>
+
+    <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/red</item>
+    </style>
+    <style name="ShapeAppearanceOverlay.Nav" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
 </resources>

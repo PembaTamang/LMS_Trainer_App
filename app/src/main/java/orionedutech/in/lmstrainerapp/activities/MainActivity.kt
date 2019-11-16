@@ -41,9 +41,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private var exit = false
     private var lastpop = false
     private var lastFrag: String = ""
-    private var viewID: Int = 0
 
-    val permission_code = 100
+    private val permissionCode = 100
     var permissions  = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE,android.Manifest.permission.CAMERA)
 
     private fun hasPermissions(context: Context, vararg permissions: String): Boolean = permissions.all {
@@ -123,7 +122,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
         }
         if(!hasPermissions(this, *permissions)){
-            ActivityCompat.requestPermissions(this, permissions, permission_code)
+            ActivityCompat.requestPermissions(this, permissions, permissionCode)
         }
     }
 
@@ -231,6 +230,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 }
             }
             .setNegativeButton("cancel") { dialogInterface, _ ->
+                checkDashBoard()
                 dialogInterface.dismiss()
             }.create().show()
     }

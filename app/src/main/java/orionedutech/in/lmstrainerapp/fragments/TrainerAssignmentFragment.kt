@@ -5,6 +5,8 @@ import android.animation.ObjectAnimator
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.os.Environment
+import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -18,7 +20,10 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.dialog.MaterialDialogs
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_trainer_assignment.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.adapters.recyclerviews.TrainerAssignmentAdapter
@@ -32,8 +37,10 @@ import orionedutech.`in`.lmstrainerapp.network.Urls
 import orionedutech.`in`.lmstrainerapp.network.dataModels.DCAssignment
 import orionedutech.`in`.lmstrainerapp.network.dataModels.DCAssignmentList
 import orionedutech.`in`.lmstrainerapp.network.downloader.MActions
+import orionedutech.`in`.lmstrainerapp.network.downloader.MDownloader
 import orionedutech.`in`.lmstrainerapp.network.downloader.MDownloaderService
 import orionedutech.`in`.lmstrainerapp.network.response
+import java.io.*
 import java.util.ArrayList
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -141,7 +148,6 @@ class TrainerAssignmentFragment : BaseFragment(), RecyclerItemClick {
             override fun click(i: Int) {
                 val model = arrayList[i]
                 val url = model.media_disk_path_relative
-                //todo check with room
                 launch {
                     context?.let {
                         val dao = MDatabase(it).getFilesDao()
@@ -162,6 +168,7 @@ class TrainerAssignmentFragment : BaseFragment(), RecyclerItemClick {
             if (!busy) {
                 swipeRefreshLayout.isRefreshing = false
                 getData()
+
             }
         }
 
@@ -169,6 +176,7 @@ class TrainerAssignmentFragment : BaseFragment(), RecyclerItemClick {
 
         return view
     }
+
 
     private fun exportViewAlert(path : String,name :String) {
    val builder =  MaterialAlertDialogBuilder(context)
@@ -195,6 +203,9 @@ class TrainerAssignmentFragment : BaseFragment(), RecyclerItemClick {
             ft.commit()
         }
         .setNegativeButton("export"){dialogInterface, i ->
+            CoroutineScope(Dispatchers.IO).launch {
+                copyToExternalStorage(path)
+            }
             dialogInterface.dismiss()
         }
         val dialog = builder.create()
@@ -218,6 +229,7 @@ class TrainerAssignmentFragment : BaseFragment(), RecyclerItemClick {
                 intent.action = MActions.start
                 context!!.startService(intent)
             }.setNegativeButton("cancel") { dialogInterface, _ ->
+
                 dialogInterface.dismiss()
             }.create().show()
     }
@@ -281,5 +293,57 @@ class TrainerAssignmentFragment : BaseFragment(), RecyclerItemClick {
 
     override fun click(itempos: Int) {
 
+    }
+
+    private suspend fun copyToExternalStorage(path:String) {
+        val sourceFile = File(path)
+        if(sourceFile.exists()){
+            val destinationFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath + "/"+sourceFile.name)
+            mLog.i(mLog.TAG,"destination path : ${destinationFile.absolutePath}")
+            destinationFile.parentFile!!.mkdirs()
+            destinationFile.createNewFile()
+            val inp = FileInputStream(sourceFile)
+            val out = FileOutputStream(destinationFile)
+            withContext(Dispatchers.Main){
+                mToast.showToast(context,"please wait")
+            }
+            inp.copyTo(out){ current, _ ->
+                /*  percentage = ((current.toFloat()/totalBytes.toFloat())*100).toLong()
+                  notificationBuilder.setProgress(100,percentage.toInt(),false)*/
+
+            }
+            MDownloader.showNotification(
+                context!!,
+                " ${destinationFile.name} has been copied to ${destinationFile.absolutePath} ",
+                "",
+                true
+            )
+            activity?.runOnUiThread {
+                MaterialAlertDialogBuilder(context).setTitle("Alert")
+                    .setMessage("The file has been copied to ${destinationFile.absolutePath}")
+                    .setPositiveButton("Ok"){dialogInterface, i ->
+                        dialogInterface.dismiss()
+                    }.create().show()
+            }
+
+
+            mLog.i(mLog.TAG,"copy complete")
+
+        }else{
+            mLog.i(mLog.TAG,"file does not exist")
+        }
+
+    }
+    fun InputStream.copyTo(out: OutputStream, onCopy: (Long, Int) -> Unit): Long {
+        var bytesCopied: Long = 0
+        val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+        var bytes = read(buffer)
+        while (bytes >= 0) {
+            out.write(buffer, 0, bytes)
+            bytesCopied += bytes
+            onCopy(bytesCopied, bytes)
+            bytes = read(buffer)
+        }
+        return bytesCopied
     }
 }

@@ -40,15 +40,15 @@ public class NetworkOps {
 
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 resp.onfailure();
                 showToast(context,"server error");
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if(response.isSuccessful()) {
-                    resp.onrespose(response.body().string());
+                    resp.onrespose(Objects.requireNonNull(response.body()).string());
                 }else{
                     showToast(context,"server error : " + response.code());
                 }
@@ -81,18 +81,18 @@ public class NetworkOps {
 
             client.newCall(request).enqueue(new Callback() {
                 @Override
-                public void onFailure(Call call, IOException e) {
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
                     myres.onfailure();
-                    mLog.i(TAG, "network call onFailure: " + e.getMessage() + "\n" + e.getCause() + "\n" + e.getStackTrace());
+                    mLog.i(TAG, "network call onFailure: " + e.getMessage() + "\n" + e.getCause());
                     showToast(context,"server error");
                 }
 
                 @Override
-                public void onResponse(Call call, Response response) {
+                public void onResponse(@NotNull Call call, @NotNull Response response) {
                     mLog.i(TAG, "response response code: " + response.code());
                     if (response.isSuccessful()) {
                         try {
-                            String s = response.body().string();
+                            String s = Objects.requireNonNull(response.body()).string();
                             myres.onrespose(s);
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -126,8 +126,6 @@ public class NetworkOps {
            MultipartBody.Builder multipart = new MultipartBody.Builder();
            multipart.setType(MultipartBody.FORM);
            multipart.addFormDataPart("data_json",json);
-
-
            final long startTime = System.nanoTime();
            MultipartBody body = multipart.build();
            RequestBody requestBody = ProgressHelper.withProgress(body, new ProgressListener() {
@@ -164,7 +162,7 @@ public class NetworkOps {
           onRes.onInternetfailure();
        }
    }
-    public static void postMultipart(String UPLOAD_URL, HashMap<String, String> data, Context context, View view, final response onRes, final progress prog) {
+    public static void postMultipart(String UPLOAD_URL, HashMap<String, String> data, Context context, final response onRes, final progress prog) {
 
         if(isConnected(context)) {
             OkHttpClient okHttpClient;
@@ -215,13 +213,17 @@ public class NetworkOps {
             Call call = okHttpClient.newCall(builder.build());
             call.enqueue(new Callback() {
                 @Override
-                public void onFailure(Call call, IOException e) {
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
                     onRes.onfailure();
                 }
 
                 @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    onRes.onrespose(response.body().string());
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if(response.body()!=null) {
+                        onRes.onrespose(Objects.requireNonNull(response.body()).string());
+                    }else{
+                        onRes.onfailure();
+                    }
                 }
             });
         }else{
