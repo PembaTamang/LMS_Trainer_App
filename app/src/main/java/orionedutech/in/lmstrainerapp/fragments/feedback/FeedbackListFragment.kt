@@ -1,4 +1,4 @@
-package orionedutech.`in`.lmstrainerapp.fragments
+package orionedutech.`in`.lmstrainerapp.fragments.feedback
 
 
 import android.os.Bundle
@@ -28,7 +28,6 @@ import orionedutech.`in`.lmstrainerapp.model.FeedbackModel
 import orionedutech.`in`.lmstrainerapp.network.NetworkOps
 import orionedutech.`in`.lmstrainerapp.network.Urls
 import orionedutech.`in`.lmstrainerapp.network.dataModels.DCFeedback
-import orionedutech.`in`.lmstrainerapp.network.progress
 import orionedutech.`in`.lmstrainerapp.network.response
 import java.util.ArrayList
 

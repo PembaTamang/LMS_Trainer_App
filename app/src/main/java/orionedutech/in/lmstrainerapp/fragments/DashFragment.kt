@@ -48,7 +48,7 @@ import java.util.concurrent.CountDownLatch
 class DashFragment : BaseFragment() {
     //views
     private lateinit var chart: BarChart
-    private lateinit var bottomNav: BottomNavigationView
+
     private lateinit var batchSpinner: Spinner
     private lateinit var animation: LottieAnimationView
     private lateinit var courseCount: TextView
@@ -71,7 +71,7 @@ class DashFragment : BaseFragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_dash, container, false)
         chart = view.bar
-        bottomNav = view.bottom_navigation
+
         batchSpinner = view.dashSpinner
         animation = view.animation1
         courseCount = view.courseCount
@@ -142,30 +142,7 @@ class DashFragment : BaseFragment() {
 
 
 
-        bottomNav.setOnNavigationItemSelectedListener(object :
-            NavigationView.OnNavigationItemSelectedListener,
-            BottomNavigationView.OnNavigationItemSelectedListener {
-            override fun onNavigationItemSelected(item: MenuItem): Boolean {
-                when (item.itemId) {
-                    R.id.dashboard -> {
-                        mLog.i(TAG, "dash clicked")
-                        return true
-                    }
-                    R.id.menu -> {
 
-                        mLog.i(TAG, "menu clicked")
-                        return true
-                    }
-                    R.id.profile -> {
-
-                        mLog.i(TAG, "profile clicked")
-                        return true
-                    }
-                }
-                return false
-            }
-
-        })
 
 
         setUpChart()
@@ -174,7 +151,7 @@ class DashFragment : BaseFragment() {
             getDashboardData()
         }else{
            courseCount.text = String.format(" %d COURSE(S)", dashPref.getInt("course",0))
-           batchCount.text = String.format("%d BATCHE(S", dashPref.getInt("batch",0))
+           batchCount.text = String.format("%d BATCHE(S)", dashPref.getInt("batch",0))
            studentCount.text = String.format("%d STUDENT(S)", dashPref.getInt("student",0))
             name.text = dashPref.getString("name","error")
             String.format("%02d", 10)

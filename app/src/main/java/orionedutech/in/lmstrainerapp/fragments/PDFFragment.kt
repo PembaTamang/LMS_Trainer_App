@@ -94,7 +94,7 @@ class PDFFragment : Fragment() {
             }
             MDownloader.showNotification(
                 context!!,
-                " ${destinationFile.name} has been copied to ${destinationFile.absolutePath} ",
+                "${destinationFile.name} has been copied to ${destinationFile.absolutePath} ",
                 "",
                 true
             )

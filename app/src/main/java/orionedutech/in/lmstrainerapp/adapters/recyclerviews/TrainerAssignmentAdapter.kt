@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 
 import com.google.android.material.card.MaterialCardView
+import kotlinx.android.synthetic.main.trainer_assignment_item.view.*
 
 import java.util.ArrayList
 
@@ -48,18 +49,13 @@ class TrainerAssignmentAdapter(
     }
 
     inner class TVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var sl: TextView
-        var name: TextView
-        var batch: TextView
-        var course: TextView
-        var cardView: MaterialCardView
+        var sl: TextView = itemView.sl
+        var name: TextView = itemView.name
+        var batch: TextView = itemView.batch
+        var course: TextView = itemView.course
+        var cardView: MaterialCardView = itemView.root
 
         init {
-            cardView = itemView.findViewById(R.id.root)
-            sl = itemView.findViewById(R.id.sl)
-            name = itemView.findViewById(R.id.name)
-            batch = itemView.findViewById(R.id.batch)
-            course = itemView.findViewById(R.id.course)
             itemView.setOnClickListener { view -> itemClick.click(adapterPosition) }
         }
     }

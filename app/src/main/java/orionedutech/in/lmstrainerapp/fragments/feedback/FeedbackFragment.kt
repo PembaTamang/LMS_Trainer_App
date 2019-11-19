@@ -1,4 +1,4 @@
-package orionedutech.`in`.lmstrainerapp.fragments
+package orionedutech.`in`.lmstrainerapp.fragments.feedback
 
 
 import android.os.Bundle
@@ -25,6 +25,7 @@ import orionedutech.`in`.lmstrainerapp.adapters.spinners.BatchSpinAdapter
 import orionedutech.`in`.lmstrainerapp.adapters.spinners.CourseSpinAdapter
 import orionedutech.`in`.lmstrainerapp.database.MDatabase
 import orionedutech.`in`.lmstrainerapp.database.entities.Batch
+import orionedutech.`in`.lmstrainerapp.fragments.BaseFragment
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
 import orionedutech.`in`.lmstrainerapp.mToast
@@ -143,7 +144,8 @@ class FeedbackFragment : BaseFragment() {
                         R.anim.enter_from_left,
                         R.anim.exit_to_right
                     )
-                    val fragment = FeedbackListFragment()
+                    val fragment =
+                        FeedbackListFragment()
                     val bundle = Bundle()
                     bundle.putString("course_id",selectedCourseID)
                     bundle.putString("user_id",userID)

@@ -8,30 +8,37 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.Spannable
 import android.text.SpannableString
-import androidx.drawerlayout.widget.DrawerLayout
-import com.google.android.material.navigation.NavigationView
-import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.get
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
 import kotlinx.coroutines.launch
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.database.MDatabase
-import orionedutech.`in`.lmstrainerapp.fragments.*
+import orionedutech.`in`.lmstrainerapp.fragments.DashFragment
+import orionedutech.`in`.lmstrainerapp.fragments.ManualFragment
+import orionedutech.`in`.lmstrainerapp.fragments.PasswordResetFragment
+import orionedutech.`in`.lmstrainerapp.fragments.assessment.AssessmentFragment
+import orionedutech.`in`.lmstrainerapp.fragments.assignment.AssignmentFragment
+import orionedutech.`in`.lmstrainerapp.fragments.feedback.FeedbackFragment
 import orionedutech.`in`.lmstrainerapp.mLog
-import orionedutech.`in`.lmstrainerapp.showToast
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
+import orionedutech.`in`.lmstrainerapp.showToast
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
     DrawerLayout.DrawerListener {
@@ -41,16 +48,23 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private var exit = false
     private var lastpop = false
     private var lastFrag: String = ""
-
+    private lateinit var bottomNav: BottomNavigationView
     private val permissionCode = 100
-    var permissions  = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE,android.Manifest.permission.CAMERA)
+    var permissions = arrayOf(
+        android.Manifest.permission.READ_EXTERNAL_STORAGE,
+        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        android.Manifest.permission.CAMERA
+    )
 
-    private fun hasPermissions(context: Context, vararg permissions: String): Boolean = permissions.all {
-        ActivityCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
-    }
+    private fun hasPermissions(context: Context, vararg permissions: String): Boolean =
+        permissions.all {
+            ActivityCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        bottomNav = bottom_navigation
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
@@ -97,18 +111,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }, 0, mNewTitle.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
         mi.title = mNewTitle
 
-
-
-        ft = supportFragmentManager.beginTransaction()
-        ft.setCustomAnimations(
-            R.anim.fadein,
-            R.anim.fadeout,
-            R.anim.fadein,
-            R.anim.fadeout
-        )
-        ft.add(R.id.mainContainer, DashFragment())
-        ft.addToBackStack(null)
-        ft.commit()
+        addDash()
         lastFrag = DashFragment().javaClass.simpleName
         mLog.i(TAG, "first dash frag count ${supportFragmentManager.backStackEntryCount} ")
         checkDashBoard()
@@ -121,9 +124,50 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 headerView.name.text = dao.getadminName()
             }
         }
-        if(!hasPermissions(this, *permissions)){
+
+
+
+        bottomNav.setOnNavigationItemSelectedListener(object :
+            NavigationView.OnNavigationItemSelectedListener,
+            BottomNavigationView.OnNavigationItemSelectedListener {
+            override fun onNavigationItemSelected(item: MenuItem): Boolean {
+                when (item.itemId) {
+                    R.id.dashboard -> {
+                        mLog.i(TAG, "dash clicked")
+                        changeFragment(DashFragment())
+                        return true
+                    }
+                    R.id.menu -> {
+
+                        mLog.i(TAG, "menu clicked")
+                        return true
+                    }
+                    R.id.profile -> {
+
+                        mLog.i(TAG, "profile clicked")
+                        return true
+                    }
+                }
+                return false
+            }
+
+        })
+        if (!hasPermissions(this, *permissions)) {
             ActivityCompat.requestPermissions(this, permissions, permissionCode)
         }
+    }
+
+    private fun addDash() {
+        ft = supportFragmentManager.beginTransaction()
+        ft.setCustomAnimations(
+            R.anim.fadein,
+            R.anim.fadeout,
+            R.anim.fadein,
+            R.anim.fadeout
+        )
+        ft.add(R.id.mainContainer, DashFragment())
+        ft.addToBackStack(null)
+        ft.commit()
     }
 
     private fun checkDashBoard() {
@@ -150,7 +194,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                     R.anim.exit_to_right
                 )
                 ft.add(R.id.mainContainer, fragment)
-                ft.addToBackStack(null)
+                // ft.addToBackStack(null)
                 ft.commit()
                 lastpop = false
                 lastFrag = PasswordResetFragment().javaClass.simpleName
@@ -191,11 +235,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
             }
             R.id.assignment -> {
-                changeFragment(TrainerAssignmentFragment())
+                changeFragment(AssignmentFragment())
 
             }
             R.id.assessment -> {
-                changeFragment(TrainerAssessmentFragment())
+                changeFragment(AssessmentFragment())
 
             }
             R.id.feedback -> {
@@ -217,7 +261,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         MaterialAlertDialogBuilder(this)
             .setTitle("Alert")
             .setMessage("Do you want to log out ?")
-            .setPositiveButton("logout") { _, i ->
+            .setPositiveButton("logout") { _, _ ->
                 launch {
                     applicationContext?.let {
                         startActivity(Intent(this@MainActivity, LoginActivity::class.java))
@@ -236,9 +280,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     private fun changeFragment(fragment: Fragment) {
-
         lastFrag =
             supportFragmentManager.findFragmentById(R.id.mainContainer)?.javaClass?.simpleName!!
+
         if (lastFrag != fragment.javaClass.simpleName) {
             ft = supportFragmentManager.beginTransaction()
             ft.setCustomAnimations(
@@ -251,10 +295,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             ft.commit()
             lastpop = false
             lastFrag = fragment.javaClass.simpleName
+            // }
+            mLog.i(TAG, "backstack count on change ${supportFragmentManager.backStackEntryCount} ")
         }
-        mLog.i(TAG, "backstack count on change ${supportFragmentManager.backStackEntryCount} ")
     }
-
 
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(nav_view)) {
@@ -267,22 +311,22 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             if (supportFragmentManager.backStackEntryCount > 1) {
                 supportFragmentManager.popBackStack()
             } else {
-                if (getlastFrag() == DashFragment().javaClass.simpleName) {
-                    if (!exit) {
-                        showToast("press back again to exit")
-                        Handler().postDelayed({ exit = false }, 2000)
-                        exit = true
-                    } else {
-                        finish()
-                    }
-                } else {
-                    if (!lastpop) {
-                        changeFragment(DashFragment())
-                        checkDashBoard()
-                        lastpop = true
-                    }
+                 if (getlastFrag() == DashFragment().javaClass.simpleName) {
+                     if (!exit) {
+                         showToast("press back again to exit")
+                         Handler().postDelayed({ exit = false }, 2000)
+                         exit = true
+                     } else {
+                         finish()
+                     }
+                 } else {
+                     if (!lastpop) {
+                         changeFragment(DashFragment())
+                         checkDashBoard()
+                         lastpop = true
+                     }
 
-                }
+                 }
 
             }
 
@@ -330,11 +374,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
                }
                R.id.assignment -> {
-                   changeFragment(TrainerAssignmentFragment())
+                   changeFragment(AssignmentFragment())
 
                }
                R.id.assessment -> {
-                   changeFragment(TrainerAssessmentFragment())
+                   changeFragment(AssessmentFragment())
 
                }
                R.id.feedback -> {

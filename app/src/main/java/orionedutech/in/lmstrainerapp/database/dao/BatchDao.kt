@@ -31,7 +31,7 @@ interface BatchDao{
     suspend fun insertBatches(batch: MutableList<Batch>){
         deleteBatchTable()
        val values =  insert(batch)
-       mLog.i(TAG,"insert value" + values.size )
+       mLog.i(TAG,"insert value " + values.size )
     }
 
     @Transaction

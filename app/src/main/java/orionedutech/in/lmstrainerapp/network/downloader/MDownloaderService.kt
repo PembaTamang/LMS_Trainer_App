@@ -124,7 +124,7 @@ class MDownloaderService : Service() {
                 mLog.i(TAG,"failed")
                 MDownloader.showNotification(
                     applicationContext,
-                    " $fileName could not be downloaded ",
+                    "$fileName could not be downloaded ",
                     "",
                     false
                 )

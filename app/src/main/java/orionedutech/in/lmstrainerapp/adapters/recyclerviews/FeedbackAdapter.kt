@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.feedback_layout.view.*
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.interfaces.FeedBackInterface
 import orionedutech.`in`.lmstrainerapp.model.FeedbackModel
@@ -19,7 +20,6 @@ class FeedbackAdapter(val arraylist: ArrayList<FeedbackModel>, private val feedB
     private val hashMap = SparseArray<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FVH {
-
         return FVH(LayoutInflater.from(parent.context).inflate(R.layout.feedback_layout, parent, false))
     }
     fun reset(){
@@ -97,14 +97,12 @@ class FeedbackAdapter(val arraylist: ArrayList<FeedbackModel>, private val feedB
     }
 
     inner class FVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        var sl: TextView = itemView.findViewById(R.id.sl)
-        var question: TextView = itemView.findViewById(R.id.question)
-        var one: CheckBox = itemView.findViewById(R.id.happy)
-        var two: CheckBox = itemView.findViewById(R.id.confused)
-        var three: CheckBox = itemView.findViewById(R.id.sad)
-        var four: CheckBox = itemView.findViewById(R.id.angry)
-
+        var sl: TextView = itemView.sl
+        var question: TextView = itemView.question
+        var one: CheckBox = itemView.happy
+        var two: CheckBox = itemView.confused
+        var three: CheckBox = itemView.sad
+        var four: CheckBox = itemView.angry
 
     }
 }

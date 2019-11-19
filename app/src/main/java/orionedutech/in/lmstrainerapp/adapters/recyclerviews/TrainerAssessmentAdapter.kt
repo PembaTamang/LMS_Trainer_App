@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
+import kotlinx.android.synthetic.main.trainer_assessment_item.view.*
 import java.util.ArrayList
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.interfaces.RecyclerItemClick
@@ -45,12 +46,13 @@ class TrainerAssessmentAdapter(
     }
 
     inner class TVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var sl: TextView = itemView.findViewById(R.id.sl)
-        var name: TextView = itemView.findViewById(R.id.name)
-        var type: TextView = itemView.findViewById(R.id.type)
-        var centers: TextView = itemView.findViewById(R.id.centers)
-        var batces: TextView = itemView.findViewById(R.id.batches)
-        var cardView: MaterialCardView = itemView.findViewById(R.id.root)
+        var sl: TextView = itemView.sl
+        var name: TextView = itemView.name
+        var type: TextView = itemView.type
+        var centers: TextView = itemView.centers
+        var batces: TextView = itemView.batches
+        var cardView: MaterialCardView = itemView.root
+
         init {
             itemView.setOnClickListener { click.click(adapterPosition) }
         }

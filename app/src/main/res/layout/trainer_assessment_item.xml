@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/root"
-    tools:context=".fragments.TrainerAssessmentFragment"
+    tools:context=".fragments.assessment.AssessmentFragment"
     app:cardElevation="0dp"
     tools:ignore="MissingPrefix">
     <androidx.constraintlayout.widget.ConstraintLayout

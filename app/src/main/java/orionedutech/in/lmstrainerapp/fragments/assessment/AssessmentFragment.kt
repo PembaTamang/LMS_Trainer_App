@@ -1,4 +1,4 @@
-package orionedutech.`in`.lmstrainerapp.fragments
+package orionedutech.`in`.lmstrainerapp.fragments.assessment
 
 
 import android.animation.ObjectAnimator
@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 /**
  * A simple [Fragment] subclass.
  */
-class TrainerAssessmentFragment : Fragment(), RecyclerItemClick {
+class AssessmentFragment : Fragment(), RecyclerItemClick {
     private val arrayList = ArrayList<TrainerAssessmentModel>()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
@@ -28,11 +28,20 @@ class TrainerAssessmentFragment : Fragment(), RecyclerItemClick {
 
         view.upload.setOnClickListener {
           //upload code here
+           val ft = activity?.supportFragmentManager!!.beginTransaction()
+            ft.setCustomAnimations(
+                R.anim.enter_from_right,
+                R.anim.exit_to_left,
+                R.anim.enter_from_left,
+                R.anim.exit_to_right
+            )
+            val fragment =
+                AssessmentUploadFragment()
+            ft.add(R.id.mainContainer, fragment)
+            ft.addToBackStack(null)
+            ft.commit()
         }
 
-        view.download.setOnClickListener {             //put download code here
-
-        }
         val ascendingName = context?.let { ContextCompat.getDrawable(it,R.drawable.animated_ascending) }
         val descendingName = context?.let { ContextCompat.getDrawable(it,R.drawable.animated_descending) }
         val ascendingNames = AtomicBoolean(true)

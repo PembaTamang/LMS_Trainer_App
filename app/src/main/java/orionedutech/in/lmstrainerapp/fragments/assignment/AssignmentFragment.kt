@@ -1,12 +1,10 @@
-package orionedutech.`in`.lmstrainerapp.fragments
+package orionedutech.`in`.lmstrainerapp.fragments.assignment
 
 
 import android.animation.ObjectAnimator
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
-import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +15,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.dialog.MaterialDialogs
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_trainer_assignment.view.*
 import kotlinx.coroutines.CoroutineScope
@@ -28,6 +25,9 @@ import org.json.JSONObject
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.adapters.recyclerviews.TrainerAssignmentAdapter
 import orionedutech.`in`.lmstrainerapp.database.MDatabase
+import orionedutech.`in`.lmstrainerapp.fragments.BaseFragment
+import orionedutech.`in`.lmstrainerapp.fragments.PDFFragment
+import orionedutech.`in`.lmstrainerapp.fragments.assessment.AssessmentUploadFragment
 import orionedutech.`in`.lmstrainerapp.interfaces.RecyclerItemClick
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
@@ -47,7 +47,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 /**
  * A simple [Fragment] subclass.
  */
-class TrainerAssignmentFragment : BaseFragment(), RecyclerItemClick {
+class AssignmentFragment : BaseFragment(), RecyclerItemClick {
 
     lateinit var giveMarks: MaterialButton
     private lateinit var recyclerView: ShimmerRecyclerView
@@ -68,10 +68,11 @@ class TrainerAssignmentFragment : BaseFragment(), RecyclerItemClick {
         swipeRefreshLayout = view.swipe
         view.upload.setOnClickListener {
             //upload code here
+            moveToFragment(AssignmentUploadFragment())
         }
 
         giveMarks.setOnClickListener {
-
+            moveToFragment(MarksFragment())
 
         }
 
@@ -145,8 +146,8 @@ class TrainerAssignmentFragment : BaseFragment(), RecyclerItemClick {
         }*/
         recyclerView.layoutManager = LinearLayoutManager(context)
         adapter = TrainerAssignmentAdapter(arrayList, object : RecyclerItemClick{
-            override fun click(i: Int) {
-                val model = arrayList[i]
+            override fun click(itempos: Int) {
+                val model = arrayList[itempos]
                 val url = model.media_disk_path_relative
                 launch {
                     context?.let {
@@ -177,12 +178,25 @@ class TrainerAssignmentFragment : BaseFragment(), RecyclerItemClick {
         return view
     }
 
+    private fun moveToFragment(fragment: Fragment) {
+        val ft = activity?.supportFragmentManager!!.beginTransaction()
+        ft.setCustomAnimations(
+            R.anim.enter_from_right,
+            R.anim.exit_to_left,
+            R.anim.enter_from_left,
+            R.anim.exit_to_right
+        )
+        ft.add(R.id.mainContainer, fragment)
+        ft.addToBackStack(null)
+        ft.commit()
+    }
+
 
     private fun exportViewAlert(path : String,name :String) {
    val builder =  MaterialAlertDialogBuilder(context)
         .setTitle("Alert")
         .setMessage("choose an option")
-        .setPositiveButton("view"){dialogInterface, i ->
+        .setPositiveButton("view"){ dialogInterface, _ ->
             dialogInterface.dismiss()
 
         val ft = activity!!.supportFragmentManager.beginTransaction()
@@ -202,7 +216,7 @@ class TrainerAssignmentFragment : BaseFragment(), RecyclerItemClick {
             ft.addToBackStack(null)
             ft.commit()
         }
-        .setNegativeButton("export"){dialogInterface, i ->
+        .setNegativeButton("export"){ dialogInterface, _ ->
             CoroutineScope(Dispatchers.IO).launch {
                 copyToExternalStorage(path)
             }
@@ -217,7 +231,7 @@ class TrainerAssignmentFragment : BaseFragment(), RecyclerItemClick {
         MaterialAlertDialogBuilder(context)
             .setTitle("Alert")
             .setMessage("do want to download $name ?")
-            .setPositiveButton("download") { dialogInterface, i ->
+            .setPositiveButton("download") { dialogInterface, _ ->
                 dialogInterface.dismiss()
                 //add download code here
 
@@ -307,14 +321,14 @@ class TrainerAssignmentFragment : BaseFragment(), RecyclerItemClick {
             withContext(Dispatchers.Main){
                 mToast.showToast(context,"please wait")
             }
-            inp.copyTo(out){ current, _ ->
+            inp.copyTo(out){ _, _ ->
                 /*  percentage = ((current.toFloat()/totalBytes.toFloat())*100).toLong()
                   notificationBuilder.setProgress(100,percentage.toInt(),false)*/
 
             }
             MDownloader.showNotification(
                 context!!,
-                " ${destinationFile.name} has been copied to ${destinationFile.absolutePath} ",
+                "${destinationFile.name} has been copied to ${destinationFile.absolutePath} ",
                 "",
                 true
             )
