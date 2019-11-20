@@ -3,6 +3,7 @@ package orionedutech.`in`.lmstrainerapp.activities
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.PathEffect
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
@@ -38,6 +39,7 @@ import orionedutech.`in`.lmstrainerapp.fragments.assignment.AssignmentFragment
 import orionedutech.`in`.lmstrainerapp.fragments.batch.BatchFragment
 import orionedutech.`in`.lmstrainerapp.fragments.course.CourseFragment
 import orionedutech.`in`.lmstrainerapp.fragments.feedback.FeedbackFragment
+import orionedutech.`in`.lmstrainerapp.fragments.profile.ParentFragment
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
 import orionedutech.`in`.lmstrainerapp.showToast
@@ -51,13 +53,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private var lastpop = false
     private var lastFrag: String = ""
     private lateinit var bottomNav: BottomNavigationView
+
     private val permissionCode = 100
     var permissions = arrayOf(
         android.Manifest.permission.READ_EXTERNAL_STORAGE,
         android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
         android.Manifest.permission.CAMERA
     )
-
+    var profile = false
     private fun hasPermissions(context: Context, vararg permissions: String): Boolean =
         permissions.all {
             ActivityCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
@@ -67,6 +70,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         bottomNav = bottom_navigation
+
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
@@ -136,15 +140,47 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 when (item.itemId) {
                     R.id.dashboard -> {
                         mLog.i(TAG, "dash clicked")
-                        changeFragment(DashFragment())
+
+                        if(profile){
+                            profile = false
+                        }else{
+                            changeFragment(DashFragment())
+                        }
                         return true
                     }
-                   /* R.id.menu -> {
+                    /* R.id.menu -> {
 
-                        mLog.i(TAG, "menu clicked")
-                        return true
-                    }*/
+                         mLog.i(TAG, "menu clicked")
+                         return true
+                     }*/
                     R.id.profile -> {
+                   /*     profile = true
+                        lastFrag = ParentFragment::class.java.simpleName
+                        ft = supportFragmentManager.beginTransaction()
+                        ft.setCustomAnimations(
+                            R.anim.enter_from_right,
+                            R.anim.exit_to_left,
+                            R.anim.enter_from_left,
+                            R.anim.exit_to_right
+                        )
+                        ft.add(R.id.mainContainer, ParentFragment())
+                        ft.addToBackStack(null)
+                        ft.commit()
+                        lastpop = false*/
+                        profile = true
+                        val fragment = ParentFragment()
+                        lastFrag = fragment.javaClass.simpleName
+                        ft = supportFragmentManager.beginTransaction()
+                        ft.setCustomAnimations(
+                            R.anim.enter_from_right,
+                            R.anim.exit_to_left,
+                            R.anim.enter_from_left,
+                            R.anim.exit_to_right
+                        )
+                        ft.add(R.id.mainContainer, fragment)
+                        ft.addToBackStack(null)
+                        ft.commit()
+                        lastpop = false
 
                         mLog.i(TAG, "profile clicked")
                         return true
@@ -159,22 +195,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
     }
 
-    private fun addDash() {
-        ft = supportFragmentManager.beginTransaction()
-        ft.setCustomAnimations(
-            R.anim.fadein,
-            R.anim.fadeout,
-            R.anim.fadein,
-            R.anim.fadeout
-        )
-        ft.add(R.id.mainContainer, DashFragment())
-        ft.addToBackStack(null)
-        ft.commit()
-    }
-
-    private fun checkDashBoard() {
-        nav_view.menu[0].isChecked = true
-    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
 
@@ -199,7 +219,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 ft.addToBackStack(null)
                 ft.commit()
                 lastpop = false
-                lastFrag = PasswordResetFragment().javaClass.simpleName
                 mLog.i(
                     TAG,
                     "backstack count password change ${supportFragmentManager.backStackEntryCount} "
@@ -212,6 +231,22 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         }
         return super.onOptionsItemSelected(item)
+    }
+    private fun addDash() {
+        ft = supportFragmentManager.beginTransaction()
+        ft.setCustomAnimations(
+            R.anim.fadein,
+            R.anim.fadeout,
+            R.anim.fadein,
+            R.anim.fadeout
+        )
+        ft.add(R.id.mainContainer, DashFragment())
+        ft.addToBackStack(null)
+        ft.commit()
+    }
+
+    private fun checkDashBoard() {
+        nav_view.menu[0].isChecked = true
     }
 
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {
@@ -310,6 +345,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 TAG,
                 " backstack count backpressed ${supportFragmentManager.backStackEntryCount}"
             )
+            if(profile){
+                bottomNav.selectedItemId = R.id.dashboard
+                profile = false
+            }
             if (supportFragmentManager.backStackEntryCount > 1) {
                 supportFragmentManager.popBackStack()
             } else {

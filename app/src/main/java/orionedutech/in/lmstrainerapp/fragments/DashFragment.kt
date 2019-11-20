@@ -118,19 +118,17 @@ class DashFragment : BaseFragment() {
                 withContext(Main){
                     batchName.text = bName
                 }
-                showAnimation()
-                hideAnimations(getBatchData())
 
-                /* val dao = database.getBatchDao()
+                val dao = database.getBatchDao()
                  if (dao.batchDataExists()) {
                      batchListSpinner.addAll(dao.getAllBatches())
-                     withContext(Dispatchers.Main) {
+                     withContext(Main) {
                          batchAdapter.notifyDataSetChanged()
                      }
                  } else {
                      showAnimation()
                      hideAnimations(getBatchData())
-                 }*/
+                 }
 
 
             }
