@@ -7,27 +7,24 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-
 import com.google.android.material.card.MaterialCardView
-import kotlinx.android.synthetic.main.trainer_assignment_item.view.*
-
+import kotlinx.android.synthetic.main.trainer_assessment_item.view.*
 import java.util.ArrayList
-
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.interfaces.RecyclerItemClick
-import orionedutech.`in`.lmstrainerapp.network.dataModels.DCAssignment
+import orionedutech.`in`.lmstrainerapp.model.TrainerAssessmentModel
 
-class TrainerAssignmentAdapter(
-    private val arrayList: ArrayList<DCAssignment>,
-    private val itemClick: RecyclerItemClick
-) : RecyclerView.Adapter<TrainerAssignmentAdapter.TVH>() {
+class AssessmentAdapter(
+    private val arrayList: ArrayList<TrainerAssessmentModel>,
+    private val click: RecyclerItemClick
+) : RecyclerView.Adapter<AssessmentAdapter.TVH>() {
     private var context: Context? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TVH {
         context = parent.context
         return TVH(
             LayoutInflater.from(context).inflate(
-                R.layout.trainer_assignment_item,
+                R.layout.trainer_assessment_item,
                 parent,
                 false
             )
@@ -35,13 +32,13 @@ class TrainerAssignmentAdapter(
     }
 
     override fun onBindViewHolder(holder: TVH, position: Int) {
-        val model = arrayList[position]
+        val m = arrayList[position]
         holder.cardView.setCardBackgroundColor(if (position % 2 == 0) context?.let { ContextCompat.getColor(it,R.color.white) }!! else context?.let { ContextCompat.getColor(it,R.color.light_grey) }!!)
         holder.sl.text = (position + 1).toString()
-        holder.name.text = model.assignment_name
-        holder.batch.text = model.batch_name
-        holder.course.text = model.course_name
-
+        holder.name.text = m.name
+        holder.type.text = m.type
+        holder.centers.text = m.center
+        holder.batces.text = m.batch
     }
 
     override fun getItemCount(): Int {
@@ -51,12 +48,13 @@ class TrainerAssignmentAdapter(
     inner class TVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var sl: TextView = itemView.sl
         var name: TextView = itemView.name
-        var batch: TextView = itemView.batch
-        var course: TextView = itemView.course
+        var type: TextView = itemView.type
+        var centers: TextView = itemView.centers
+        var batces: TextView = itemView.batches
         var cardView: MaterialCardView = itemView.root
 
         init {
-            itemView.setOnClickListener { view -> itemClick.click(adapterPosition) }
+            itemView.setOnClickListener { click.click(adapterPosition) }
         }
     }
 }

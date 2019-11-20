@@ -35,6 +35,8 @@ import orionedutech.`in`.lmstrainerapp.fragments.ManualFragment
 import orionedutech.`in`.lmstrainerapp.fragments.PasswordResetFragment
 import orionedutech.`in`.lmstrainerapp.fragments.assessment.AssessmentFragment
 import orionedutech.`in`.lmstrainerapp.fragments.assignment.AssignmentFragment
+import orionedutech.`in`.lmstrainerapp.fragments.batch.BatchFragment
+import orionedutech.`in`.lmstrainerapp.fragments.course.CourseFragment
 import orionedutech.`in`.lmstrainerapp.fragments.feedback.FeedbackFragment
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
@@ -137,11 +139,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                         changeFragment(DashFragment())
                         return true
                     }
-                    R.id.menu -> {
+                   /* R.id.menu -> {
 
                         mLog.i(TAG, "menu clicked")
                         return true
-                    }
+                    }*/
                     R.id.profile -> {
 
                         mLog.i(TAG, "profile clicked")
@@ -194,7 +196,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                     R.anim.exit_to_right
                 )
                 ft.add(R.id.mainContainer, fragment)
-                // ft.addToBackStack(null)
+                ft.addToBackStack(null)
                 ft.commit()
                 lastpop = false
                 lastFrag = PasswordResetFragment().javaClass.simpleName
@@ -223,7 +225,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
             }
             R.id.batch_creation -> {
-
+                changeFragment(BatchFragment())
 
             }
             R.id.student -> {
@@ -231,7 +233,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
             }
             R.id.course -> {
-
+                changeFragment(CourseFragment())
 
             }
             R.id.assignment -> {
@@ -311,22 +313,22 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             if (supportFragmentManager.backStackEntryCount > 1) {
                 supportFragmentManager.popBackStack()
             } else {
-                 if (getlastFrag() == DashFragment().javaClass.simpleName) {
-                     if (!exit) {
-                         showToast("press back again to exit")
-                         Handler().postDelayed({ exit = false }, 2000)
-                         exit = true
-                     } else {
-                         finish()
-                     }
-                 } else {
-                     if (!lastpop) {
-                         changeFragment(DashFragment())
-                         checkDashBoard()
-                         lastpop = true
-                     }
+                if (getlastFrag() == DashFragment().javaClass.simpleName) {
+                    if (!exit) {
+                        showToast("press back again to exit")
+                        Handler().postDelayed({ exit = false }, 2000)
+                        exit = true
+                    } else {
+                        finish()
+                    }
+                } else {
+                    if (!lastpop) {
+                        changeFragment(DashFragment())
+                        checkDashBoard()
+                        lastpop = true
+                    }
 
-                 }
+                }
 
             }
 
@@ -359,23 +361,19 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
                R.id.dash_board -> {
                    changeFragment(DashFragment())
-
                }
-               R.id.batch_creation -> {
 
+               R.id.batch_creation -> {
 
                }
                R.id.student -> {
 
-
                }
                R.id.course -> {
-
 
                }
                R.id.assignment -> {
                    changeFragment(AssignmentFragment())
-
                }
                R.id.assessment -> {
                    changeFragment(AssessmentFragment())
@@ -383,14 +381,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                }
                R.id.feedback -> {
 
-
                }
                R.id.manual -> {
 
-
                }
                R.id.logout -> {
-
 
                }
            }
@@ -398,4 +393,5 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
        }*/
     }
+
 }

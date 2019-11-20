@@ -23,11 +23,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import orionedutech.`in`.lmstrainerapp.R
-import orionedutech.`in`.lmstrainerapp.adapters.recyclerviews.TrainerAssignmentAdapter
+import orionedutech.`in`.lmstrainerapp.adapters.recyclerviews.AssignmentAdapter
 import orionedutech.`in`.lmstrainerapp.database.MDatabase
 import orionedutech.`in`.lmstrainerapp.fragments.BaseFragment
 import orionedutech.`in`.lmstrainerapp.fragments.PDFFragment
-import orionedutech.`in`.lmstrainerapp.fragments.assessment.AssessmentUploadFragment
 import orionedutech.`in`.lmstrainerapp.interfaces.RecyclerItemClick
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
@@ -52,7 +51,7 @@ class AssignmentFragment : BaseFragment(), RecyclerItemClick {
     lateinit var giveMarks: MaterialButton
     private lateinit var recyclerView: ShimmerRecyclerView
     private val arrayList = ArrayList<DCAssignment>()
-    private lateinit var adapter: TrainerAssignmentAdapter
+    private lateinit var adapter: AssignmentAdapter
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private var busy = false
 
@@ -145,7 +144,7 @@ class AssignmentFragment : BaseFragment(), RecyclerItemClick {
             arrayList.add(model)
         }*/
         recyclerView.layoutManager = LinearLayoutManager(context)
-        adapter = TrainerAssignmentAdapter(arrayList, object : RecyclerItemClick{
+        adapter = AssignmentAdapter(arrayList, object : RecyclerItemClick{
             override fun click(itempos: Int) {
                 val model = arrayList[itempos]
                 val url = model.media_disk_path_relative
