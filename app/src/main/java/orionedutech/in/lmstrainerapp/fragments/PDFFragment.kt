@@ -23,12 +23,13 @@ import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mToast
 import orionedutech.`in`.lmstrainerapp.network.downloader.MDownloader
 import java.io.*
+import java.lang.Exception
 
 
 /**
  * A simple [Fragment] subclass.
  */
-class PDFFragment : Fragment() {
+class PDFFragment : BaseFragment() {
     lateinit var name: TextView
     lateinit var pdfView: PDFView
     var currentPage: Int = 0
@@ -47,12 +48,19 @@ class PDFFragment : Fragment() {
         val naam = arguments!!.getString("name")
 
         name.text = naam
-        pdfView.fromFile(File(path))
-            .scrollHandle(DefaultScrollHandle(context))
-            .defaultPage(pdfPref.getInt(path, 0)).onPageChange { page, pageCount ->
-                currentPage = page
 
-            }.load()
+            pdfView.fromFile(File(path))
+                .scrollHandle(DefaultScrollHandle(context))
+                .defaultPage(pdfPref.getInt(path, 0)).onPageError { page, t ->
+                    run {
+                        mToast.showToast(context, "error loading pdf")
+                    }
+                }.onPageChange { page, pageCount ->
+                    currentPage = page
+
+                }.load()
+
+
 
         view.export.setOnClickListener {
             MaterialAlertDialogBuilder(context).setTitle("Alert")

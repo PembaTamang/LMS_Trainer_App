@@ -121,7 +121,18 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
                      path = dao.getInternalPath(serverURL)
                     pdfView.fromFile(File(path))
                         .scrollHandle(DefaultScrollHandle(context))
-                        .defaultPage(pdfPref.getInt(path,0)).onPageChange { page, _ ->
+                        .defaultPage(pdfPref.getInt(path,0)).onError{
+                       mToast.showToast(context,"corrupted pdf")
+                            MaterialAlertDialogBuilder(context).setTitle("Alert")
+                                .setMessage("The downloaded pdf is missing or corrupted. Would you like to download again?")
+                                .setPositiveButton("download"){dialogInterface, i ->
+                                    dialogInterface.dismiss()
+                                    directDownload()
+                                }.setNegativeButton("cancel"){dialogInterface, i ->
+                                    dialogInterface.dismiss()
+                                }.create().show()
+
+                        }.onPageChange { page, _ ->
                             currentPage = page
                         }
                         .load().let {
@@ -151,6 +162,15 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
                 }
             }
         }
+    }
+
+    private fun directDownload() {
+        val intent = Intent(context, MDownloaderService::class.java)
+        intent.putExtra("url", serverURL)
+        intent.putExtra("name", "manual.pdf")
+        intent.putExtra("pdf", true)
+        intent.action = MActions.start
+        context!!.startService(intent)
     }
 
     private fun onFailure() {

@@ -140,49 +140,37 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 when (item.itemId) {
                     R.id.dashboard -> {
                         mLog.i(TAG, "dash clicked")
-
-                        if(profile){
+                        bottomNav.menu.setGroupCheckable(0, true, true)
+                        if (profile) {
                             profile = false
-                        }else{
+                            mLog.i(TAG,"${supportFragmentManager.backStackEntryCount}")
+                            supportFragmentManager.popBackStack()
+                        } else {
                             changeFragment(DashFragment())
                         }
+                        lastFrag = DashFragment::javaClass.name
                         return true
                     }
-                    /* R.id.menu -> {
-
-                         mLog.i(TAG, "menu clicked")
-                         return true
-                     }*/
                     R.id.profile -> {
-                   /*     profile = true
-                        lastFrag = ParentFragment::class.java.simpleName
-                        ft = supportFragmentManager.beginTransaction()
-                        ft.setCustomAnimations(
-                            R.anim.enter_from_right,
-                            R.anim.exit_to_left,
-                            R.anim.enter_from_left,
-                            R.anim.exit_to_right
-                        )
-                        ft.add(R.id.mainContainer, ParentFragment())
-                        ft.addToBackStack(null)
-                        ft.commit()
-                        lastpop = false*/
-                        profile = true
-                        val fragment = ParentFragment()
-                        lastFrag = fragment.javaClass.simpleName
-                        ft = supportFragmentManager.beginTransaction()
-                        ft.setCustomAnimations(
-                            R.anim.enter_from_right,
-                            R.anim.exit_to_left,
-                            R.anim.enter_from_left,
-                            R.anim.exit_to_right
-                        )
-                        ft.add(R.id.mainContainer, fragment)
-                        ft.addToBackStack(null)
-                        ft.commit()
-                        lastpop = false
+                        mLog.i(TAG,"last frag before adding profile $lastFrag")
+                        if (lastFrag != ParentFragment::class.java.simpleName) {
+                            profile = true
+                            bottomNav.menu.setGroupCheckable(0, true, true)
+                            lastFrag = ParentFragment::class.java.simpleName
+                            ft = supportFragmentManager.beginTransaction()
+                            ft.setCustomAnimations(
+                                R.anim.enter_from_right,
+                                R.anim.exit_to_left,
+                                R.anim.enter_from_left,
+                                R.anim.exit_to_right
+                            )
+                            ft.add(R.id.mainContainer, ParentFragment())
+                            ft.addToBackStack(null)
+                            ft.commit()
+                            lastpop = false
 
-                        mLog.i(TAG, "profile clicked")
+                            mLog.i(TAG, "profile clicked")
+                        }
                         return true
                     }
                 }
@@ -208,6 +196,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             R.id.action_settings -> {
                 val fragment = PasswordResetFragment()
                 lastFrag = fragment.javaClass.simpleName
+                mLog.i(TAG,"password frag name $lastFrag")
                 ft = supportFragmentManager.beginTransaction()
                 ft.setCustomAnimations(
                     R.anim.enter_from_right,
@@ -232,6 +221,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
         return super.onOptionsItemSelected(item)
     }
+
     private fun addDash() {
         ft = supportFragmentManager.beginTransaction()
         ft.setCustomAnimations(
@@ -319,7 +309,12 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private fun changeFragment(fragment: Fragment) {
         lastFrag =
             supportFragmentManager.findFragmentById(R.id.mainContainer)?.javaClass?.simpleName!!
+        mLog.i(TAG,"fragment name ${fragment.javaClass.simpleName}")
 
+        if (fragment.javaClass.simpleName != "DashFragment") {
+
+            bottomNav.menu.setGroupCheckable(0, false, true)
+        }
         if (lastFrag != fragment.javaClass.simpleName) {
             ft = supportFragmentManager.beginTransaction()
             ft.setCustomAnimations(
@@ -345,12 +340,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 TAG,
                 " backstack count backpressed ${supportFragmentManager.backStackEntryCount}"
             )
-            if(profile){
+            if (profile) {
                 bottomNav.selectedItemId = R.id.dashboard
                 profile = false
             }
             if (supportFragmentManager.backStackEntryCount > 1) {
+                if(getlastFrag()!="ParentFragment"){
                 supportFragmentManager.popBackStack()
+                }
             } else {
                 if (getlastFrag() == DashFragment().javaClass.simpleName) {
                     if (!exit) {
@@ -381,6 +378,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun finish() {
         val dashPref = getSharedPreferences("dash", Context.MODE_PRIVATE)
         dashPref.edit().clear().apply()
+        mLog.i(TAG, "clearing preferences")
         super.finish()
         overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right)
     }

@@ -12,10 +12,10 @@ import kotlinx.android.synthetic.main.trainer_assessment_item.view.*
 import java.util.ArrayList
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.interfaces.RecyclerItemClick
-import orionedutech.`in`.lmstrainerapp.model.TrainerAssessmentModel
+import orionedutech.`in`.lmstrainerapp.network.dataModels.DCAssessmentList
 
 class AssessmentAdapter(
-    private val arrayList: ArrayList<TrainerAssessmentModel>,
+    private val arrayList: ArrayList<DCAssessmentList>,
     private val click: RecyclerItemClick
 ) : RecyclerView.Adapter<AssessmentAdapter.TVH>() {
     private var context: Context? = null
@@ -35,10 +35,10 @@ class AssessmentAdapter(
         val m = arrayList[position]
         holder.cardView.setCardBackgroundColor(if (position % 2 == 0) context?.let { ContextCompat.getColor(it,R.color.white) }!! else context?.let { ContextCompat.getColor(it,R.color.light_grey) }!!)
         holder.sl.text = (position + 1).toString()
-        holder.name.text = m.name
-        holder.type.text = m.type
-        holder.centers.text = m.center
-        holder.batces.text = m.batch
+        holder.name.text = m.assesment_name
+        holder.type.text = m.assesment_q_type
+        holder.centers.text = m.assesment_centers
+        holder.batces.text = m.assesment_batches
     }
 
     override fun getItemCount(): Int {

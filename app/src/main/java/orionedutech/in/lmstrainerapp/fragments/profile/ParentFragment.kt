@@ -6,8 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import com.mikhaellopez.circularimageview.CircularImageView
 import kotlinx.android.synthetic.main.fragment_parent.view.*
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.fragments.BaseFragment
@@ -26,13 +28,20 @@ class ParentFragment : BaseFragment() {
         val view =  inflater.inflate(R.layout.fragment_parent, container, false)
         tabLayout = view.tabLayout
         viewPager = view.viewPager
-        val adapter = ViewPagerAdapter(activity!!.supportFragmentManager)
-        viewPager!!.adapter = adapter
-        tabLayout!!.setupWithViewPager(viewPager)
 
+        setUpViewPager()
+
+        view.camera.setOnClickListener {
+            //start camera intent
+
+        }
         return view
         }
-
-
+    private fun setUpViewPager() {
+        val adapter = ViewPagerAdapter(childFragmentManager)
+        viewPager!!.adapter = adapter
+        tabLayout!!.setupWithViewPager(viewPager)
+        activity!!.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
+    }
 
 }

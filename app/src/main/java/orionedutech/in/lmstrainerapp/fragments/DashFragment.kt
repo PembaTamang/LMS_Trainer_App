@@ -107,45 +107,10 @@ class DashFragment : BaseFragment() {
 
         }
 
-
-
-        CoroutineScope(IO).launch {
-            context?.let {
-                val database = MDatabase(it)
-                val userDao = database.getUserDao()
-
-                val bName = userDao.getBatchName()
-                withContext(Main){
-                    batchName.text = bName
-                }
-
-                val dao = database.getBatchDao()
-                 if (dao.batchDataExists()) {
-                     batchListSpinner.addAll(dao.getAllBatches())
-                     withContext(Main) {
-                         batchAdapter.notifyDataSetChanged()
-                     }
-                 } else {
-                     showAnimation()
-                     hideAnimations(getBatchData())
-                 }
-
-
-            }
-
-        }
-
-
-
-
-
-
-
-
-
         setUpChart()
         mLog.i(TAG,"pref value : ${dashPref.getBoolean("data",false)}")
         if(!dashPref.getBoolean("data",false)){
+            mLog.i(TAG,"getting data")
             getDashboardData()
         }else{
            courseCount.text = String.format(" %d COURSE(S)", dashPref.getInt("course",0))
@@ -153,6 +118,18 @@ class DashFragment : BaseFragment() {
            studentCount.text = String.format("%d STUDENT(S)", dashPref.getInt("student",0))
             name.text = dashPref.getString("name","error")
             String.format("%02d", 10)
+            CoroutineScope(IO).launch {
+                context?.let {
+                    val dao = MDatabase(it).getBatchDao()
+                    if (dao.batchDataExists()) {
+                        batchListSpinner.addAll(dao.getAllBatches())
+                        withContext(Main) {
+                            batchAdapter.notifyDataSetChanged()
+                        }
+                    }
+                }
+
+            }
         }
 
         return view
@@ -179,6 +156,7 @@ class DashFragment : BaseFragment() {
                         mLog.i(TAG,"dash resp : $string")
                         val dash = Gson().fromJson(string, DCDash::class.java)
                         if (dash != null) {
+                            mLog.i(TAG,"success")
                             activity!!.runOnUiThread {
                                 courseCount.text = String.format(" %d COURSE(S)", dash.total_courses)
                                 batchCount.text = String.format("%d BATCHE(S",dash.total_batches)
@@ -189,6 +167,15 @@ class DashFragment : BaseFragment() {
                                     .putString("name",naam)
                                     .putBoolean("data",true).apply()
                             }
+                            CoroutineScope(IO).launch {
+                                context?.let {
+
+                                    showAnimation()
+                                    hideAnimations(getBatchData())
+                                }
+                            }
+
+
                         } else {
                             mToast.showToast(context, "failed")
                         }

@@ -27,6 +27,18 @@ interface UserDao {
     @Query("select batchName from user_table")
     suspend fun getBatchName(): String
 
+    @Query("select centerName from user_table")
+    suspend fun getCenterName(): String
+
+    @Query("select phoneNumber from user_table")
+    suspend fun getPhone(): String
+
+    @Query("select email from user_table")
+    suspend fun getEmail(): String
+
+    @Query("select batchID from user_table")
+    suspend fun getBatchID(): String
+
     @Query("select centerID from user_table")
     suspend fun getCenterID(): String
 

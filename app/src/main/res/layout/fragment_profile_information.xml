@@ -1,14 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="16dp"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".fragments.profile.ProfileInformationFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Profile Fragment" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="EDIT Info"
+                android:textStyle="bold"
+                android:drawableEnd="@drawable/ic_write"
+                android:layout_gravity="end"
+                android:drawablePadding="4dp"
+                android:textAppearance="@style/OpenSansRegular"
+                />
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/MyEditText"
+                app:boxCornerRadiusTopStart="8dp"
+                app:boxCornerRadiusBottomEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:hintAnimationEnabled="true"
+                android:hint="Name">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:textColor="@color/profile_edit_text_color"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                style="@style/MyEditText"
+                android:tint="@color/blue"
+                android:src="@drawable/rounded_bottom"/>
 
-</FrameLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                style="@style/MyEditText"
+                app:hintAnimationEnabled="true"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:boxCornerRadiusTopStart="8dp"
+                app:boxCornerRadiusBottomEnd="8dp"
+                android:hint="Email">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:textColor="@color/profile_edit_text_color"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:tint="@color/blue"
+                style="@style/MyEditText"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/rounded_bottom"/>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:hintAnimationEnabled="true"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:boxCornerRadiusTopStart="8dp"
+                style="@style/MyEditText"
+                app:boxCornerRadiusBottomEnd="8dp"
+                android:hint="Phone Number">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:textColor="@color/profile_edit_text_color"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:tint="@color/blue"
+                style="@style/MyEditText"
+                android:src="@drawable/rounded_bottom"/>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:hintAnimationEnabled="true"
+                style="@style/MyEditText"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:boxCornerRadiusTopStart="8dp"
+                app:boxCornerRadiusBottomEnd="8dp"
+                android:hint="Center Name">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/centerName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:textColor="@color/profile_edit_text_color"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:tint="@color/blue"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/rounded_bottom"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/updateProfile"
+                android:text="Update profile"
+                app:cornerRadius="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_gravity="center"
+                android:enabled="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

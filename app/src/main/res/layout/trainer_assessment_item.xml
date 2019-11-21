@@ -44,7 +44,7 @@
             android:layout_marginEnd="1dp"
             app:layout_constraintEnd_toStartOf="@+id/type"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintHorizontal_weight="2"
             app:layout_constraintStart_toEndOf="@+id/sl"
             app:layout_constraintTop_toTopOf="@+id/sl" />
 
@@ -52,7 +52,7 @@
             android:id="@+id/type"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Question Type"
+            android:text="QType"
             android:paddingStart="8dp"
             android:textSize="12sp"
             android:textAppearance="@style/OpenSansRegular"
@@ -60,7 +60,7 @@
             android:layout_marginEnd="1dp"
             app:layout_constraintEnd_toStartOf="@+id/centers"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_weight="2"
+            app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toEndOf="@+id/name"
             app:layout_constraintTop_toTopOf="@+id/name" />
 

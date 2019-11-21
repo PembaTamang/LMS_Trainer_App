@@ -44,6 +44,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="1dp"
         android:background="@color/black"
         android:padding="8dp"
@@ -56,7 +57,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_weight="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/upload" />
+        app:layout_constraintTop_toBottomOf="@+id/button" />
 
     <TextView
         android:id="@+id/name"
@@ -75,7 +76,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/sl"
         app:layout_constraintEnd_toStartOf="@+id/type"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintHorizontal_weight="2"
         app:layout_constraintStart_toEndOf="@+id/sl"
         app:layout_constraintTop_toTopOf="@+id/sl" />
 
@@ -88,7 +89,7 @@
         android:drawableEnd="@drawable/ascending"
         android:drawablePadding="4dp"
         android:padding="8dp"
-        android:text="Question Type"
+        android:text="QType"
         android:textAlignment="textStart"
         android:textAppearance="@style/OpenSansSemiBold"
         android:textColor="@color/white"
@@ -96,7 +97,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/name"
         app:layout_constraintEnd_toStartOf="@+id/centers"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@+id/name"
         app:layout_constraintTop_toTopOf="@+id/name" />
 
@@ -140,7 +141,38 @@
         app:layout_constraintStart_toEndOf="@+id/centers"
         app:layout_constraintTop_toTopOf="@+id/centers" />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/materialCardView6"
+        android:layout_width="0dp"
+        android:layout_height="?actionBarSize"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/upload">
+
+        <Spinner
+            android:id="@+id/batch_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:background="@drawable/spinner_bg" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Get assessments"
+        android:textAllCaps="true"
+        app:cornerRadius="16dp"
+        app:layout_constraintEnd_toEndOf="@+id/materialCardView6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/materialCardView6" />
+    <com.cooltechworks.views.shimmer.ShimmerRecyclerView
         android:id="@+id/recycler"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -149,5 +181,7 @@
         app:layout_constraintEnd_toEndOf="@+id/batches"
         app:layout_constraintStart_toStartOf="@+id/sl"
         app:layout_constraintTop_toBottomOf="@+id/type"
+        app:shimmer_demo_child_count="10"
+        app:shimmer_demo_layout="@layout/shimmer_assignment"
         tools:listitem="@layout/trainer_assessment_item" />
 </androidx.constraintlayout.widget.ConstraintLayout>
