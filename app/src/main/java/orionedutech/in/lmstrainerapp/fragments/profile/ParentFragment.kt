@@ -9,10 +9,10 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import com.mikhaellopez.circularimageview.CircularImageView
 import kotlinx.android.synthetic.main.fragment_parent.view.*
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.fragments.BaseFragment
+import orionedutech.`in`.lmstrainerapp.interfaces.MoveNavBar
 
 /**
  * A simple [Fragment] subclass.
@@ -25,7 +25,7 @@ class ParentFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view =  inflater.inflate(R.layout.fragment_parent, container, false)
+        val view = inflater.inflate(R.layout.fragment_parent, container, false)
         tabLayout = view.tabLayout
         viewPager = view.viewPager
 
@@ -33,10 +33,12 @@ class ParentFragment : BaseFragment() {
 
         view.camera.setOnClickListener {
             //start camera intent
-
+            moveToFragment(CameraFragment())
+            MoveNavBar.theRealInstance.refresh()
         }
         return view
-        }
+    }
+
     private fun setUpViewPager() {
         val adapter = ViewPagerAdapter(childFragmentManager)
         viewPager!!.adapter = adapter
@@ -44,4 +46,16 @@ class ParentFragment : BaseFragment() {
         activity!!.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
     }
 
+    private fun moveToFragment(fragment: Fragment) {
+        val ft = activity?.supportFragmentManager!!.beginTransaction()
+        ft.setCustomAnimations(
+            R.anim.enter_from_right,
+            R.anim.exit_to_left,
+            R.anim.enter_from_left,
+            R.anim.exit_to_right
+        )
+        ft.add(R.id.mainContainer, fragment)
+        ft.addToBackStack(null)
+        ft.commit()
+    }
 }

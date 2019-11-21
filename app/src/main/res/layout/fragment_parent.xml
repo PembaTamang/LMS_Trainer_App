@@ -33,7 +33,7 @@
             app:civ_border_color="#FFFFFF"
             app:civ_border_width="4dp"
             app:civ_shadow="false"
-            android:src="@drawable/girl_icon"
+            android:src="@drawable/user"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -43,7 +43,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginTop="24dp"
-            app:srcCompat="@drawable/ic_camera"
+            app:srcCompat="@drawable/camera"
             app:layout_constraintEnd_toEndOf="@+id/circularImageView"
             app:layout_constraintStart_toEndOf="@+id/circularImageView"
             app:layout_constraintTop_toTopOf="@+id/circularImageView" />
@@ -99,9 +99,10 @@
         app:layout_constraintTop_toBottomOf="@+id/container"
         app:layout_constraintVertical_weight="0.5"
         app:tabBackground="@drawable/tab_background"
-        app:tabGravity="center"
+        app:tabGravity="fill"
         app:tabIndicator="@null"
         app:tabMinWidth="0dp"
+        app:tabMaxWidth="0dp"
         app:tabMode="fixed"
         app:tabPaddingEnd="10dp"
         app:tabPaddingStart="10dp"
@@ -113,14 +114,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Profile Information"
+            android:text="Profile Info"
             android:textAlignment="center" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Additoinal Information"
+            android:text="Additional Info"
             android:textAlignment="center" />
     </com.google.android.material.tabs.TabLayout>
 

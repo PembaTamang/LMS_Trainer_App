@@ -12,6 +12,7 @@ import android.text.SpannableString
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.View.VISIBLE
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
@@ -27,6 +28,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.fragment_parent.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
 import kotlinx.coroutines.launch
 import orionedutech.`in`.lmstrainerapp.R
@@ -40,15 +42,20 @@ import orionedutech.`in`.lmstrainerapp.fragments.batch.BatchFragment
 import orionedutech.`in`.lmstrainerapp.fragments.course.CourseFragment
 import orionedutech.`in`.lmstrainerapp.fragments.feedback.FeedbackFragment
 import orionedutech.`in`.lmstrainerapp.fragments.profile.ParentFragment
+import orionedutech.`in`.lmstrainerapp.interfaces.CaptureInterface
+import orionedutech.`in`.lmstrainerapp.interfaces.MoveNavBar
+import orionedutech.`in`.lmstrainerapp.interfaces.PDFDownloadComplete
+import orionedutech.`in`.lmstrainerapp.interfaces.flashtoggle
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
 import orionedutech.`in`.lmstrainerapp.showToast
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
-    DrawerLayout.DrawerListener {
+    DrawerLayout.DrawerListener, MoveNavBar.move{
 
 
     lateinit var ft: FragmentTransaction
+    private var isBarDown = true
     private var exit = false
     private var lastpop = false
     private var lastFrag: String = ""
@@ -131,8 +138,16 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
         }
 
+        flash.setOnClickListener {
+            CaptureInterface.theRealInstance.toggleflash()
+        }
 
-
+        capture.setOnClickListener {
+            CaptureInterface.theRealInstance.capture()
+        }
+        lens.setOnClickListener {
+            CaptureInterface.theRealInstance.togglelens()
+        }
         bottomNav.setOnNavigationItemSelectedListener(object :
             NavigationView.OnNavigationItemSelectedListener,
             BottomNavigationView.OnNavigationItemSelectedListener {
@@ -145,6 +160,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                             profile = false
                             mLog.i(TAG,"${supportFragmentManager.backStackEntryCount}")
                             supportFragmentManager.popBackStack()
+
                         } else {
                             changeFragment(DashFragment())
                         }
@@ -169,6 +185,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                             ft.commit()
                             lastpop = false
 
+
                             mLog.i(TAG, "profile clicked")
                         }
                         return true
@@ -181,9 +198,35 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         if (!hasPermissions(this, *permissions)) {
             ActivityCompat.requestPermissions(this, permissions, permissionCode)
         }
+        Handler().postDelayed({
+            cameraControls.visibility = VISIBLE
+        },1500)
+        cameraControls.animate()
+            .translationYBy(1000f)
+            .duration = 0
+       MoveNavBar.theRealInstance.setListener(this)
     }
 
+    fun pulldownBar(){
+        cameraControls.animate()
+            .translationYBy(1000f)
+            .duration = 2000
+    }
 
+    fun pushupBar(){
+        cameraControls.animate()
+            .translationYBy(-1000f)
+            .duration = 1000
+    }
+    fun moveNavBar(){
+        if(isBarDown){
+            pushupBar()
+            isBarDown = false
+        }else{
+            pulldownBar()
+            isBarDown = true
+        }
+    }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
 
         menuInflater.inflate(R.menu.main, menu)
@@ -430,5 +473,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
        }*/
     }
+
+    override fun movebar() {
+        moveNavBar()
+    }
+
+
 
 }
