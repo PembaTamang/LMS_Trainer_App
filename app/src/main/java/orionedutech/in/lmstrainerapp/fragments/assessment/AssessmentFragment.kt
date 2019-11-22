@@ -29,6 +29,7 @@ import orionedutech.`in`.lmstrainerapp.fragments.BaseFragment
 import orionedutech.`in`.lmstrainerapp.interfaces.RecyclerItemClick
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
+import orionedutech.`in`.lmstrainerapp.mToast
 import orionedutech.`in`.lmstrainerapp.mToast.noInternetSnackBar
 import orionedutech.`in`.lmstrainerapp.mToast.showToast
 import orionedutech.`in`.lmstrainerapp.network.NetworkOps
@@ -48,8 +49,8 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
     private lateinit var batchAdapter: BatchSpinAdapter
     lateinit var selectedBatchID: String
     var batchListSpinner = ArrayList<Batch>()
-    lateinit var recyclerView : ShimmerRecyclerView
-    lateinit var adapter : AssessmentAdapter
+    lateinit var recyclerView: ShimmerRecyclerView
+    lateinit var adapter: AssessmentAdapter
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -73,9 +74,9 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
             ft.addToBackStack(null)
             ft.commit()
         }
-        recyclerView =  view.recycler
+        recyclerView = view.recycler
         recyclerView.layoutManager = LinearLayoutManager(context)
-         adapter =
+        adapter =
             AssessmentAdapter(
                 arrayList,
                 this
@@ -122,11 +123,11 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
                     val userID = dao.getUserID()
                     val batchID = selectedBatchID
                     val centerID = dao.getCenterID()
-                    mLog.i(TAG," userID $userID batchID $batchID centerID $centerID")
+                    mLog.i(TAG, " userID $userID batchID $batchID centerID $centerID")
                     val json = JSONObject()
-                    json.put("user_id",userID)
-                    json.put("user_center_id",centerID)
-                    json.put("batch_id",batchID)
+                    json.put("user_id", userID)
+                    json.put("user_center_id", centerID)
+                    json.put("batch_id", batchID)
                     getAssessmentData(json.toString())
                     recyclerView.showShimmerAdapter()
                 }
@@ -148,7 +149,8 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
                 view.name.setCompoundDrawablesWithIntrinsicBounds(null, null, ascendingName, null)
                 ascendingNames.set(false)
                 //sort by descending names
-                val templist =   arrayList.sortedWith(compareByDescending(DCAssessmentList::assesment_name))
+                val templist =
+                    arrayList.sortedWith(compareByDescending(DCAssessmentList::assesment_name))
                 arrayList.clear()
                 arrayList.addAll(templist)
                 adapter.notifyDataSetChanged()
@@ -160,7 +162,7 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
                 view.name.setCompoundDrawablesWithIntrinsicBounds(null, null, descendingName, null)
                 ascendingNames.set(true)
                 //sort by ascending names
-             val templist =   arrayList.sortedWith(compareBy(DCAssessmentList::assesment_name))
+                val templist = arrayList.sortedWith(compareBy(DCAssessmentList::assesment_name))
                 arrayList.clear()
                 arrayList.addAll(templist)
                 adapter.notifyDataSetChanged()
@@ -231,52 +233,59 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
         return view
     }
 
-    fun getAssessmentData(json : String) {
-    NetworkOps.post(Urls.assessmentUrl,json,context,object : response {
-        override fun onrespose(string: String?) {
-        val assessment = Gson().fromJson(string,DCAssessment::class.java)
-            if(assessment ==  null){
-                runfailureCode()
-                return
+    fun getAssessmentData(json: String) {
+        NetworkOps.post(Urls.assessmentUrl, json, context, object : response {
+            var nodata = false
+            override fun onrespose(string: String?) {
+                val assessment = Gson().fromJson(string, DCAssessment::class.java)
+                if (assessment == null) {
+                    runfailureCode()
+                    return
+                }
+                if (assessment.success == "1") {
+                    val assessmentList = assessment.assesments
+                    if (assessmentList.isEmpty()) {
+                        nodata = true
+                    }
+                    arrayList.clear()
+                    arrayList.addAll(assessmentList)
+                    activity!!.runOnUiThread {
+                        if (nodata) {
+                            showToast(context, "There is no data to display")
+                        }
+                        adapter.notifyDataSetChanged()
+                        recyclerView.hideShimmerAdapter()
+                    }
+                } else {
+                    runfailureCode()
+                }
             }
-            if(assessment.success =="1"){
-                val assessmentList = assessment.assesments
-                arrayList.clear()
-                arrayList.addAll(assessmentList)
+
+            override fun onfailure() {
+                runfailureCode()
+            }
+
+            override fun onInternetfailure() {
                 activity!!.runOnUiThread {
-                    adapter.notifyDataSetChanged()
                     recyclerView.hideShimmerAdapter()
                 }
-            }else{
-                runfailureCode()
+                noInternetSnackBar(activity)
             }
+
+        }) { _, _, _ ->
+
         }
-
-        override fun onfailure() {
-          runfailureCode()
-        }
-
-        override fun onInternetfailure() {
-            activity!!.runOnUiThread {
-                recyclerView.hideShimmerAdapter()
-            }
-            noInternetSnackBar(activity)
-        }
-
-    }) { _, _, _ ->
-
-    }
     }
 
     private fun runfailureCode() {
-        showToast(context,"failed")
+        showToast(context, "failed")
         activity!!.runOnUiThread {
             recyclerView.hideShimmerAdapter()
         }
     }
 
     override fun click(itempos: Int) {
-     mLog.i(TAG,"")
+        mLog.i(TAG, " id ${arrayList[itempos].assesment_id}")
     }
 
 }

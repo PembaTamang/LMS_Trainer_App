@@ -261,7 +261,9 @@ class AssignmentFragment : BaseFragment(), RecyclerItemClick {
                 json.put("user_id", userID)
                 recyclerView.showShimmerAdapter()
                 NetworkOps.post(Urls.assignmentUrl, json.toString(), context, object :
+
                     response {
+                    var noData = false
 
                     override fun onInternetfailure() {
                         mToast.noInternetSnackBar(activity!!)
@@ -274,8 +276,10 @@ class AssignmentFragment : BaseFragment(), RecyclerItemClick {
                             return
                         }
                         if (assignments.success == "1") {
+                            val list = assignments.assignments
+                            noData = list.isEmpty()
                             arrayList.clear()
-                            arrayList.addAll(assignments.assignments)
+                            arrayList.addAll(list)
                         } else {
                             mToast.showToast(context, "no assignment found")
                         }
@@ -283,6 +287,9 @@ class AssignmentFragment : BaseFragment(), RecyclerItemClick {
                             adapter.notifyDataSetChanged()
                             recyclerView.hideShimmerAdapter()
                             busy = false
+                            if(noData){
+                                mToast.showToast(context, "no assignment found")
+                            }
                         }
                     }
 

@@ -5,9 +5,11 @@ import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.Camera
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.net.Uri
 import android.os.Build
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -15,8 +17,13 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
+import java.io.File
+import java.net.URI
+import android.provider.MediaStore
+
 
 
 
@@ -84,5 +91,26 @@ fun Context.noInternetSnackBar(view: View) {
         }
         snackbar.show()
     }
+
+fun getFileUri(context : Context,file : File) : Uri {
+    return  FileProvider.getUriForFile(context, "orionedutech.in.lmstrainerapp.fileprovider", file)
+}
+ fun getOrientation(context: Context, photoUri: Uri): Int {
+    var cursor = context.contentResolver.query(
+        photoUri,
+        arrayOf(MediaStore.Images.ImageColumns.ORIENTATION), null, null, null
+    )
+
+    if (cursor!!.count != 1) {
+        cursor.close()
+        return -1
+    }
+
+    cursor.moveToFirst()
+    val orientation = cursor.getInt(0)
+    cursor.close()
+    cursor = null
+    return orientation
+}
 
 

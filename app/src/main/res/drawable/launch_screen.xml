@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!-- The android:opacity=”opaque” line — this is critical in preventing a flash of black as your theme transitions. -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android" android:opacity="opaque">
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:opacity="opaque">
 
-    <item android:drawable="@android:color/white"/>
-    <item>
+    <item android:drawable="@android:color/white" />
+    <item
+        android:width="200dp"
+        android:height="200dp"
+        android:bottom="30dp"
+        android:gravity="center"
+        android:left="30dp"
+        android:right="30dp"
+        android:top="30dp">
         <bitmap
-            android:src="@drawable/logo_large"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:src="@drawable/logo_large"/>
+
     </item>
 
 </layer-list>

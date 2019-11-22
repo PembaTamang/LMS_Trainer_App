@@ -2,6 +2,7 @@ package orionedutech.`in`.lmstrainerapp.activities
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.PathEffect
 import android.graphics.Typeface
@@ -19,6 +20,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
+import androidx.core.view.forEach
 import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -42,18 +44,16 @@ import orionedutech.`in`.lmstrainerapp.fragments.batch.BatchFragment
 import orionedutech.`in`.lmstrainerapp.fragments.course.CourseFragment
 import orionedutech.`in`.lmstrainerapp.fragments.feedback.FeedbackFragment
 import orionedutech.`in`.lmstrainerapp.fragments.profile.ParentFragment
-import orionedutech.`in`.lmstrainerapp.interfaces.CaptureInterface
-import orionedutech.`in`.lmstrainerapp.interfaces.MoveNavBar
-import orionedutech.`in`.lmstrainerapp.interfaces.PDFDownloadComplete
-import orionedutech.`in`.lmstrainerapp.interfaces.flashtoggle
+import orionedutech.`in`.lmstrainerapp.interfaces.*
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
 import orionedutech.`in`.lmstrainerapp.showToast
 
-class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
-    DrawerLayout.DrawerListener, MoveNavBar.move{
-
-
+class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener, MoveNavBar.move, profilebooleantoggle.capture {
+    override fun capturepic(boolean: Boolean) {
+        mLog.i(TAG,"val $boolean")
+        profile = boolean
+    }
     lateinit var ft: FragmentTransaction
     private var isBarDown = true
     private var exit = false
@@ -68,6 +68,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         android.Manifest.permission.CAMERA
     )
     var profile = false
+    lateinit var barPreferences: SharedPreferences
     private fun hasPermissions(context: Context, vararg permissions: String): Boolean =
         permissions.all {
             ActivityCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
@@ -86,12 +87,15 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             R.string.navigation_drawer_open,
             R.string.navigation_drawer_close
         )
+        barPreferences = getSharedPreferences("bar",Context.MODE_PRIVATE)
+       //for camera
+        barPreferences.edit().putBoolean("move",true).apply()
+
         drawerLayout.addDrawerListener(toggle)
 
         drawerLayout.setScrimColor(ContextCompat.getColor(this, android.R.color.transparent))
         toggle.isDrawerIndicatorEnabled = true
         toggle.syncState()
-        drawerLayout.addDrawerListener(this)
         nav_view.setNavigationItemSelectedListener(this)
         val m = nav_view.menu
         for (i in 0 until m.size() - 1) {
@@ -160,11 +164,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                             profile = false
                             mLog.i(TAG,"${supportFragmentManager.backStackEntryCount}")
                             supportFragmentManager.popBackStack()
-
                         } else {
                             changeFragment(DashFragment())
                         }
                         lastFrag = DashFragment::javaClass.name
+                        checkDashBoard()
                         return true
                     }
                     R.id.profile -> {
@@ -184,7 +188,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                             ft.addToBackStack(null)
                             ft.commit()
                             lastpop = false
-
+                          uncheckAll()
 
                             mLog.i(TAG, "profile clicked")
                         }
@@ -205,18 +209,21 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             .translationYBy(1000f)
             .duration = 0
        MoveNavBar.theRealInstance.setListener(this)
+        profilebooleantoggle.theRealInstance.setListener(this)
     }
 
     fun pulldownBar(){
         cameraControls.animate()
             .translationYBy(1000f)
             .duration = 2000
+        profile = true
     }
 
     fun pushupBar(){
         cameraControls.animate()
             .translationYBy(-1000f)
             .duration = 1000
+        profile = false
     }
     fun moveNavBar(){
         if(isBarDown){
@@ -280,6 +287,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     private fun checkDashBoard() {
         nav_view.menu[0].isChecked = true
+    }
+    private fun uncheckAll() {
+        nav_view.menu.forEach {
+            it.isChecked = false
+        }
     }
 
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {
@@ -370,7 +382,12 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             ft.commit()
             lastpop = false
             lastFrag = fragment.javaClass.simpleName
-            // }
+
+            if(!isBarDown){
+                pulldownBar()
+                isBarDown = true
+            }
+
             mLog.i(TAG, "backstack count on change ${supportFragmentManager.backStackEntryCount} ")
         }
     }
@@ -383,6 +400,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 TAG,
                 " backstack count backpressed ${supportFragmentManager.backStackEntryCount}"
             )
+            mLog.i(TAG,"last fragment ${getlastFrag()}")
             if (profile) {
                 bottomNav.selectedItemId = R.id.dashboard
                 profile = false
@@ -426,56 +444,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right)
     }
 
-    override fun onDrawerStateChanged(newState: Int) {
-    }
-
-    override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
-    }
-
-    override fun onDrawerOpened(drawerView: View) {
-    }
-
-    override fun onDrawerClosed(drawerView: View) {
-        /*   if(viewID!=0){
-           when (viewID) {
-
-               R.id.dash_board -> {
-                   changeFragment(DashFragment())
-               }
-
-               R.id.batch_creation -> {
-
-               }
-               R.id.student -> {
-
-               }
-               R.id.course -> {
-
-               }
-               R.id.assignment -> {
-                   changeFragment(AssignmentFragment())
-               }
-               R.id.assessment -> {
-                   changeFragment(AssessmentFragment())
-
-               }
-               R.id.feedback -> {
-
-               }
-               R.id.manual -> {
-
-               }
-               R.id.logout -> {
-
-               }
-           }
-
-
-       }*/
-    }
 
     override fun movebar() {
+        if(barPreferences.getBoolean("move",true)){
         moveNavBar()
+        }
     }
 
 
