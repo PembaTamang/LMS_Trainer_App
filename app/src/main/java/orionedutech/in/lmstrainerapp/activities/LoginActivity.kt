@@ -125,6 +125,8 @@ class LoginActivity : BaseActivity() {
                 if (userModel.success == "1") {
                     mLog.i(TAG, "success")
                     val userData = userModel.userdata
+                    val trainer = userModel.trainer_data
+
                     launch {
                         applicationContext?.let {
                             val dao: UserDao = MDatabase(it)
@@ -142,7 +144,14 @@ class LoginActivity : BaseActivity() {
                                 userData.center_id,
                                 userData.batch_name,
                                 userData.center_name,
-                                userData.user_password
+                                userData.user_password,
+                                trainer.user_pan,
+                                trainer.user_aadhar,
+                                trainer.user_doj,
+                                trainer.user_dob,
+                                trainer.user_last_qualification,
+                                trainer.user_prof_qualification,
+                                trainer.user_work_experience
                             )
                             if (dao.userDataExists()) {
                                 mLog.i(TAG, "user data exists")
@@ -158,6 +167,7 @@ class LoginActivity : BaseActivity() {
                                 mLog.i(TAG, "new user")
                                 dao.insertUser(user)
                                 goToMainActivity(user.name!!)
+
                             }
 
                         }

@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.android.synthetic.main.fragment_profile_information.*
 import kotlinx.android.synthetic.main.fragment_profile_information.view.*
 import kotlinx.coroutines.launch
 import orionedutech.`in`.lmstrainerapp.R
@@ -26,6 +27,7 @@ class ProfileInformationFragment : BaseFragment() {
     lateinit var phoneET : TextInputEditText
     lateinit var emailET : TextInputEditText
     lateinit var centerET : TextInputEditText
+    lateinit var dobET : TextInputEditText
     lateinit var submit : MaterialButton
     lateinit var editButton : TextView
     var arraylist : ArrayList<TextInputEditText> = ArrayList()
@@ -42,7 +44,8 @@ class ProfileInformationFragment : BaseFragment() {
         emailET = view.email
         centerET = view.centerName
         submit = view.updateProfile
-        arraylist.addAll(arrayListOf(nameET,phoneET,emailET,centerET))
+        dobET = view.dob
+        arraylist.addAll(arrayListOf(nameET,phoneET,emailET,centerET,dobET))
         disableETs()
 
         editButton = view.edit
@@ -62,6 +65,7 @@ class ProfileInformationFragment : BaseFragment() {
 
          submit.setOnClickListener {
              //submit code here
+
          }
             launch {
                 context?.let {
@@ -70,11 +74,12 @@ class ProfileInformationFragment : BaseFragment() {
                     val phone = dao.getPhone()
                     val email = dao.getEmail()
                     val center  = dao.getCenterName()
-
+                    val dob = dao.getDob()
                     nameET.setText(name)
                     phoneET.setText(phone)
                     emailET.setText(email)
                     centerET.setText(center)
+                    dobET.setText(dob)
 
                 }
             }

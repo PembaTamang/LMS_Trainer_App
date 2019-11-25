@@ -4,25 +4,35 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import orionedutech.`in`.lmstrainerapp.database.entities.User
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.room.migration.Migration
-import orionedutech.`in`.lmstrainerapp.database.dao.BatchDao
-import orionedutech.`in`.lmstrainerapp.database.dao.FileDao
-import orionedutech.`in`.lmstrainerapp.database.dao.UserDao
-import orionedutech.`in`.lmstrainerapp.database.entities.AppFiles
-import orionedutech.`in`.lmstrainerapp.database.entities.Batch
+import orionedutech.`in`.lmstrainerapp.database.dao.*
+import orionedutech.`in`.lmstrainerapp.database.entities.*
 
 
-@Database(entities = [User::class,Batch::class,AppFiles::class], version = 1,exportSchema = false)
+@Database(
+    entities = [User::class,
+        Batch::class,
+        AppFiles::class,
+        AssessmentMainData::class,
+        AssesmentQuestion::class,
+        AssesmentAnswers::class],
+    version = 1,
+    exportSchema = false
+)
 abstract class MDatabase : RoomDatabase() {
 
     abstract fun getUserDao(): UserDao
 
     abstract fun getBatchDao(): BatchDao
 
-    abstract fun getFilesDao() : FileDao
+    abstract fun getFilesDao(): FileDao
 
+    abstract fun getAssessmentMainDao(): AssessmentMainDao
+
+    abstract fun getAssessmentQuestionsDao(): AssessmentQuestionsDao
+
+    abstract fun getAssessmentAnswersDao(): AssessmentAnswersDao
 
     companion object {
         @Volatile
@@ -30,11 +40,11 @@ abstract class MDatabase : RoomDatabase() {
         private val Lock = Any()
         operator fun invoke(c: Context) = instance
             ?: synchronized(Lock) {
-            instance
-                ?: buildDB(c).also {
-                instance = it
+                instance
+                    ?: buildDB(c).also {
+                        instance = it
+                    }
             }
-        }
 
         private fun buildDB(c: Context): MDatabase {
             val dbName = "lms_database.db"

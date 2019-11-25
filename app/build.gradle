@@ -69,4 +69,5 @@ dependencies {
     implementation 'androidx.exifinterface:exifinterface:1.1.0'
 
     implementation 'com.github.yalantis:ucrop:2.2.4'
+    implementation 'ir.samanjafari.easycountdowntimer:easycountdowntimer:2.1'
 }

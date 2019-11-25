@@ -17,7 +17,15 @@ val batchID:String?,
 val centerID:String?,
 val batchName:String?,
 val centerName:String?,
-val password:String?
+val password:String?,
+val pan:String?,
+val aadhar:String?,
+val user_doj:String?,
+val user_dob:String?,
+val last_qualification:String?,
+val prof_qualification:String?,
+val workExperice:String?
+
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0

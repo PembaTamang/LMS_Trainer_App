@@ -1,6 +1,6 @@
 package orionedutech.`in`.lmstrainerapp.network.dataModels
 
-data class Userdata(
+data class DCUser(
     val batch_id: String,
     val batch_name: String,
     val center_id: String,

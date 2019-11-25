@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:layout_margin="16dp"
     android:orientation="vertical"
-
     tools:context=".fragments.profile.ProfileInformationFragment">
     <TextView
         android:id="@+id/edit"
@@ -58,7 +57,34 @@
                 android:layout_marginEnd="8dp"
                 android:src="@drawable/rounded_bottom"
                 android:tint="@color/blue" />
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/MyEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:hint="DOB"
+                app:boxCornerRadiusTopEnd="8dp"
+                app:boxCornerRadiusTopStart="8dp"
+                app:hintAnimationEnabled="false">
 
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/dob"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:textColor="@color/profile_edit_text_color" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ImageView
+                style="@style/MyEditText"
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/rounded_bottom"
+                android:tint="@color/blue" />
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/MyEditText"
                 android:layout_width="match_parent"

@@ -12,10 +12,7 @@
             android:id="@+id/batch_creation"
             android:icon="@drawable/ic_batch_creation_icon"
             android:title="Batch Creation" />
-        <item
-            android:id="@+id/student"
-            android:icon="@drawable/ic_student"
-            android:title="Student" />
+
         <item
             android:id="@+id/course"
             android:icon="@drawable/ic_course_icon"
@@ -29,6 +26,10 @@
                 android:id="@+id/assessment"
             android:icon="@drawable/ic_assessment"
             android:title="Assessment" />
+        <item
+            android:id="@+id/student"
+            android:icon="@drawable/ic_score"
+            android:title="Scores" />
         <item
             android:id="@+id/feedback"
             android:icon="@drawable/ic_traning_feedback_icon"

@@ -11,5 +11,5 @@ object Urls {
     const val feedbackUrl = "https://orionedutech.co.in/cglms_app_demo/appfeedbackqns"
     const val feebackPostUrl = "https://orionedutech.co.in/cglms_app_demo/appfeedbacks"
     const val assessmentUrl = "https://orionedutech.co.in/cglms_app_demo/apptrainerassesments"
-
+    const val assessmentQuestionsUrl = "https://orionedutech.co.in/cglms_app_demo/appassesmentsdata"
 }

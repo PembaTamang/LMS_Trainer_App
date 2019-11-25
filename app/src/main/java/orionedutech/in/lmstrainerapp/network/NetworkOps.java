@@ -5,6 +5,7 @@ import android.view.View;
 import android.webkit.MimeTypeMap;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -112,7 +113,7 @@ public class NetworkOps {
 
 
     }
-   public static void post(String url, String json, final Context context, final response onRes,final progress prog){
+   public static void post(String url, String json, final Context context, final response onRes,@Nullable final progress prog){
        if(isConnected(context)) {
            OkHttpClient okHttpClient;
            OkHttpClient.Builder build = new OkHttpClient.Builder();

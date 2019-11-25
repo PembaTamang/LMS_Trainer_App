@@ -2,6 +2,7 @@ package orionedutech.`in`.lmstrainerapp.fragments.assessment
 
 
 import android.animation.ObjectAnimator
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,18 +13,22 @@ import android.widget.Spinner
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_trainer_assessment.view.*
 import kotlinx.android.synthetic.main.fragment_trainer_assessment.view.batch_spinner
+import kotlinx.android.synthetic.main.fragment_trainer_assessment_upload.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import orionedutech.`in`.lmstrainerapp.R
+import orionedutech.`in`.lmstrainerapp.activities.AssessmentActivity
 import orionedutech.`in`.lmstrainerapp.adapters.recyclerviews.AssessmentAdapter
 import orionedutech.`in`.lmstrainerapp.adapters.spinners.BatchSpinAdapter
 import orionedutech.`in`.lmstrainerapp.database.MDatabase
+import orionedutech.`in`.lmstrainerapp.database.entities.AssessmentMainData
 import orionedutech.`in`.lmstrainerapp.database.entities.Batch
 import orionedutech.`in`.lmstrainerapp.fragments.BaseFragment
 import orionedutech.`in`.lmstrainerapp.interfaces.RecyclerItemClick
@@ -51,6 +56,7 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
     var batchListSpinner = ArrayList<Batch>()
     lateinit var recyclerView: ShimmerRecyclerView
     lateinit var adapter: AssessmentAdapter
+    var userID = ""
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -120,7 +126,7 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
             launch {
                 context?.let {
                     val dao = MDatabase(it).getUserDao()
-                    val userID = dao.getUserID()
+                    userID = dao.getUserID()
                     val batchID = selectedBatchID
                     val centerID = dao.getCenterID()
                     mLog.i(TAG, " userID $userID batchID $batchID centerID $centerID")
@@ -285,7 +291,22 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
     }
 
     override fun click(itempos: Int) {
+        // get assessment here
+
         mLog.i(TAG, " id ${arrayList[itempos].assesment_id}")
+
+        MaterialAlertDialogBuilder(context).setTitle("Alert")
+            .setMessage("Do you want to give the assessment for ${arrayList[itempos].assesment_name} ? ")
+            .setPositiveButton("proceed"){dialogInterface, i ->
+                dialogInterface.dismiss()
+                val intent = Intent(context,AssessmentActivity::class.java)
+                intent.putExtra("assessmentID",arrayList[itempos].assesment_id)
+                intent.putExtra("uid",userID)
+                startActivity(intent)
+            }
+            .setNegativeButton("cancel"){dialogInterface, i ->
+                dialogInterface.dismiss()
+            }.create().show()
     }
 
 }

@@ -49,6 +49,31 @@ interface UserDao {
     @Query("select password from user_table")
     suspend fun getadminPassword(): String
 
+
+    @Query("select pan from user_table")
+    suspend fun getPan(): String
+
+
+    @Query("select aadhar from user_table")
+    suspend fun getAadhar(): String
+
+
+    @Query("select user_dob from user_table")
+    suspend fun getDob(): String
+
+    @Query("select user_doj from user_table")
+    suspend fun getDoj(): String
+
+    @Query("select prof_qualification from user_table")
+    suspend fun getPQualification(): String
+
+
+    @Query("select last_qualification from user_table")
+    suspend fun getLQualification(): String
+
+    @Query("select workExperice from user_table")
+    suspend fun getWorkExperience(): String
+
     @Delete
     suspend fun deleteUser(user: User)
 
