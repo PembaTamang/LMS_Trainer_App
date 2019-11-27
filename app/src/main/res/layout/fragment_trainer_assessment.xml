@@ -16,6 +16,7 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:text="Assessment"
+        android:textSize="22sp"
         android:textColor="@color/white"
         android:textAppearance="@style/Baloo"
         app:layout_constraintEnd_toEndOf="parent"

@@ -16,14 +16,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:textStyle="bold"
-        android:textAppearance="@style/OpenSansRegular"/>
+        android:textAppearance="@style/Baloo"/>
 
     <TextView
         android:id="@+id/textView13"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:text="1/10"
         android:textAppearance="@style/OpenSansRegular"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,12 +33,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/round_rect_grey"
+        android:padding="8dp"
+        app:colonColor="@color/white"
+        app:digitBackground="@color/greyText"
         app:layout_constraintEnd_toEndOf="@+id/name"
         app:layout_constraintStart_toStartOf="@+id/name"
         app:layout_constraintTop_toBottomOf="@+id/textView13"
         app:setAnimation="true"
         app:showOnlySecond="false"
-        app:textColor="@color/default_text"
+        app:textColor="@color/white"
         app:textSize="25sp" />
 
     <FrameLayout
@@ -47,23 +51,37 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toTopOf="@+id/next"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/easyCountDownTextview" />
 
+    <TextView
+        android:id="@+id/topstatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Please wait"
+        android:textAppearance="@style/OpenSansRegular"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/container"
+        app:layout_constraintEnd_toEndOf="@+id/lottie"
+        app:layout_constraintStart_toStartOf="@+id/lottie"
+        app:layout_constraintTop_toBottomOf="@+id/easyCountDownTextview" />
+
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        app:layout_constraintBottom_toBottomOf="@+id/container"
         app:layout_constraintEnd_toEndOf="@+id/container"
         app:layout_constraintStart_toStartOf="@+id/container"
-        app:lottie_fileName="loading.json"
+        app:layout_constraintTop_toBottomOf="@+id/topstatus"
         app:lottie_autoPlay="false"
-        app:lottie_loop="true"
-        app:layout_constraintTop_toBottomOf="@+id/easyCountDownTextview" />
+        app:lottie_colorFilter="@color/greyText"
+        app:lottie_fileName="loading.json"
+        app:lottie_loop="true" />
 
     <TextView
         android:id="@+id/data"

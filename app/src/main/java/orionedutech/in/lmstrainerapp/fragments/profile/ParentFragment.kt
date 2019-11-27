@@ -248,7 +248,7 @@ class ParentFragment : BaseFragment(), UCropFragmentCallback, flashtoggle.captur
                 mLog.i(TAG,"s $sourceuri ")
                 mLog.i(TAG,"d $destinationuri")
                UCrop.of(sourceuri,destinationuri)
-                    .withAspectRatio(16f, 9f)
+                    .withAspectRatio(4f, 4f)
                     .start(context!!, this@ParentFragment,UCrop.REQUEST_CROP)
 
             } catch (e: IOException) {

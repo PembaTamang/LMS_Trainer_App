@@ -55,7 +55,7 @@
         app:layout_constraintTop_toBottomOf="@+id/view10">
 
         <Spinner
-            android:id="@+id/sector_name"
+            android:id="@+id/batch_spinner"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/spinner_bg"
@@ -77,7 +77,24 @@
         app:layout_constraintTop_toTopOf="@+id/materialCardView1">
 
         <Spinner
-            android:id="@+id/center"
+            android:id="@+id/course_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/spinner_bg" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/materialCardView5"
+        android:layout_width="0dp"
+        android:layout_height="?actionBarSize"
+        android:layout_marginTop="8dp"
+        app:cardElevation="4dp"
+        app:layout_constraintEnd_toEndOf="@+id/materialCardView1"
+        app:layout_constraintStart_toStartOf="@+id/materialCardView1"
+        app:layout_constraintTop_toBottomOf="@+id/materialCardView1">
+
+        <Spinner
+            android:id="@+id/modeule_spinner"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/spinner_bg" />
@@ -87,14 +104,12 @@
         android:id="@+id/materialCardView3"
         android:layout_width="0dp"
         android:layout_height="?actionBarSize"
-        android:layout_marginTop="16dp"
         app:cardElevation="4dp"
         app:layout_constraintEnd_toEndOf="@+id/materialCardView2"
-        app:layout_constraintStart_toStartOf="@+id/materialCardView1"
-        app:layout_constraintTop_toBottomOf="@+id/materialCardView1">
-
+        app:layout_constraintStart_toStartOf="@+id/materialCardView2"
+        app:layout_constraintTop_toTopOf="@+id/materialCardView5">
         <Spinner
-            android:id="@+id/batch_name"
+            android:id="@+id/chapter_spinner"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/spinner_bg" />
@@ -109,64 +124,48 @@
         android:layout_marginEnd="1dp"
         android:background="@color/black"
         android:gravity="center"
-        android:text="sl"
+        android:text="Sl"
         android:textAppearance="@style/OpenSansRegular"
         android:textColor="@color/white"
         app:layout_constraintEnd_toStartOf="@+id/textView11"
-        app:layout_constraintHorizontal_weight="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
     <TextView
         android:id="@+id/textView11"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:text="name"
+        android:layout_height="25dp"
         android:layout_marginEnd="1dp"
+        android:background="@color/black"
         android:gravity="start|center"
         android:paddingStart="4dp"
-        android:textColor="@color/white"
-        android:background="@color/black"
+        android:text=" Name"
         android:textAppearance="@style/OpenSansRegular"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/textView12"
-        app:layout_constraintEnd_toStartOf="@+id/absent"
-        app:layout_constraintHorizontal_weight="1.5"
+        app:layout_constraintEnd_toStartOf="@+id/present"
+        app:layout_constraintHorizontal_weight="2"
         app:layout_constraintStart_toEndOf="@+id/textView12"
         app:layout_constraintTop_toTopOf="@+id/textView12" />
 
     <TextView
         android:id="@+id/present"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="25dp"
         android:layout_marginEnd="16dp"
-        android:gravity="center"
-        android:text="All Present"
+        android:background="@color/black"
         android:drawableEnd="@drawable/ic_check_mark_green"
+        android:gravity="center|start"
+        android:paddingStart="4dp"
         android:paddingEnd="4dp"
+        android:text="All Present"
         android:textColor="@color/white"
-        android:background="@color/black"
-        app:layout_constraintBottom_toBottomOf="@+id/absent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toEndOf="@+id/absent"
-        app:layout_constraintTop_toTopOf="@+id/absent" />
-
-    <TextView
-        android:id="@+id/absent"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:gravity="center"
-        android:text="All Absent"
-        android:drawableEnd="@drawable/ic_check_mark_red"
-        android:paddingEnd="4dp"
-        android:textColor="@color/white"
-        android:layout_marginEnd="1dp"
-        android:background="@color/black"
         app:layout_constraintBottom_toBottomOf="@+id/textView11"
-        app:layout_constraintEnd_toStartOf="@+id/present"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@+id/textView11"
         app:layout_constraintTop_toTopOf="@+id/textView11" />
+
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/create"
@@ -181,7 +180,7 @@
         android:textSize="14sp"
         app:cornerRadius="16dp"
         app:layout_constraintEnd_toEndOf="@+id/materialCardView3"
-        app:layout_constraintStart_toStartOf="@+id/materialCardView3"
+        app:layout_constraintStart_toStartOf="@+id/materialCardView5"
         app:layout_constraintTop_toBottomOf="@+id/materialCardView3" />
 
     <TextView
@@ -203,9 +202,9 @@
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/markAttendance"
         app:layout_constraintEnd_toEndOf="@+id/materialCardView3"
-        app:layout_constraintStart_toStartOf="@+id/materialCardView3"
+        app:layout_constraintStart_toStartOf="@+id/textView12"
         app:layout_constraintTop_toBottomOf="@+id/textView11"
-        tools:listitem="@layout/attendance_item" />
+        tools:listitem="@layout/recycler_student_list" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/markAttendance"
@@ -222,4 +221,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

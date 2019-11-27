@@ -53,6 +53,7 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
     private lateinit var batchSpinner: Spinner
     private lateinit var batchAdapter: BatchSpinAdapter
     lateinit var selectedBatchID: String
+    lateinit var centerID : String
     var batchListSpinner = ArrayList<Batch>()
     lateinit var recyclerView: ShimmerRecyclerView
     lateinit var adapter: AssessmentAdapter
@@ -128,7 +129,7 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
                     val dao = MDatabase(it).getUserDao()
                     userID = dao.getUserID()
                     val batchID = selectedBatchID
-                    val centerID = dao.getCenterID()
+                    centerID = dao.getCenterID()
                     mLog.i(TAG, " userID $userID batchID $batchID centerID $centerID")
                     val json = JSONObject()
                     json.put("user_id", userID)
@@ -302,6 +303,8 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
                 val intent = Intent(context,AssessmentActivity::class.java)
                 intent.putExtra("assessmentID",arrayList[itempos].assesment_id)
                 intent.putExtra("uid",userID)
+                intent.putExtra("batch_id",selectedBatchID)
+                intent.putExtra("center_id",centerID)
                 startActivity(intent)
             }
             .setNegativeButton("cancel"){dialogInterface, i ->

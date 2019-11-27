@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.scoreCard.ScoreFragment">
+
+    <TextView
+        android:id="@+id/textView21"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        android:background="@color/blue"
+        android:gravity="center|start"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:text="Score Card"
+        android:textAppearance="@style/Baloo"
+        android:textColor="@color/white"
+        android:textSize="22sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/sl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/black"
+        android:padding="4dp"
+        android:text="Sl"
+        android:layout_marginEnd="1dp"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:textAppearance="@style/OpenSansRegular"
+        app:layout_constraintEnd_toStartOf="@+id/name"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView21" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/black"
+        android:padding="4dp"
+        android:text="Assessment Name"
+        android:paddingStart="4dp"
+        android:textAppearance="@style/OpenSansRegular"
+        android:textColor="@color/white"
+        android:layout_marginEnd="1dp"
+        android:textSize="12sp"
+        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintEnd_toStartOf="@+id/percentage"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/sl"
+        app:layout_constraintTop_toTopOf="@+id/sl" />
+
+    <TextView
+        android:id="@+id/percentage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:background="@color/black"
+        android:padding="4dp"
+        android:text="Percentage"
+        android:textAppearance="@style/OpenSansRegular"
+        android:paddingStart="4dp"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/name"
+        app:layout_constraintTop_toTopOf="@+id/name" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/percentage"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/sl"
+        app:layout_constraintTop_toBottomOf="@+id/name" >
+        <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/recycler_score_item"
+            app:shimmer_demo_layout="@layout/shimmer_assignment"
+            />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <TextView
+        android:id="@+id/noData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No data to show"
+        android:drawablePadding="4dp"
+        android:drawableEnd="@drawable/ic_folder"
+        app:layout_constraintBottom_toBottomOf="@+id/swipe"
+        app:layout_constraintEnd_toEndOf="@+id/swipe"
+        app:layout_constraintStart_toStartOf="@+id/swipe"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@+id/swipe" />
+</androidx.constraintlayout.widget.ConstraintLayout>

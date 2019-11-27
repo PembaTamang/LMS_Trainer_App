@@ -10,8 +10,16 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import kotlinx.android.synthetic.main.activity_assessment.view.*
 import kotlinx.android.synthetic.main.fragment_mcq.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import orionedutech.`in`.lmstrainerapp.R
+import orionedutech.`in`.lmstrainerapp.database.MDatabase
 import orionedutech.`in`.lmstrainerapp.interfaces.ActivityAns
+import orionedutech.`in`.lmstrainerapp.mLog
+import orionedutech.`in`.lmstrainerapp.mLog.TAG
 import java.util.*
 
 /**
@@ -42,31 +50,37 @@ class MCQFragment : Fragment(), View.OnClickListener {
         view1  = inflater.inflate(R.layout.fragment_mcq, container, false)
 
         val boxContainer = view1.container11
-        val count = 5
         val context = context!!
 
         val qid = arguments!!.getString("qid")
+        val qString = arguments!!.getString("qString")
 
+        view1.question.text = qString
 
-
-
-        for (i in 0 until count) {
-            val radioButton = RadioButton(context)
-            radioButton.text = String.format(Locale.getDefault(), "Option %d", i)
-            radioButton.id = i
-            radioButton.tag = "Answer id : $i"
-            radioButton.setOnClickListener(this)
-            radioButton.setTextAppearance(context, R.style.OpenSansRegular)
-            radioButton.setButtonDrawable(R.drawable.custom_button)
-            boxContainer.addView(radioButton)
-            radioButtons.add(radioButton)
-        }
-
+         mLog.i(TAG,"qid : $qid")
+         CoroutineScope(IO).launch {
+             context?.let {
+                 val ansDao = MDatabase(it).getAssessmentAnswersDao()
+                 val answers = ansDao.getAllAssesmentAnswers(qid!!)
+                 answers.forEach {ans->
+                     val radioButton = RadioButton(context)
+                     radioButton.text = ans.answer_value
+                     mLog.i(TAG,"loaded ans id ${ans.question_ans_id}")
+                     radioButton.tag = ans.question_ans_id
+                     radioButton.setOnClickListener(this@MCQFragment)
+                     radioButton.setButtonDrawable(R.drawable.custom_button)
+                     withContext(Main){
+                         boxContainer.addView(radioButton)
+                     }
+                     radioButtons.add(radioButton)
+                 }
+             }
+         }
 
         return view1
     }
     override fun onClick(p0: View?) {
-        val m = view as RadioButton
+        val m = p0 as RadioButton
         if (checks.contains(m)) {
             checks.remove(m)
         } else {
@@ -90,7 +104,7 @@ class MCQFragment : Fragment(), View.OnClickListener {
             } else {
                 m.isChecked = checks.contains(m)
             }
-            activityAns!!.answer(if (choices < choiceLimit) "" else userchoices[choiceLimit - 1] + "," + userchoices[choiceLimit - 2])
+            activityAns!!.answer(if (choices < choiceLimit) "" else userchoices[choiceLimit - 1]!! )
         }
     }
 }

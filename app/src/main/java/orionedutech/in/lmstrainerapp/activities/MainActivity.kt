@@ -44,6 +44,7 @@ import orionedutech.`in`.lmstrainerapp.fragments.batch.BatchFragment
 import orionedutech.`in`.lmstrainerapp.fragments.course.CourseFragment
 import orionedutech.`in`.lmstrainerapp.fragments.feedback.FeedbackFragment
 import orionedutech.`in`.lmstrainerapp.fragments.profile.ParentFragment
+import orionedutech.`in`.lmstrainerapp.fragments.scoreCard.ScoreFragment
 import orionedutech.`in`.lmstrainerapp.interfaces.*
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
@@ -309,7 +310,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
             }
             R.id.student -> {
-
+                changeFragment(ScoreFragment())
 
             }
             R.id.course -> {
@@ -420,7 +421,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                     }
                 } else {
                     if (!lastpop) {
-                        changeFragment(DashFragment())
+                        bottomNav.selectedItemId = R.id.dashboard
                         checkDashBoard()
                         lastpop = true
                     }

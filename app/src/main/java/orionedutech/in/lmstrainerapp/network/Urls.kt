@@ -12,4 +12,7 @@ object Urls {
     const val feebackPostUrl = "https://orionedutech.co.in/cglms_app_demo/appfeedbacks"
     const val assessmentUrl = "https://orionedutech.co.in/cglms_app_demo/apptrainerassesments"
     const val assessmentQuestionsUrl = "https://orionedutech.co.in/cglms_app_demo/appassesmentsdata"
+    const val assessmentAnsSubmit = "https://orionedutech.co.in/cglms_app_demo/appassesmentsdatasend"
+    const val scoreList = "https://orionedutech.co.in/cglms_app_demo/appscorecards"
+    const val scoreDetailList = "https://orionedutech.co.in/cglms_app_demo/appscorecard"
 }
