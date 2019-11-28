@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_additional_information.view.*
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import orionedutech.`in`.lmstrainerapp.R
@@ -34,11 +35,14 @@ class AdditionalInformationFragment : BaseFragment() {
                 val doj = dao.getDoj()
                 val qualification = dao.getLQualification()
                 val experience = dao.getWorkExperience()
-                view.pan.setText(pan)
-                view.aadhar.setText(aadhar)
-                view.doj.setText(doj)
-                view.qualification.setText(qualification)
-                view.experience.setText(String.format(" %s year(s)",experience))
+             withContext(Main){
+                 view.pan.setText(pan)
+                 view.aadhar.setText(aadhar)
+                 view.doj.setText(doj)
+                 view.qualification.setText(qualification)
+                 view.experience.setText(String.format(" %s year(s)",experience))
+
+             }
 
             }
         }

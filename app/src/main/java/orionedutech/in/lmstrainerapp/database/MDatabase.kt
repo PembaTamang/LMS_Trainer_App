@@ -14,8 +14,6 @@ import orionedutech.`in`.lmstrainerapp.database.entities.*
     entities = [User::class,
         Batch::class,
         AppFiles::class,
-        AssessmentMainData::class,
-        AssesmentQuestion::class,
         AssesmentAnswers::class],
     version = 1,
     exportSchema = false
@@ -27,10 +25,6 @@ abstract class MDatabase : RoomDatabase() {
     abstract fun getBatchDao(): BatchDao
 
     abstract fun getFilesDao(): FileDao
-
-    abstract fun getAssessmentMainDao(): AssessmentMainDao
-
-    abstract fun getAssessmentQuestionsDao(): AssessmentQuestionsDao
 
     abstract fun getAssessmentAnswersDao(): AssessmentAnswersDao
 

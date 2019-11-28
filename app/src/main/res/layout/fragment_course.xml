@@ -16,6 +16,7 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:text="Courses"
+        android:textSize="22sp"
         android:textAppearance="@style/Baloo"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,17 +30,7 @@
         android:background="@color/blue"
         app:layout_constraintTop_toBottomOf="@+id/textView21" />
 
-    <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/back"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="16dp"
-        android:background="@android:color/transparent"
-        android:scaleType="fitCenter"
-        android:src="@drawable/back"
-        app:layout_constraintBottom_toTopOf="@+id/view10"
-        app:layout_constraintEnd_toEndOf="@+id/textView21"
-        app:layout_constraintTop_toTopOf="@+id/textView21" />
+
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/materialCardView1"

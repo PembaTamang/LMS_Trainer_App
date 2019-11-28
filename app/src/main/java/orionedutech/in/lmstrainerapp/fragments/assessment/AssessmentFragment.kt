@@ -28,13 +28,11 @@ import orionedutech.`in`.lmstrainerapp.activities.AssessmentActivity
 import orionedutech.`in`.lmstrainerapp.adapters.recyclerviews.AssessmentAdapter
 import orionedutech.`in`.lmstrainerapp.adapters.spinners.BatchSpinAdapter
 import orionedutech.`in`.lmstrainerapp.database.MDatabase
-import orionedutech.`in`.lmstrainerapp.database.entities.AssessmentMainData
 import orionedutech.`in`.lmstrainerapp.database.entities.Batch
 import orionedutech.`in`.lmstrainerapp.fragments.BaseFragment
 import orionedutech.`in`.lmstrainerapp.interfaces.RecyclerItemClick
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
-import orionedutech.`in`.lmstrainerapp.mToast
 import orionedutech.`in`.lmstrainerapp.mToast.noInternetSnackBar
 import orionedutech.`in`.lmstrainerapp.mToast.showToast
 import orionedutech.`in`.lmstrainerapp.network.NetworkOps
@@ -48,6 +46,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 /**
  * A simple [Fragment] subclass.
  */
+
 class AssessmentFragment : BaseFragment(), RecyclerItemClick {
     private val arrayList = ArrayList<DCAssessmentList>()
     private lateinit var batchSpinner: Spinner

@@ -32,7 +32,6 @@
             android:layout_marginTop="8dp"
             app:civ_border_color="#FFFFFF"
             app:civ_border_width="4dp"
-            app:civ_shadow="false"
             android:src="@drawable/user"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -71,6 +70,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
+        android:id="@+id/imageView9"
         android:layout_width="0dp"
         android:layout_height="200dp"
         android:scaleType="fitXY"
@@ -129,13 +129,29 @@
             android:textAlignment="center" />
     </com.google.android.material.tabs.TabLayout>
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/anim"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:elevation="1dp"
+        app:layout_constraintBottom_toBottomOf="@+id/viewPager"
+        app:layout_constraintEnd_toEndOf="@+id/viewPager"
+        app:layout_constraintStart_toStartOf="@+id/viewPager"
+        app:layout_constraintTop_toBottomOf="@+id/tabLayout"
+        app:lottie_autoPlay="false"
+        app:lottie_colorFilter="@color/greyText"
+        app:lottie_fileName="loading.json"
+        app:lottie_loop="true" />
+
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPager"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="4dp"
         android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tabLayout"
         app:layout_constraintVertical_weight="3">

@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:paddingBottom="8dp"
     tools:context=".fragments.profile.AdditionalInformationFragment">
     <TextView
         android:id="@+id/edit"
@@ -14,6 +15,7 @@
         android:layout_margin="16dp"
         android:drawablePadding="4dp"
         android:text="Info not editable"
+        android:visibility="gone"
         android:textAppearance="@style/OpenSansRegular"
         android:textStyle="bold" />
 <androidx.core.widget.NestedScrollView

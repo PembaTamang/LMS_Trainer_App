@@ -3,7 +3,7 @@ package orionedutech.`in`.lmstrainerapp.interfaces
 class flashtoggle private constructor() {
     private var capturelistener : capture? = null
     interface capture {
-        fun flash()
+        fun flash(path: String)
     }
     fun setListener(listener: capture) {
         capturelistener=listener
@@ -20,13 +20,13 @@ class flashtoggle private constructor() {
     }
 
 
-    fun flashtoggle() {
+    fun flashtoggle(path :String) {
         if (capturelistener != null) {
-            notifyStateChange()
+            notifyStateChange(path)
         }
     }
 
-    private fun notifyStateChange() {
-        capturelistener!!.flash()
+    private fun notifyStateChange(path: String) {
+        capturelistener!!.flash(path)
     }
 }

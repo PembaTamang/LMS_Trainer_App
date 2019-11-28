@@ -14,6 +14,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.DisplayMetrics
 import android.util.Log
+import android.util.Rational
 import android.util.Size
 import android.view.*
 import android.view.View.*
@@ -33,6 +34,7 @@ import orionedutech.`in`.lmstrainerapp.getOrientation
 import orionedutech.`in`.lmstrainerapp.interfaces.*
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
+import orionedutech.`in`.lmstrainerapp.mToast
 import java.io.*
 import java.util.*
 import java.util.concurrent.Executors
@@ -47,7 +49,7 @@ class CameraFragment : Fragment(), CaptureInterface.capture,UploadImage {
 
     private var lensFacing = CameraX.LensFacing.FRONT
     lateinit var texture: TextureView
-    val aspectRatio = AspectRatio.RATIO_4_3
+    val aspectRatio = AspectRatio.RATIO_16_9
     lateinit var previewConfig: PreviewConfig
     lateinit var preview: Preview
     lateinit var imageCapture: ImageCapture
@@ -59,10 +61,8 @@ class CameraFragment : Fragment(), CaptureInterface.capture,UploadImage {
     lateinit var img1: File
     var busy = false
     lateinit var animation : LottieAnimationView
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_camera, container, false)
         animation = view.lottie
@@ -75,24 +75,43 @@ class CameraFragment : Fragment(), CaptureInterface.capture,UploadImage {
             updateTransform()
         }
         view.close.setOnClickListener {
-            activity!!.onBackPressed()
+            MoveNavBar.theRealInstance.refresh()
+            activity!!.supportFragmentManager.popBackStack()
         }
         view.help.setOnClickListener {
-            val barpreference: SharedPreferences =
-                activity!!.getSharedPreferences("bar", Context.MODE_PRIVATE)
+            val barpreference: SharedPreferences = activity!!.getSharedPreferences("bar", Context.MODE_PRIVATE)
             MaterialAlertDialogBuilder(context)
                 .setTitle("Alert")
-                .setMessage("You can switch to the normal camera if this is not working")
+                .setMessage("-You can switch to the normal camera if the in-app cam is not working. \n \n-You can also long press on the camera icon in the previous screen to choose between the two camera modes.")
                 .setPositiveButton("Switch to phone cam") { dialogInterface, i ->
+                    dialogInterface.dismiss()
                     MoveNavBar.theRealInstance.refresh()
                     barpreference.edit().putBoolean("move", false).apply()
-                    dialogInterface.dismiss()
-                    activity!!.onBackPressed()
+                    activity!!.supportFragmentManager.popBackStack()
+                    mToast.showToast(context,"Phone cam selected")
+
+
                 }.setNegativeButton("cancel") { dialogInterface, i ->
                     dialogInterface.dismiss()
 
                 }.create().show()
         }
+
+
+        view.isFocusableInTouchMode = true
+        view.requestFocus()
+        view.setOnKeyListener(object  : OnKeyListener{
+            override fun onKey(p0: View?, keyCode: Int, event: KeyEvent?): Boolean {
+                if( keyCode == KeyEvent.KEYCODE_BACK && event!!.action == KeyEvent.ACTION_UP) {
+                    MoveNavBar.theRealInstance.refresh()
+                    activity!!.supportFragmentManager.popBackStack()
+
+                    return true
+                }
+                return false
+            }
+
+        })
 
         return view
     }
@@ -113,10 +132,15 @@ class CameraFragment : Fragment(), CaptureInterface.capture,UploadImage {
         CameraX.unbindAll()
          val displayMetrics = DisplayMetrics()
         activity!!.windowManager.defaultDisplay.getMetrics(displayMetrics)
-        val screenSize = Size(720,1280)
+        val screenSize = Size(displayMetrics.widthPixels,displayMetrics.heightPixels)
+        mLog.i(TAG,"width ${displayMetrics.widthPixels} height ${displayMetrics.heightPixels} dpi ${displayMetrics.densityDpi}" +
+                "density ${displayMetrics.density} dpi ${displayMetrics.densityDpi}"
+        )
+        val screenAspectRatio = Rational(displayMetrics.widthPixels, displayMetrics.heightPixels)
         previewConfig = PreviewConfig.Builder().apply {
             setLensFacing(lensFacing)
             setTargetResolution(screenSize)
+          // setTargetAspectRatio(aspectRatio)
             setTargetRotation(activity!!.windowManager.defaultDisplay.rotation)
             setTargetRotation(texture.display.rotation)
         }.build()
@@ -133,7 +157,7 @@ class CameraFragment : Fragment(), CaptureInterface.capture,UploadImage {
         val imageCaptureConfig = ImageCaptureConfig.Builder()
             .apply {
                 setLensFacing(lensFacing)
-                    .setFlashMode(flashMode)
+                setFlashMode(flashMode)
                 setTargetAspectRatio(aspectRatio)
                 setTargetRotation(texture.display.rotation)
                 setCaptureMode(ImageCapture.CaptureMode.MIN_LATENCY)
@@ -146,6 +170,8 @@ class CameraFragment : Fragment(), CaptureInterface.capture,UploadImage {
          }*/
         CaptureInterface.theRealInstance.setListener(this)
         CameraX.bindToLifecycle(this, preview, imageCapture)
+
+
     }
 
     fun takePic() {
@@ -223,9 +249,10 @@ class CameraFragment : Fragment(), CaptureInterface.capture,UploadImage {
                                 .skipMemoryCache(true)
                                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                                 .into(previewImage)
+
                             okbtn.setOnClickListener {
                                 UCrop.of(sourceuri, destinationuri)
-                                    .withAspectRatio(4f, 3f)
+                                    .withAspectRatio(4f, 4f)
                                     .start(context!!, this@CameraFragment, UCrop.REQUEST_CROP)
                             }
                             cancelbtn.setOnClickListener {
@@ -358,7 +385,6 @@ class CameraFragment : Fragment(), CaptureInterface.capture,UploadImage {
 
     override fun onDetach() {
         super.onDetach()
-        MoveNavBar.theRealInstance.refresh()
 
     }
 
@@ -380,6 +406,10 @@ class CameraFragment : Fragment(), CaptureInterface.capture,UploadImage {
             else -> return
         }
         matrix.postRotate(-rotationDegrees.toFloat(), centerX, centerY)
+        val displayMetrics = DisplayMetrics()
+        activity!!.windowManager.defaultDisplay.getMetrics(displayMetrics)
+        matrix.setScale(1f,1.050f)
+
         texture.setTransform(matrix)
     }
 
@@ -404,10 +434,11 @@ class CameraFragment : Fragment(), CaptureInterface.capture,UploadImage {
             cancelbtn.visibility = INVISIBLE
             texture.visibility = VISIBLE
             busy = false
-            flashtoggle.theRealInstance.flashtoggle()
-
-            activity!!.onBackPressed()
+            flashtoggle.theRealInstance.flashtoggle(img1.absolutePath)
+            MoveNavBar.theRealInstance.refresh()
+            activity!!.supportFragmentManager.popBackStack()
 
         }
     }
+
 }

@@ -63,10 +63,7 @@ class ProfileInformationFragment : BaseFragment() {
             }
             }
 
-         submit.setOnClickListener {
-             //submit code here
 
-         }
             launch {
                 context?.let {
                     val dao = MDatabase(it).getUserDao()

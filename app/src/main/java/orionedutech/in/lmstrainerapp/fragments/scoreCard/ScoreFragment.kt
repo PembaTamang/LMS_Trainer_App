@@ -64,6 +64,7 @@ class ScoreFragment : Fragment(), RecyclerItemClick {
 
         swipeRefreshLayout.setOnRefreshListener {
             swipeRefreshLayout.isRefreshing = false
+            recyclerView.showShimmerAdapter()
             getScoreData(json.toString())
         }
         CoroutineScope(IO).launch {

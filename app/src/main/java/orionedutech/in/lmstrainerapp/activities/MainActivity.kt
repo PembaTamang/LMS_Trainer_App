@@ -25,6 +25,7 @@ import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.Lifecycle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
@@ -50,11 +51,13 @@ import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
 import orionedutech.`in`.lmstrainerapp.showToast
 
-class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener, MoveNavBar.move, profilebooleantoggle.capture {
+class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
+    MoveNavBar.move, profilebooleantoggle.capture {
     override fun capturepic(boolean: Boolean) {
-        mLog.i(TAG,"val $boolean")
+        mLog.i(TAG, "val $boolean")
         profile = boolean
     }
+
     lateinit var ft: FragmentTransaction
     private var isBarDown = true
     private var exit = false
@@ -88,9 +91,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             R.string.navigation_drawer_open,
             R.string.navigation_drawer_close
         )
-        barPreferences = getSharedPreferences("bar",Context.MODE_PRIVATE)
-       //for camera
-        barPreferences.edit().putBoolean("move",true).apply()
+        barPreferences = getSharedPreferences("bar", Context.MODE_PRIVATE)
+        //for camera
+      //  barPreferences.edit().putBoolean("move", true).apply()
 
         drawerLayout.addDrawerListener(toggle)
 
@@ -163,7 +166,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                         bottomNav.menu.setGroupCheckable(0, true, true)
                         if (profile) {
                             profile = false
-                            mLog.i(TAG,"${supportFragmentManager.backStackEntryCount}")
+                            mLog.i(TAG, "${supportFragmentManager.backStackEntryCount}")
                             supportFragmentManager.popBackStack()
                         } else {
                             changeFragment(DashFragment())
@@ -173,11 +176,12 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                         return true
                     }
                     R.id.profile -> {
-                        mLog.i(TAG,"last frag before adding profile $lastFrag")
+                        mLog.i(TAG, "last frag before adding profile $lastFrag")
                         if (lastFrag != ParentFragment::class.java.simpleName) {
                             profile = true
                             bottomNav.menu.setGroupCheckable(0, true, true)
                             lastFrag = ParentFragment::class.java.simpleName
+                            val fragment =  ParentFragment()
                             ft = supportFragmentManager.beginTransaction()
                             ft.setCustomAnimations(
                                 R.anim.enter_from_right,
@@ -185,11 +189,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                                 R.anim.enter_from_left,
                                 R.anim.exit_to_right
                             )
-                            ft.add(R.id.mainContainer, ParentFragment())
+                            ft.add(R.id.mainContainer,fragment)
                             ft.addToBackStack(null)
                             ft.commit()
                             lastpop = false
-                          uncheckAll()
+                            uncheckAll()
 
                             mLog.i(TAG, "profile clicked")
                         }
@@ -205,36 +209,38 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
         Handler().postDelayed({
             cameraControls.visibility = VISIBLE
-        },1500)
+        }, 1500)
         cameraControls.animate()
             .translationYBy(1000f)
             .duration = 0
-       MoveNavBar.theRealInstance.setListener(this)
+        MoveNavBar.theRealInstance.setListener(this)
         profilebooleantoggle.theRealInstance.setListener(this)
     }
 
-    fun pulldownBar(){
+    fun pulldownBar() {
         cameraControls.animate()
             .translationYBy(1000f)
             .duration = 2000
         profile = true
     }
 
-    fun pushupBar(){
+    fun pushupBar() {
         cameraControls.animate()
             .translationYBy(-1000f)
             .duration = 1000
         profile = false
     }
-    fun moveNavBar(){
-        if(isBarDown){
+
+    fun moveNavBar() {
+        if (isBarDown) {
             pushupBar()
             isBarDown = false
-        }else{
+        } else {
             pulldownBar()
             isBarDown = true
         }
     }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
 
         menuInflater.inflate(R.menu.main, menu)
@@ -247,7 +253,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             R.id.action_settings -> {
                 val fragment = PasswordResetFragment()
                 lastFrag = fragment.javaClass.simpleName
-                mLog.i(TAG,"password frag name $lastFrag")
+                mLog.i(TAG, "password frag name $lastFrag")
                 ft = supportFragmentManager.beginTransaction()
                 ft.setCustomAnimations(
                     R.anim.enter_from_right,
@@ -259,6 +265,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 ft.addToBackStack(null)
                 ft.commit()
                 lastpop = false
+                bottomNav.menu.setGroupCheckable(0, false, true)
                 mLog.i(
                     TAG,
                     "backstack count password change ${supportFragmentManager.backStackEntryCount} "
@@ -289,6 +296,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private fun checkDashBoard() {
         nav_view.menu[0].isChecked = true
     }
+
     private fun uncheckAll() {
         nav_view.menu.forEach {
             it.isChecked = false
@@ -365,7 +373,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private fun changeFragment(fragment: Fragment) {
         lastFrag =
             supportFragmentManager.findFragmentById(R.id.mainContainer)?.javaClass?.simpleName!!
-        mLog.i(TAG,"fragment name ${fragment.javaClass.simpleName}")
+        mLog.i(TAG, "fragment name ${fragment.javaClass.simpleName}")
 
         if (fragment.javaClass.simpleName != "DashFragment") {
 
@@ -384,7 +392,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             lastpop = false
             lastFrag = fragment.javaClass.simpleName
 
-            if(!isBarDown){
+            if (!isBarDown) {
                 pulldownBar()
                 isBarDown = true
             }
@@ -401,14 +409,20 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 TAG,
                 " backstack count backpressed ${supportFragmentManager.backStackEntryCount}"
             )
-            mLog.i(TAG,"last fragment ${getlastFrag()}")
+            mLog.i(TAG, "last fragment ${getlastFrag()}")
+            if (getlastFrag() == "CameraFragment") {
+                pulldownBar()
+                isBarDown = true
+                mLog.i(TAG, "pulling down bar")
+            }
             if (profile) {
                 bottomNav.selectedItemId = R.id.dashboard
                 profile = false
             }
             if (supportFragmentManager.backStackEntryCount > 1) {
-                if(getlastFrag()!="ParentFragment"){
-                supportFragmentManager.popBackStack()
+                if (getlastFrag() != "ParentFragment") {
+                        supportFragmentManager.popBackStack()
+                            mLog.i(TAG, "popping")
                 }
             } else {
                 if (getlastFrag() == DashFragment().javaClass.simpleName) {
@@ -447,11 +461,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
 
     override fun movebar() {
-        if(barPreferences.getBoolean("move",true)){
-        moveNavBar()
+        if (barPreferences.getBoolean("move", true)) {
+            moveNavBar()
         }
     }
-
 
 
 }

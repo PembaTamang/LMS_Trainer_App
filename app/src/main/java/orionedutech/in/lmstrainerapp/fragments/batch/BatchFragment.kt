@@ -14,12 +14,23 @@ import androidx.recyclerview.widget.RecyclerView
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView
 import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.fragment_batch.view.*
+import kotlinx.android.synthetic.main.fragment_trainer_assessment_upload.*
+import kotlinx.android.synthetic.main.trainer_assessment_item.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import org.json.JSONObject
 import org.w3c.dom.Text
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.adapters.recyclerviews.BatchAdapter
+import orionedutech.`in`.lmstrainerapp.database.MDatabase
 import orionedutech.`in`.lmstrainerapp.interfaces.RecyclerItemClick
+import orionedutech.`in`.lmstrainerapp.mToast
 import orionedutech.`in`.lmstrainerapp.mToast.showToast
 import orionedutech.`in`.lmstrainerapp.model.BatchModel
+import orionedutech.`in`.lmstrainerapp.network.NetworkOps
+import orionedutech.`in`.lmstrainerapp.network.Urls
+import orionedutech.`in`.lmstrainerapp.network.response
 import java.util.concurrent.atomic.AtomicBoolean
 
 
@@ -31,6 +42,8 @@ class BatchFragment : Fragment(), RecyclerItemClick {
         showToast(context,"$itempos clicked")
     }
 
+    private var uid : String = ""
+    private var centerID : String = ""
     lateinit var createBatch: MaterialButton
     lateinit var batchName : TextView
     lateinit var batchCenter : TextView
@@ -53,10 +66,6 @@ class BatchFragment : Fragment(), RecyclerItemClick {
         recyclerView.adapter = adapter
 
 
-        for(i in 0 until 20){
-            val model = BatchModel("name $i","center $i","course $i")
-            arrayList.add(model)
-        }
         adapter.notifyDataSetChanged()
 
         val ascendingName = context?.let { ContextCompat.getDrawable(it,R.drawable.animated_ascending) }
@@ -113,8 +122,55 @@ class BatchFragment : Fragment(), RecyclerItemClick {
             moveToFragment(BatchCreationFragment())
           }
 
+        CoroutineScope(IO).launch {
+            context?.let {
+                val userDao = MDatabase(it).getUserDao()
+                uid = userDao.getUserID()
+                centerID = userDao.getCenterID()
+            }
+        }
+
+        val json = JSONObject()
+        json.put("language_id", "1")
+        json.put("user_id", uid)
+        json.put("user_type", "3")
+        json.put("center_id",centerID)
+
+        getBatches(json.toString())
+
         return view
     }
+
+    private fun getBatches(json: String) {
+        recyclerView.showShimmerAdapter()
+        NetworkOps.post(Urls.batchesUrl, json, context, object : response {
+            override fun onrespose(string: String?) {
+
+            }
+
+            override fun onfailure() {
+                runFailureCode()
+            }
+
+            override fun onInternetfailure() {
+                runFailureCode()
+                activity!!.runOnUiThread {
+                    mToast.noInternetSnackBar(activity!!)
+                }
+            }
+
+        }
+        ){_,_,_->
+
+        }
+    }
+
+    private fun runFailureCode() {
+        activity!!.runOnUiThread {
+            recyclerView.hideShimmerAdapter()
+        }
+    }
+
 
     private fun moveToFragment(fragment: Fragment) {
         val ft = activity?.supportFragmentManager!!.beginTransaction()

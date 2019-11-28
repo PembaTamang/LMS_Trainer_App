@@ -1,10 +1,8 @@
 package orionedutech.`in`.lmstrainerapp.activities
 
-import android.app.ProgressDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.os.Message
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.FrameLayout
@@ -22,11 +20,9 @@ import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
-import org.w3c.dom.Text
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.database.MDatabase
 import orionedutech.`in`.lmstrainerapp.database.entities.AssesmentQuestion
-import orionedutech.`in`.lmstrainerapp.database.entities.AssessmentMainData
 import orionedutech.`in`.lmstrainerapp.fragments.questionTypes.MCQFragment
 import orionedutech.`in`.lmstrainerapp.interfaces.ActivityAns
 import orionedutech.`in`.lmstrainerapp.mLog
@@ -35,7 +31,6 @@ import orionedutech.`in`.lmstrainerapp.mToast
 import orionedutech.`in`.lmstrainerapp.network.NetworkOps
 import orionedutech.`in`.lmstrainerapp.network.Urls
 import orionedutech.`in`.lmstrainerapp.network.dataModels.assessmentQuestions.DCAsseessmentQ
-import orionedutech.`in`.lmstrainerapp.network.progress
 import orionedutech.`in`.lmstrainerapp.network.response
 import java.util.*
 import kotlin.collections.ArrayList
@@ -181,10 +176,10 @@ class AssessmentActivity : AppCompatActivity(), ActivityAns, CountDownInterface 
 
         getAssessmentQuestions(json.toString())
 
+
     }
 
     private fun uploadJson(mainJSON: JSONObject) {
-
 
         NetworkOps.post(Urls.assessmentAnsSubmit, mainJSON.toString(), this, object : response {
             override fun onrespose(string: String?) {
