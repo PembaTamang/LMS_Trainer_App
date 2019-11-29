@@ -151,7 +151,8 @@ class LoginActivity : BaseActivity() {
                                 trainer.user_dob,
                                 trainer.user_last_qualification,
                                 trainer.user_prof_qualification,
-                                trainer.user_work_experience
+                                trainer.user_work_experience,
+                                userData.userprofileid
                             )
                             if (dao.userDataExists()) {
                                 mLog.i(TAG, "user data exists")

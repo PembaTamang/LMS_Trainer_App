@@ -1,11 +1,9 @@
 package orionedutech.`in`.lmstrainerapp
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.graphics.Camera
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -18,10 +16,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import java.io.File
-import java.net.URI
 import android.provider.MediaStore
 
 

@@ -167,7 +167,7 @@ class ParentFragment : BaseFragment(), UCropFragmentCallback, flashtoggle.captur
             }
         },1000)
 
-           
+
         return view
     }
 
@@ -184,7 +184,7 @@ class ParentFragment : BaseFragment(), UCropFragmentCallback, flashtoggle.captur
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         val imageuri = getOutputMediaFileUri(context!!)
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageuri)
-        if (intent.resolveActivity(activity!!.getPackageManager()) != null) {
+        if (intent.resolveActivity(activity!!.packageManager) != null) {
             val path = context!!.filesDir.path + "/profile.jpg"
             img = File(path)
             if (!img.exists()) {

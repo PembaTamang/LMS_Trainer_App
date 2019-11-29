@@ -80,6 +80,7 @@ public class NetworkOps {
                     .post(responseBody)
                     .build();
 
+
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -187,14 +188,14 @@ public class NetworkOps {
                     mLog.i(TAG, "postMultipart: file type " + type);
                     mLog.i(TAG, "postMultipart: file path" + value);
                     File file = new File(value);
-                    multipart.addFormDataPart("file_path", filename,
-                            RequestBody.create(file,MediaType.parse(type)));
+                    multipart.addFormDataPart("file_path", filename,RequestBody.create(file,MediaType.parse(type)));
                 } else {
-                    mLog.i(TAG, "postMultipart: " + key + "  " + value);
+
+                    mLog.i(TAG, "postMultipart: " +key+"-"+ value);
                     multipart.addFormDataPart(key, value);
+
                 }
 
-                mLog.i(TAG, "postMultipart: " + multipart.getClass().toString());
             }
             final long startTime = System.nanoTime();
             MultipartBody body = multipart.build();
@@ -216,6 +217,8 @@ public class NetworkOps {
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
                     onRes.onfailure();
+                    mLog.i(TAG,"failed "+e.getMessage());
+                    mLog.i(TAG,"failed "+e.getCause());
                 }
 
                 @Override

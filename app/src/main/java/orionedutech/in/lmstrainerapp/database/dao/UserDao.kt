@@ -33,6 +33,9 @@ interface UserDao {
     @Query("select phoneNumber from user_table")
     suspend fun getPhone(): String
 
+    @Query("select userprofileid from user_table")
+    suspend fun getProfileID(): String
+
     @Query("select email from user_table")
     suspend fun getEmail(): String
 

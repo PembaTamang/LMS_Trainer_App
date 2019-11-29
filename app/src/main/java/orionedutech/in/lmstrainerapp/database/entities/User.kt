@@ -24,7 +24,8 @@ val user_doj:String?,
 val user_dob:String?,
 val last_qualification:String?,
 val prof_qualification:String?,
-val workExperice:String?
+val workExperice:String?,
+val userprofileid: String?
 
 ) {
     @PrimaryKey(autoGenerate = true)

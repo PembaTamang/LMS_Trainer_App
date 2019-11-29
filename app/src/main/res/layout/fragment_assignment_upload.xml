@@ -29,17 +29,7 @@
         android:background="@color/blue"
         app:layout_constraintTop_toBottomOf="@+id/textView21" />
 
-    <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/back"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="16dp"
-        android:background="@android:color/transparent"
-        android:scaleType="fitCenter"
-        android:src="@drawable/back"
-        app:layout_constraintBottom_toTopOf="@+id/view10"
-        app:layout_constraintEnd_toEndOf="@+id/textView21"
-        app:layout_constraintTop_toTopOf="@+id/textView21" />
+
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/materialCardView1"
@@ -129,16 +119,32 @@
             android:scrollbars="vertical" />
     </com.google.android.material.card.MaterialCardView>
 
+    <ProgressBar
+        android:id="@+id/prog"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="0dp"
+        android:layout_height="4dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="8dp"
+        android:layout_toEndOf="@+id/icon"
+        android:progress="20"
+        android:progressDrawable="@drawable/curved_progress_bar"
+        android:progressTint="@color/blue"
+        app:layout_constraintEnd_toEndOf="@+id/upload"
+        app:layout_constraintStart_toStartOf="@+id/browse"
+        app:layout_constraintTop_toBottomOf="@+id/materialCardView9" />
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/browse"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/left_round"
+        android:elevation="2dp"
         android:text="Browse"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="@+id/materialCardView9"
-        app:layout_constraintTop_toBottomOf="@+id/materialCardView9" />
+        app:layout_constraintTop_toBottomOf="@+id/progressText" />
 
     <TextView
         android:id="@+id/fileName"
@@ -146,6 +152,8 @@
         android:layout_height="0dp"
         android:text="choose a pdf/doc/dox file"
         android:gravity="center"
+        android:elevation="2dp"
+        android:background="@drawable/round_rect_white_stroke1"
         app:layout_constraintBottom_toBottomOf="@+id/browse"
         app:layout_constraintEnd_toStartOf="@+id/upload"
         app:layout_constraintStart_toEndOf="@+id/browse"
@@ -155,10 +163,20 @@
         android:id="@+id/upload"
         android:layout_width="100dp"
         android:layout_height="50dp"
+        android:elevation="2dp"
         android:background="@drawable/right_round"
         android:src="@drawable/ic_upload"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="@+id/materialCardView9"
         app:layout_constraintTop_toTopOf="@+id/fileName" />
+
+    <TextView
+        android:id="@+id/progressText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="@+id/prog"
+        app:layout_constraintStart_toStartOf="@+id/prog"
+        app:layout_constraintTop_toBottomOf="@+id/prog" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
