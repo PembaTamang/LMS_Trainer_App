@@ -10,17 +10,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView
 import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.fragment_batch.view.*
-import kotlinx.android.synthetic.main.fragment_trainer_assessment_upload.*
-import kotlinx.android.synthetic.main.trainer_assessment_item.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import org.json.JSONObject
-import org.w3c.dom.Text
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.adapters.recyclerviews.BatchAdapter
 import orionedutech.`in`.lmstrainerapp.database.MDatabase
@@ -33,11 +29,9 @@ import orionedutech.`in`.lmstrainerapp.network.Urls
 import orionedutech.`in`.lmstrainerapp.network.response
 import java.util.concurrent.atomic.AtomicBoolean
 
-
 /**
  * A simple [Fragment] subclass.
  */
-
 
 class BatchFragment : Fragment(), RecyclerItemClick {
     override fun click(itempos: Int) {
