@@ -91,7 +91,7 @@ class FeedbackListFragment : Fragment(), FeedBackInterface {
             val postjson =
                 "{\"user_type\":\"3\",\"uid\":\"$userID\",\"course_id\":\"$courseID\",\"response\":$json}"
             mLog.i(TAG, "response : $postjson")
-            NetworkOps.post(Urls.feebackPostUrl, postjson, context, object : response {
+            NetworkOps.post(Urls.feedbackPostUrl, postjson, context, object : response {
                 override fun onrespose(string: String?) {
                     val jsonobj = JSONObject(string!!)
                     if (jsonobj.getString("success") == "1") {

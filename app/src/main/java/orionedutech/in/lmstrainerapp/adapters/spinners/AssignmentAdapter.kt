@@ -7,16 +7,16 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import orionedutech.`in`.lmstrainerapp.R
-import orionedutech.`in`.lmstrainerapp.network.dataModels.DCStudents
+import orionedutech.`in`.lmstrainerapp.network.dataModels.DCAssignmentListByBatchandStudent
 import java.util.ArrayList
 
-class StudentSpinAdapter(context: Context, textViewResourceId: Int, private val values: ArrayList<DCStudents>) : ArrayAdapter<DCStudents>(context, textViewResourceId, values) {
+class AssignmentAdapter(context: Context, textViewResourceId: Int, private val values: ArrayList<DCAssignmentListByBatchandStudent>) : ArrayAdapter<DCAssignmentListByBatchandStudent>(context, textViewResourceId, values) {
 
     override fun getCount(): Int {
         return values.size
     }
 
-    override fun getItem(position: Int): DCStudents? {
+    override fun getItem(position: Int): DCAssignmentListByBatchandStudent? {
         return values[position]
     }
 
@@ -30,10 +30,9 @@ class StudentSpinAdapter(context: Context, textViewResourceId: Int, private val 
         val label = super.getView(position, convertView, parent) as TextView
         label.setTextAppearance(context, R.style.Baloo)
 
-            label.setTextColor(ContextCompat.getColor(context, R.color.greyText))
+        label.setTextColor(ContextCompat.getColor(context, R.color.greyText))
 
-        label.text = values[position].user_fullname
-
+        label.text = values[position].assignment_name
 
         return label
     }
@@ -42,7 +41,7 @@ class StudentSpinAdapter(context: Context, textViewResourceId: Int, private val 
         val label = super.getDropDownView(position, convertView, parent) as TextView
         label.setTextAppearance(context, R.style.Baloo)
         label.setTextColor(ContextCompat.getColor(context, R.color.greyText))
-        label.text = values[position].user_fullname
+        label.text = values[position].assignment_name
 
         return label
     }

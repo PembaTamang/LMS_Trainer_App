@@ -37,6 +37,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 /**
  * A simple [Fragment] subclass.
  */
+
+
 class BatchFragment : Fragment(), RecyclerItemClick {
     override fun click(itempos: Int) {
         showToast(context,"$itempos clicked")
@@ -145,6 +147,8 @@ class BatchFragment : Fragment(), RecyclerItemClick {
         recyclerView.showShimmerAdapter()
         NetworkOps.post(Urls.batchesUrl, json, context, object : response {
             override fun onrespose(string: String?) {
+
+
 
             }
 

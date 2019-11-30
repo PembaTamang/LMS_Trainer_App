@@ -1,6 +1,7 @@
 package orionedutech.`in`.lmstrainerapp.adapters.recyclerviews
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
 import orionedutech.`in`.lmstrainerapp.model.AttendanceModel
+import java.util.logging.Handler
 
 class NewAttendanceAdapter(private val arrayList: ArrayList<AttendanceModel>) :
     RecyclerView.Adapter<NewAttendanceAdapter.AVH>() {
@@ -46,11 +48,22 @@ class NewAttendanceAdapter(private val arrayList: ArrayList<AttendanceModel>) :
                 m.status = "absent"
                 holder.radio.text = "Absent"
                 holder.radio.isChecked = false
+                android.os.Handler().postDelayed({
+                    holder.radio.buttonTintList = ColorStateList.valueOf(ContextCompat.getColor(context!!,R.color.radio_button_color))
+                    holder.radio.isChecked = true
+
+                },500)
+
             }else{
                 mLog.i(TAG,"true")
                 m.status = "present"
                 holder.radio.text = "Present"
-                holder.radio.isChecked = true
+                holder.radio.isChecked = false
+                android.os.Handler().postDelayed({
+                    holder.radio.buttonTintList = ColorStateList.valueOf(ContextCompat.getColor(context!!,R.color.radio_button_color1))
+                    holder.radio.isChecked = true
+
+                },500)
             }
 
         }
@@ -58,10 +71,12 @@ class NewAttendanceAdapter(private val arrayList: ArrayList<AttendanceModel>) :
 
         if(m.status=="present"){
             holder.radio.text = "Present"
+            holder.radio.buttonTintList = ColorStateList.valueOf(ContextCompat.getColor(context!!,R.color.radio_button_color1))
             holder.radio.isChecked = true
         }else{
             holder.radio.text = "Absent"
-            holder.radio.isChecked = false
+            holder.radio.buttonTintList = ColorStateList.valueOf(ContextCompat.getColor(context!!,R.color.radio_button_color))
+            holder.radio.isChecked = true
         }
 
     }
