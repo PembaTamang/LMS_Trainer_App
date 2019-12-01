@@ -89,10 +89,6 @@ class DashFragment : BaseFragment() {
 
         batchSpinner.adapter = batchAdapter
 
-
-
-
-
         batchSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(p0: AdapterView<*>?) {
 

@@ -129,8 +129,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/course"
         app:layout_constraintStart_toStartOf="@+id/sl"
-        app:layout_constraintTop_toBottomOf="@+id/name"
-        tools:listitem="@layout/trainer_assignment_item">
+        app:layout_constraintTop_toBottomOf="@+id/name">
 
         <com.cooltechworks.views.shimmer.ShimmerRecyclerView
             android:id="@+id/recycler"

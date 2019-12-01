@@ -16,7 +16,7 @@ object Urls {
     const val assessmentAnsSubmit = "https://orionedutech.co.in/cglms_app_demo/appassesmentsdatasend"
     const val scoreList = "https://orionedutech.co.in/cglms_app_demo/appscorecards"
     const val scoreDetailList = "https://orionedutech.co.in/cglms_app_demo/appscorecard"
-    const val batchesUrl = ""
+    const val batchesUrl = "https://orionedutech.co.in/cglms_app_demo/apptrainerbatcheslist"
     const val assignmentUploadUrl = "https://orionedutech.co.in/cglms_app_demo/apptrainerassignup"
     const val assignmentStudentList = "https://orionedutech.co.in/cglms_app_demo/apptrainerassignstdlist"
     const val assignmentListByBatchAndStudent = "https://orionedutech.co.in/cglms_app_demo/appstrainerassignlist"

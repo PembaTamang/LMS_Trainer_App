@@ -23,17 +23,19 @@ import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mToast
 import orionedutech.`in`.lmstrainerapp.network.downloader.MDownloader
 import java.io.*
-import java.lang.Exception
 
 
 /**
  * A simple [Fragment] subclass.
  */
+
 class PDFFragment : BaseFragment() {
     lateinit var name: TextView
     lateinit var pdfView: PDFView
     var currentPage: Int = 0
     var path = ""
+    lateinit var destinationFile : File
+    lateinit var sourceFile : File
     lateinit var pdfPref: SharedPreferences
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,11 +47,12 @@ class PDFFragment : BaseFragment() {
         pdfView = view.pdfView
         pdfPref = activity!!.getSharedPreferences("pdf", Context.MODE_PRIVATE)
         path = arguments!!.getString("path")!!
+        sourceFile = File(path)
         val naam = arguments!!.getString("name")
 
         name.text = naam
 
-            pdfView.fromFile(File(path))
+            pdfView.fromFile(sourceFile)
                 .scrollHandle(DefaultScrollHandle(context))
                 .defaultPage(pdfPref.getInt(path, 0)).onPageError { page, t ->
                     run {
@@ -67,7 +70,12 @@ class PDFFragment : BaseFragment() {
                 .setMessage("Do you want to export the file to storage?")
                 .setPositiveButton("export"){dialogInterface, i ->
                     dialogInterface.dismiss()
+                     destinationFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath + "/"+sourceFile.name)
+                    mLog.i(mLog.TAG,"destination path : ${destinationFile.absolutePath}")
+                    destinationFile.parentFile!!.mkdirs()
+                    destinationFile.createNewFile()
                     CoroutineScope(Dispatchers.IO).launch {
+
                         copyToExternalStorage(path)
                     }
                 }.setNegativeButton("cancel"){dialogInterface, i ->
@@ -86,10 +94,7 @@ class PDFFragment : BaseFragment() {
     private suspend fun copyToExternalStorage(path:String) {
         val sourceFile = File(path)
         if(sourceFile.exists()){
-            val destinationFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath + "/"+sourceFile.name)
-            mLog.i(mLog.TAG,"destination path : ${destinationFile.absolutePath}")
-            destinationFile.parentFile!!.mkdirs()
-            destinationFile.createNewFile()
+
             val inp = FileInputStream(sourceFile)
             val out = FileOutputStream(destinationFile)
             withContext(Dispatchers.Main){

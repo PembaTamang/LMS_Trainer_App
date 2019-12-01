@@ -155,8 +155,7 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
                 view.name.setCompoundDrawablesWithIntrinsicBounds(null, null, ascendingName, null)
                 ascendingNames.set(false)
                 //sort by descending names
-                val templist =
-                    arrayList.sortedWith(compareByDescending(DCAssessmentList::assesment_name))
+                val templist = arrayList.sortedWith(compareByDescending(DCAssessmentList::assesment_name))
                 arrayList.clear()
                 arrayList.addAll(templist)
                 adapter.notifyDataSetChanged()
