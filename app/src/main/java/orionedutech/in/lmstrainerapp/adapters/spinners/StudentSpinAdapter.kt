@@ -30,7 +30,7 @@ class StudentSpinAdapter(context: Context, textViewResourceId: Int, private val 
         val label = super.getView(position, convertView, parent) as TextView
         label.setTextAppearance(context, R.style.Baloo)
 
-            label.setTextColor(ContextCompat.getColor(context, R.color.greyText))
+            label.setTextColor(ContextCompat.getColor(context, R.color.default_text))
 
         label.text = values[position].user_fullname
 
@@ -41,7 +41,7 @@ class StudentSpinAdapter(context: Context, textViewResourceId: Int, private val 
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
         val label = super.getDropDownView(position, convertView, parent) as TextView
         label.setTextAppearance(context, R.style.Baloo)
-        label.setTextColor(ContextCompat.getColor(context, R.color.greyText))
+        label.setTextColor(ContextCompat.getColor(context, R.color.default_text))
         label.text = values[position].user_fullname
 
         return label

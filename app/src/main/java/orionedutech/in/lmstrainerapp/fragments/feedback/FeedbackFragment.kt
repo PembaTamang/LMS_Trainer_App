@@ -214,6 +214,7 @@ class FeedbackFragment : BaseFragment() {
                         }
 
                         override fun onrespose(string: String?) {
+                            mLog.i(TAG,"response : $string ")
                             val courses = Gson().fromJson(string, DCCourseList::class.java)
                             if (courses.success == "1") {
 

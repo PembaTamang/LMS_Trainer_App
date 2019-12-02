@@ -21,5 +21,7 @@ object Urls {
     const val assignmentStudentList = "https://orionedutech.co.in/cglms_app_demo/apptrainerassignstdlist"
     const val assignmentListByBatchAndStudent = "https://orionedutech.co.in/cglms_app_demo/appstrainerassignlist"
     const val assignmentMarksUpload = "https://orionedutech.co.in/cglms_app_demo/appstrainerassignmarks"
-
+    const val courseLinkedModules = "https://orionedutech.co.in/cglms_app_demo/appscourslinks"
+    const val moduleLinkedChapters = "https://orionedutech.co.in/cglms_app_demo/appscoursemodulelinks"
+    const val studentListUrl = "https://orionedutech.co.in/cglms_app_demo/appgetbatchstudents"
 }

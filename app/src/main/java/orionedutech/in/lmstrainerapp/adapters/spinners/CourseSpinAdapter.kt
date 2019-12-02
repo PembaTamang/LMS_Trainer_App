@@ -29,9 +29,9 @@ class CourseSpinAdapter(context: Context, textViewResourceId: Int, private val v
 
         val label = super.getView(position, convertView, parent) as TextView
         label.setTextAppearance(context, R.style.Baloo)
-        label.setTextColor(ContextCompat.getColor(context,R.color.greyText))
+        label.setTextColor(ContextCompat.getColor(context,R.color.default_text))
 
-        label.text = values[position].batch_name
+        label.text = values[position].course_name
 
 
         return label
@@ -43,8 +43,8 @@ class CourseSpinAdapter(context: Context, textViewResourceId: Int, private val v
     ): View {
         val label = super.getDropDownView(position, convertView, parent) as TextView
         label.setTextAppearance(context, R.style.Baloo)
-        label.setTextColor(ContextCompat.getColor(context,R.color.greyText))
-        label.text = values[position].batch_name
+        label.setTextColor(ContextCompat.getColor(context,R.color.default_text))
+        label.text = values[position].course_name
 
         return label
     }

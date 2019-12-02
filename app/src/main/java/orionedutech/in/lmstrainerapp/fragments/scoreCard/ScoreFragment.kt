@@ -26,6 +26,8 @@ import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.adapters.recyclerviews.ScoreAdapter
 import orionedutech.`in`.lmstrainerapp.database.MDatabase
 import orionedutech.`in`.lmstrainerapp.interfaces.RecyclerItemClick
+import orionedutech.`in`.lmstrainerapp.mLog
+import orionedutech.`in`.lmstrainerapp.mLog.TAG
 import orionedutech.`in`.lmstrainerapp.mToast
 import orionedutech.`in`.lmstrainerapp.network.NetworkOps
 import orionedutech.`in`.lmstrainerapp.network.Urls
@@ -89,6 +91,7 @@ class ScoreFragment : Fragment(), RecyclerItemClick {
     private fun getScoreData(json: String) {
         NetworkOps.post(Urls.scoreList, json, context, object : response {
             override fun onrespose(string: String?) {
+                mLog.i(TAG,"response $string ")
                 val scoreData = Gson().fromJson(string, DCScoreData::class.java)
                 if (scoreData == null) {
                     runFailureCode()
@@ -128,7 +131,7 @@ class ScoreFragment : Fragment(), RecyclerItemClick {
     }
 
     private fun runFailureCode() {
-        activity!!.run {
+        activity!!.runOnUiThread{
             mToast.showToast(context, "failed")
             recyclerView.hideShimmerAdapter()
         }

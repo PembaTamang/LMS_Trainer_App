@@ -30,7 +30,7 @@ class AssignmentAdapter(context: Context, textViewResourceId: Int, private val v
         val label = super.getView(position, convertView, parent) as TextView
         label.setTextAppearance(context, R.style.Baloo)
 
-        label.setTextColor(ContextCompat.getColor(context, R.color.greyText))
+        label.setTextColor(ContextCompat.getColor(context, R.color.default_text))
 
         label.text = values[position].assignment_name
 
@@ -40,7 +40,7 @@ class AssignmentAdapter(context: Context, textViewResourceId: Int, private val v
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
         val label = super.getDropDownView(position, convertView, parent) as TextView
         label.setTextAppearance(context, R.style.Baloo)
-        label.setTextColor(ContextCompat.getColor(context, R.color.greyText))
+        label.setTextColor(ContextCompat.getColor(context, R.color.default_text))
         label.text = values[position].assignment_name
 
         return label

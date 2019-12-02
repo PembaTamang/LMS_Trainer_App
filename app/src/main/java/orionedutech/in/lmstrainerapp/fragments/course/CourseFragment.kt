@@ -1,51 +1,84 @@
 package orionedutech.`in`.lmstrainerapp.fragments.course
 
 
-import android.animation.ObjectAnimator
 import android.os.Bundle
+import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.*
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.Spinner
-import android.widget.TextView
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.cooltechworks.views.shimmer.ShimmerRecyclerView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.airbnb.lottie.LottieAnimationView
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_course.view.*
-import kotlinx.android.synthetic.main.fragment_course.view.present
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import orionedutech.`in`.lmstrainerapp.R
-import orionedutech.`in`.lmstrainerapp.adapters.recyclerviews.AttendanceAdapter
-import orionedutech.`in`.lmstrainerapp.adapters.recyclerviews.NewAttendanceAdapter
+import orionedutech.`in`.lmstrainerapp.adapters.spinners.BatchSpinAdapter
+import orionedutech.`in`.lmstrainerapp.adapters.spinners.ChapterAdapter
+import orionedutech.`in`.lmstrainerapp.adapters.spinners.CourseSpinAdapter
+import orionedutech.`in`.lmstrainerapp.adapters.spinners.ModuleAdapter
+import orionedutech.`in`.lmstrainerapp.database.MDatabase
+import orionedutech.`in`.lmstrainerapp.database.entities.Batch
+import orionedutech.`in`.lmstrainerapp.fragments.BaseFragment
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
-import orionedutech.`in`.lmstrainerapp.model.AttendanceModel
+import orionedutech.`in`.lmstrainerapp.mToast.noInternetSnackBar
+import orionedutech.`in`.lmstrainerapp.mToast.showToast
+import orionedutech.`in`.lmstrainerapp.network.NetworkOps
+import orionedutech.`in`.lmstrainerapp.network.Urls
+import orionedutech.`in`.lmstrainerapp.network.dataModels.*
+import orionedutech.`in`.lmstrainerapp.network.response
 
 
 /**
  * A simple [Fragment] subclass.
  */
-class CourseFragment : Fragment() {
+class CourseFragment : BaseFragment() {
 
-    lateinit var recyclerView: ShimmerRecyclerView
-    lateinit var allPresent: TextView
-    var allPrsnt = true
-    var arrayList: ArrayList<AttendanceModel> = ArrayList()
+
     lateinit var batchSpinner: Spinner
     lateinit var courseSpinner: Spinner
     lateinit var moduleSpinner: Spinner
     lateinit var chapterSpinner: Spinner
 
-    // 1 module
 
-    // 2 3 chapter
+    lateinit var batchlisenter: AdapterView.OnItemSelectedListener
+    lateinit var courselisenter: AdapterView.OnItemSelectedListener
+    lateinit var modulelisenter: AdapterView.OnItemSelectedListener
+    lateinit var chapterlisenter: AdapterView.OnItemSelectedListener
 
-    // 4 unit
+    lateinit var moduleContainer: MaterialCardView
+    lateinit var chapterContainer: MaterialCardView
+    lateinit var courseContainer: MaterialCardView
+
+    lateinit var batchAdapter: BatchSpinAdapter
+    lateinit var courseAdapter: CourseSpinAdapter
+    lateinit var moduleAdapter: ModuleAdapter
+    lateinit var chapterAdapter: ChapterAdapter
+
+    lateinit var animation: LottieAnimationView
+
+    var batchList: ArrayList<Batch> = ArrayList()
+    var courseList: ArrayList<DCCourse> = ArrayList()
+    var moduleList: ArrayList<DCModule> = ArrayList()
+    var chapterList: ArrayList<DCModuleChapter> = ArrayList()
+
+    var selectedBatchID = ""
+    var selectedCourseID = ""
+    var selectedModuleID = ""
+    var selectedChapterID = ""
 
 
-    // 5 sub unit
+    lateinit var getStudentList: MaterialButton
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,72 +86,353 @@ class CourseFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_course, container, false)
-        allPresent = view.present
+        batchSpinner = view.batch_spinner
+        courseSpinner = view.course_spinner
+        moduleSpinner = view.module_spinner
+        chapterSpinner = view.chapter_spinner
+        getStudentList = view.getStudentList
+        moduleContainer = view.materialCardView5
+        chapterContainer = view.materialCardView3
+        courseContainer = view.materialCardView2
+        animation = view.anim
 
+        batchAdapter =
+            BatchSpinAdapter(context!!, android.R.layout.simple_list_item_1, batchList, 0)
+        courseAdapter =
+            CourseSpinAdapter(context!!, android.R.layout.simple_list_item_1, courseList)
+        moduleAdapter = ModuleAdapter(context!!, android.R.layout.simple_list_item_1, moduleList)
+        chapterAdapter = ChapterAdapter(context!!, android.R.layout.simple_list_item_1, chapterList)
 
+        batchSpinner.adapter = batchAdapter
+        courseSpinner.adapter = courseAdapter
+        moduleSpinner.adapter = moduleAdapter
+        chapterSpinner.adapter = chapterAdapter
 
-
-        recyclerView = view.shimmerRecyclerView
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        val adapter = NewAttendanceAdapter(arrayList)
-        recyclerView.adapter = adapter
-
-
-        for (i in 0 until 20) {
-            val student = AttendanceModel("name ${i + 1}", "id ${i + 1}", "present")
-            arrayList.add(student)
-        }
-        adapter.notifyDataSetChanged()
-        val rotatingCheck =
-            context?.let { ContextCompat.getDrawable(it, R.drawable.rotating_check_green) }
-
-
-        val rotatingCheck1 =
-            context?.let { ContextCompat.getDrawable(it, R.drawable.rotating_check_red) }
-
-        allPresent.setOnClickListener {
-            if (allPrsnt) {
-                for (m in arrayList) {
-                    m.status = "absent"
-                }
-                allPrsnt = false
-                val animator =
-                    ObjectAnimator.ofInt(rotatingCheck1, "level", 0, 10000).setDuration(500)
-                animator.start()
-                allPresent.text = "All Absent"
-                allPresent.setCompoundDrawablesWithIntrinsicBounds(null, null, rotatingCheck1, null)
-
-            } else {
-
-                for (m in arrayList) {
-                    m.status = "present"
-                }
-
-                allPrsnt = true
-                val animator =
-                    ObjectAnimator.ofInt(rotatingCheck, "level", 0, 10000).setDuration(500)
-                animator.start()
-                allPresent.text = "All Present"
-                allPresent.setCompoundDrawablesWithIntrinsicBounds(null, null, rotatingCheck, null)
+        batchlisenter = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {
 
             }
-            //adapter.clearSparseArray()
-            adapter.notifyDataSetChanged()
-        }
 
-        view.markAttendance.setOnClickListener {
-            val json = JSONObject()
-            mLog.i(TAG, "size ${arrayList.size}")
-            arrayList.forEach {
-                json.put(it.id!!, it.status)
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                val batch = batchList[p2]
+                selectedBatchID = batch.batch_id.toString()
+                courseContainer.visibility = GONE
+                CoroutineScope(Dispatchers.IO).launch {
+                    getCourseData(selectedBatchID)
+                }
             }
-            mLog.i(TAG, "json $json")
-            MaterialAlertDialogBuilder(context).setTitle("Alert")
-                .setMessage("Generated json : $json")
-                .create().show()
+
         }
 
+        courselisenter = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                /*   if (firstCourseSelection) {
+                       firstCourseSelection = false
+                       mLog.i(TAG,"returning")
+                       return
+                   }*/
+                mLog.i(TAG, "going")
+                val course = courseList[p2]
+                selectedCourseID = course.course_id
+                when (course.course_links_to) {
+                    "1" -> {
+                        getStudentList.isEnabled = false
+                        moduleContainer.visibility = GONE
+                        getModuleData()
+                    }
+                    "2" -> {
+
+                    }
+                    else -> {
+                        showToast(context, "error")
+                    }
+                }
+            }
+
+        }
+
+        modulelisenter = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+
+            }
+
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                /*      if (firstModuleSelection) {
+                          firstModuleSelection = false
+                          return
+                      }*/
+                val module = moduleList[p2]
+                selectedModuleID = module.course_module_id
+                getChapterData(selectedModuleID)
+            }
+
+        }
+
+        chapterlisenter = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+            }
+
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+
+                val chapter = chapterList[p2]
+                selectedChapterID = chapter.chapter_id
+                getStudentList.isEnabled = true
+
+            }
+
+
+        }
+
+        batchSpinner.onItemSelectedListener = batchlisenter
+
+        courseSpinner.onItemSelectedListener = courselisenter
+
+        moduleSpinner.onItemSelectedListener = modulelisenter
+
+        chapterSpinner.onItemSelectedListener = chapterlisenter
+
+
+        CoroutineScope(Dispatchers.IO).launch {
+            context?.let {
+                val dao = MDatabase(it).getBatchDao()
+                if (dao.batchDataExists()) {
+                    batchList.addAll(dao.getAllBatches())
+                    withContext(Dispatchers.Main) {
+                        batchAdapter.notifyDataSetChanged()
+
+                    }
+                }
+            }
+
+        }
+
+        getStudentList.setOnClickListener {
+            //go to student list fragment
+            val fragment = StudentListFragment()
+            val bundle = Bundle()
+            bundle.putString("batch_id",selectedBatchID)
+            bundle.putString("course_id",selectedCourseID)
+            bundle.putString("module_id",selectedModuleID)
+            bundle.putString("chapter_id",selectedChapterID)
+            fragment.arguments = bundle
+            val ft = activity?.supportFragmentManager!!.beginTransaction()
+            ft.setCustomAnimations(
+                R.anim.enter_from_right,
+                R.anim.exit_to_left,
+                R.anim.enter_from_left,
+                R.anim.exit_to_right
+            )
+            ft.add(R.id.mainContainer, fragment)
+            ft.addToBackStack(null)
+            ft.commit()
+        }
         return view
     }
 
+    fun disableSpinners() {
+        batchSpinner.isEnabled = false
+        courseSpinner.isEnabled = false
+        moduleSpinner.isEnabled = false
+        chapterSpinner.isEnabled = false
+    }
+
+    fun enableSpinners() {
+        batchSpinner.isEnabled = true
+        courseSpinner.isEnabled = true
+        moduleSpinner.isEnabled = true
+        chapterSpinner.isEnabled = true
+    }
+
+    fun showWaitAnimation() {
+        animation.visibility = VISIBLE
+        animation.playAnimation()
+    }
+
+    fun hideAnimation() {
+        animation.visibility = GONE
+        animation.cancelAnimation()
+    }
+
+    fun getCourseData(batchId: String?) {
+        activity!!.runOnUiThread {
+            moduleContainer.visibility = GONE
+            chapterContainer.visibility = GONE
+            selectedModuleID = ""
+            getStudentList.isEnabled = false
+            showWaitAnimation()
+            disableSpinners()
+        }
+        val json = JSONObject()
+        json.put("batch_id", batchId)
+        launch {
+            context?.let {
+                NetworkOps.post(
+                    Urls.courseUrl,
+                    json.toString(),
+                    context,
+                    object : response {
+                        override fun onInternetfailure() {
+                            noInternetSnackBar(activity!!)
+                        }
+
+                        override fun onrespose(string: String?) {
+                            mLog.i(TAG, "response : $string")
+                            val courses = Gson().fromJson(string, DCCourseList::class.java)
+                            if (courses.success == "1") {
+
+                                val course = courses.courses
+                                if (course.isNotEmpty()) {
+                                    courseList.clear()
+                                    courseList.addAll(course)
+                                    activity!!.runOnUiThread {
+                                        mLog.i(TAG, "done course lise ${courseList.size}")
+                                        courseContainer.visibility = VISIBLE
+                                        courseSpinner.onItemSelectedListener = null
+                                        hideAnimation()
+                                        enableSpinners()
+                                        courseAdapter.notifyDataSetChanged()
+                                        Handler().postDelayed({
+                                            courseSpinner.onItemSelectedListener = courselisenter
+                                        }, 500)
+
+                                    }
+                                } else {
+                                    onfailure()
+                                }
+                            } else {
+                                onfailure()
+                            }
+                        }
+
+                        override fun onfailure() {
+                            activity!!.runOnUiThread {
+                                enableSpinners()
+                                hideAnimation()
+                                showToast(context, "error")
+                            }
+                        }
+
+                    }) { _, _, _ -> }
+            }
+        }
+    }
+
+    private fun getModuleData() {
+        activity!!.runOnUiThread {
+            selectedChapterID = ""
+            getStudentList.isEnabled = false
+            showWaitAnimation()
+            disableSpinners()
+        }
+        val json = JSONObject()
+        json.put("course_id", selectedCourseID)
+        json.put("course_links_to", "1")
+        NetworkOps.post(Urls.courseLinkedModules, json.toString(), context, object : response {
+            override fun onInternetfailure() {
+                activity!!.runOnUiThread {
+                    noInternetSnackBar(activity!!)
+                }
+            }
+
+            override fun onrespose(string: String?) {
+                mLog.i(TAG, "response : $string ")
+                val moduleData = Gson().fromJson(string, DCModuleData::class.java)
+                if (moduleData == null) {
+                    onfailure()
+                    return
+                }
+                if (moduleData.success == "1") {
+                    val modules = moduleData.response
+                    if (!modules.isNullOrEmpty()) {
+                        moduleList.clear()
+                        moduleList.addAll(modules)
+                        activity!!.runOnUiThread {
+                            moduleContainer.visibility = VISIBLE
+                            moduleSpinner.onItemSelectedListener = null
+                            moduleAdapter.notifyDataSetChanged()
+                            hideAnimation()
+                            enableSpinners()
+                            Handler().postDelayed({
+                                moduleSpinner.onItemSelectedListener = modulelisenter
+                            }, 500)
+                        }
+                    } else {
+                        onfailure()
+                    }
+
+                } else {
+                    onfailure()
+                }
+            }
+
+            override fun onfailure() {
+                activity!!.runOnUiThread {
+                    enableSpinners()
+                    hideAnimation()
+                    showToast(context, "module data error")
+                }
+            }
+
+        })
+        { _, _, _ -> }
+    }
+
+
+    private fun getChapterData(courseModuleId: String) {
+        activity!!.runOnUiThread {
+            chapterContainer.visibility = GONE
+            getStudentList.isEnabled = false
+            showWaitAnimation()
+            disableSpinners()
+        }
+        val json = JSONObject()
+        json.put("module_id", courseModuleId)
+        NetworkOps.post(Urls.moduleLinkedChapters, json.toString(), context, object : response {
+            override fun onInternetfailure() {
+                activity!!.runOnUiThread {
+                    noInternetSnackBar(activity)
+                }
+            }
+
+            override fun onrespose(string: String?) {
+                val chapterData = Gson().fromJson(string, DCChapterData::class.java)
+                if (chapterData == null) {
+                    onfailure()
+                    return
+                }
+                val chapterDataOne = chapterData.module_details
+                val chapters = chapterDataOne.module_chapters
+                chapterList.clear()
+                chapterList.addAll(chapters)
+                activity!!.runOnUiThread {
+                    getStudentList.isEnabled = true
+                    chapterContainer.visibility = VISIBLE
+                    chapterSpinner.onItemSelectedListener = null
+                    chapterAdapter.notifyDataSetChanged()
+                    enableSpinners()
+                    hideAnimation()
+                    Handler().postDelayed({
+                        chapterSpinner.onItemSelectedListener = chapterlisenter
+                    }, 500)
+                }
+            }
+
+            override fun onfailure() {
+                activity!!.runOnUiThread {
+                    enableSpinners()
+                    hideAnimation()
+                    showToast(context, "failed to get chapter data")
+                }
+            }
+
+        }) { _, _, _ ->
+        }
+
+    }
 }
+

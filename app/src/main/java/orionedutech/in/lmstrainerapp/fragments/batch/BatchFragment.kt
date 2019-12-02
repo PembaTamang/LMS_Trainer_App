@@ -192,7 +192,9 @@ class BatchFragment : Fragment() {
     }
 
     private fun getBatches(json: String) {
-        recyclerView.showShimmerAdapter()
+        activity!!.runOnUiThread {
+            recyclerView.showShimmerAdapter()
+        }
         NetworkOps.post(Urls.batchesUrl, json, context, object : response {
             override fun onrespose(string: String?) {
                 val batchData = Gson().fromJson(string, DCBatchesLongList::class.java)

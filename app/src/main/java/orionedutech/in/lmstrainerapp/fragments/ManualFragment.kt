@@ -78,7 +78,6 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
         waitText.text = "checking file..."
         pdfPref = activity?.getSharedPreferences("pdf",Context.MODE_PRIVATE)!!
 
-
         if(pdfPref.getString("lastURL","")==""){
             getData()
         }else{
@@ -98,9 +97,7 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
 
 
             }
-
         }
-
         PDFDownloadComplete.instance.setListener(this)
         return view
     }
@@ -113,7 +110,6 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
                 if (jsonval.getString("success") == "1") {
                      serverURL = jsonval.getString("response")
                     checkValue(serverURL)
-
                 } else {
                     onFailure()
                 }

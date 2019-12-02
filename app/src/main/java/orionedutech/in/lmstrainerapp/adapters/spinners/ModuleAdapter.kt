@@ -1,26 +1,22 @@
 package orionedutech.`in`.lmstrainerapp.adapters.spinners
 
 import android.content.Context
-import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
-
 import androidx.core.content.ContextCompat
-
+import orionedutech.`in`.lmstrainerapp.R
+import orionedutech.`in`.lmstrainerapp.network.dataModels.DCModule
 import java.util.ArrayList
 
-import orionedutech.`in`.lmstrainerapp.R
-import orionedutech.`in`.lmstrainerapp.database.entities.Batch
-
-class BatchSpinAdapter(context: Context, textViewResourceId: Int, private val values: ArrayList<Batch>,private val colors : Int) : ArrayAdapter<Batch>(context, textViewResourceId, values) {
+class ModuleAdapter(context: Context, textViewResourceId: Int, private val values: ArrayList<DCModule>) : ArrayAdapter<DCModule>(context, textViewResourceId, values) {
 
     override fun getCount(): Int {
         return values.size
     }
 
-    override fun getItem(position: Int): Batch? {
+    override fun getItem(position: Int): DCModule? {
         return values[position]
     }
 
@@ -33,12 +29,10 @@ class BatchSpinAdapter(context: Context, textViewResourceId: Int, private val va
 
         val label = super.getView(position, convertView, parent) as TextView
         label.setTextAppearance(context, R.style.Baloo)
-        if(colors==0) {
-            label.setTextColor(ContextCompat.getColor(context, R.color.default_text))
-        }else{
-            label.setTextColor(ContextCompat.getColor(context, R.color.white))
-        }
-        label.text = values[position].batch_name
+
+        label.setTextColor(ContextCompat.getColor(context, R.color.default_text))
+
+        label.text = values[position].course_module_name
 
 
         return label
@@ -47,8 +41,8 @@ class BatchSpinAdapter(context: Context, textViewResourceId: Int, private val va
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
         val label = super.getDropDownView(position, convertView, parent) as TextView
         label.setTextAppearance(context, R.style.Baloo)
-        label.setTextColor(ContextCompat.getColor(context,R.color.default_text))
-        label.text = values[position].batch_name
+        label.setTextColor(ContextCompat.getColor(context, R.color.default_text))
+        label.text = values[position].course_module_name
 
         return label
     }

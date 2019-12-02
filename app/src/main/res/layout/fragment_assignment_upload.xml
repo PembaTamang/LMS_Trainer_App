@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:animateLayoutChanges="true"
     tools:context=".fragments.assignment.AssignmentUploadFragment">
 
     <TextView
@@ -30,19 +31,33 @@
         app:layout_constraintTop_toBottomOf="@+id/textView21" />
 
 
-
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/materialCardView1"
         android:layout_width="0dp"
         android:layout_height="?actionBarSize"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
         app:cardElevation="4dp"
         app:layout_constraintBottom_toBottomOf="@+id/view10"
-        app:layout_constraintEnd_toStartOf="@+id/materialCardView2"
+        app:layout_constraintEnd_toEndOf="@+id/textView21"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view10">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Batch"
+                android:textAppearance="@style/OpenSansRegular"
+                android:textColor="@color/default_text"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <Spinner
             android:id="@+id/batch"
@@ -58,19 +73,34 @@
         android:id="@+id/materialCardView2"
         android:layout_width="0dp"
         android:layout_height="?actionBarSize"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
         app:cardElevation="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/materialCardView1"
-        app:layout_constraintTop_toTopOf="@+id/materialCardView1">
+        app:layout_constraintEnd_toEndOf="@+id/materialCardView1"
+        app:layout_constraintStart_toStartOf="@+id/materialCardView1"
+        app:layout_constraintTop_toBottomOf="@+id/materialCardView1">
 
-        <Spinner
-            android:id="@+id/course"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/spinner_bg" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Course"
+                android:textAppearance="@style/OpenSansRegular"
+                android:textColor="@color/default_text"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/course"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/spinner_bg" />
+        </LinearLayout>
+
+
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
@@ -81,7 +111,7 @@
         app:cardElevation="4dp"
         app:layout_constraintEnd_toEndOf="@+id/materialCardView2"
         app:layout_constraintStart_toStartOf="@+id/materialCardView1"
-        app:layout_constraintTop_toBottomOf="@+id/materialCardView1">
+        app:layout_constraintTop_toBottomOf="@+id/materialCardView2">
 
         <EditText
             android:id="@+id/name"
@@ -89,8 +119,8 @@
             android:layout_height="match_parent"
             android:background="@color/white"
             android:hint="Name"
-            android:padding="8dp"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:padding="8dp" />
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
@@ -150,10 +180,10 @@
         android:id="@+id/fileName"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:text="choose a pdf/doc/dox file"
-        android:gravity="center"
-        android:elevation="2dp"
         android:background="@drawable/round_rect_white_stroke1"
+        android:elevation="2dp"
+        android:gravity="center"
+        android:text="choose a pdf/doc/dox file"
         app:layout_constraintBottom_toBottomOf="@+id/browse"
         app:layout_constraintEnd_toStartOf="@+id/upload"
         app:layout_constraintStart_toEndOf="@+id/browse"
@@ -163,8 +193,8 @@
         android:id="@+id/upload"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:elevation="2dp"
         android:background="@drawable/right_round"
+        android:elevation="2dp"
         android:src="@drawable/ic_upload"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="@+id/materialCardView9"

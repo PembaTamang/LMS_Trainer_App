@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:animateLayoutChanges="true"
     tools:context=".fragments.course.CourseFragment">
 
     <TextView
@@ -16,9 +17,9 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:text="Courses"
-        android:textSize="22sp"
         android:textAppearance="@style/Baloo"
         android:textColor="@color/white"
+        android:textSize="22sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -31,186 +32,177 @@
         app:layout_constraintTop_toBottomOf="@+id/textView21" />
 
 
-
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/materialCardView1"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
         app:cardElevation="4dp"
-        app:layout_constraintBottom_toBottomOf="@+id/view10"
-        app:layout_constraintEnd_toStartOf="@+id/materialCardView2"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view10">
+        app:layout_constraintTop_toBottomOf="@+id/textView21">
 
-        <Spinner
-            android:id="@+id/batch_spinner"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/spinner_bg"
-            tools:layout_editor_absoluteX="156dp"
-            tools:layout_editor_absoluteY="215dp" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Batch"
+                android:textAppearance="@style/OpenSansRegular"
+                android:textColor="@color/default_text"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/batch_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/spinner_bg" />
+        </LinearLayout>
+
 
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/materialCardView2"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="16dp"
-        app:cardElevation="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/materialCardView1"
-        app:layout_constraintTop_toTopOf="@+id/materialCardView1">
-
-        <Spinner
-            android:id="@+id/course_spinner"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/spinner_bg" />
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/materialCardView5"
-        android:layout_width="0dp"
-        android:layout_height="?actionBarSize"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:visibility="gone"
+        android:layout_marginEnd="16dp"
         app:cardElevation="4dp"
         app:layout_constraintEnd_toEndOf="@+id/materialCardView1"
         app:layout_constraintStart_toStartOf="@+id/materialCardView1"
         app:layout_constraintTop_toBottomOf="@+id/materialCardView1">
 
-        <Spinner
-            android:id="@+id/modeule_spinner"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/spinner_bg" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Course"
+                android:textAppearance="@style/OpenSansRegular"
+                android:textColor="@color/default_text"
+                android:textStyle="bold" />
+
+            <orionedutech.in.lmstrainerapp.NDSpinner
+                android:id="@+id/course_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/spinner_bg" />
+        </LinearLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/materialCardView5"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:cardElevation="4dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/materialCardView2">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Module"
+                android:textAppearance="@style/OpenSansRegular"
+                android:textColor="@color/default_text"
+                android:textStyle="bold" />
+
+            <orionedutech.in.lmstrainerapp.NDSpinner
+                android:id="@+id/module_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/spinner_bg" />
+        </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/materialCardView3"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        app:cardElevation="4dp"
-        app:layout_constraintEnd_toEndOf="@+id/materialCardView2"
-        app:layout_constraintStart_toStartOf="@+id/materialCardView2"
-        app:layout_constraintTop_toTopOf="@+id/materialCardView5">
-        <Spinner
-            android:id="@+id/chapter_spinner"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/spinner_bg" />
-    </com.google.android.material.card.MaterialCardView>
-
-    <TextView
-        android:id="@+id/textView12"
-        android:layout_width="30dp"
-        android:layout_height="25dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="1dp"
-        android:background="@color/black"
-        android:gravity="center"
-        android:text="Sl"
-        android:textAppearance="@style/OpenSansRegular"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toStartOf="@+id/textView11"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView10" />
-
-    <TextView
-        android:id="@+id/textView11"
-        android:layout_width="0dp"
-        android:layout_height="25dp"
-        android:layout_marginEnd="1dp"
-        android:background="@color/black"
-        android:gravity="start|center"
-        android:paddingStart="4dp"
-        android:text=" Name"
-        android:textAppearance="@style/OpenSansRegular"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="@+id/textView12"
-        app:layout_constraintEnd_toStartOf="@+id/present"
-        app:layout_constraintHorizontal_weight="2"
-        app:layout_constraintStart_toEndOf="@+id/textView12"
-        app:layout_constraintTop_toTopOf="@+id/textView12" />
-
-    <TextView
-        android:id="@+id/present"
-        android:layout_width="0dp"
-        android:layout_height="25dp"
         android:layout_marginEnd="16dp"
-        android:background="@color/black"
-        android:drawableEnd="@drawable/ic_check_mark_green"
-        android:gravity="center|start"
-        android:paddingStart="4dp"
-        android:paddingEnd="4dp"
-        android:text="All Present"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="@+id/textView11"
+        app:cardElevation="4dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toEndOf="@+id/textView11"
-        app:layout_constraintTop_toTopOf="@+id/textView11" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/materialCardView5">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Chapter"
+                android:textAppearance="@style/OpenSansRegular"
+                android:textColor="@color/default_text"
+                android:textStyle="bold" />
+
+            <orionedutech.in.lmstrainerapp.NDSpinner
+                android:id="@+id/chapter_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/spinner_bg" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/create"
+        android:id="@+id/getStudentList"
+        style="@style/Widget.MaterialComponents.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginTop="16dp"
-        android:backgroundTint="@color/blue"
         android:elevation="4dp"
+        android:enabled="false"
         android:text="GET STUDENT LIST"
         android:textAppearance="@style/Baloo"
         android:textColor="@color/white"
         android:textSize="14sp"
         app:cornerRadius="16dp"
         app:layout_constraintEnd_toEndOf="@+id/materialCardView3"
-        app:layout_constraintStart_toStartOf="@+id/materialCardView5"
+        app:layout_constraintStart_toStartOf="@+id/materialCardView3"
         app:layout_constraintTop_toBottomOf="@+id/materialCardView3" />
 
-    <TextView
-        android:id="@+id/textView10"
-        android:layout_width="wrap_content"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/anim"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Mark Attendance"
-        android:textAppearance="@style/Baloo"
-        android:textColor="@color/blue"
-        app:layout_constraintEnd_toEndOf="@+id/create"
-        app:layout_constraintStart_toStartOf="@+id/create"
-        app:layout_constraintTop_toBottomOf="@+id/create" />
+        app:layout_constraintEnd_toEndOf="@+id/getStudentList"
+        app:layout_constraintStart_toStartOf="@+id/getStudentList"
+        app:layout_constraintTop_toBottomOf="@id/getStudentList"
+        app:lottie_autoPlay="false"
+        app:lottie_fileName="waitsmall.json"
+        app:lottie_loop="true" />
 
-    <com.cooltechworks.views.shimmer.ShimmerRecyclerView
-        android:id="@+id/shimmerRecyclerView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/markAttendance"
-        app:layout_constraintEnd_toEndOf="@+id/materialCardView3"
-        app:layout_constraintStart_toStartOf="@+id/textView12"
-        app:layout_constraintTop_toBottomOf="@+id/textView11"
-        tools:listitem="@layout/recycler_student_list" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/markAttendance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:backgroundTint="@color/blue"
-        android:elevation="4dp"
-        android:text="Mark Attendance"
-        android:textAppearance="@style/Baloo"
-        android:textColor="@color/white"
-        android:textSize="14sp"
-        app:cornerRadius="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
