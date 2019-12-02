@@ -58,6 +58,7 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_manual, container, false)
+
         pdfView = view.pdfView
         animation = view.animation1
         waitText = view.wait
@@ -76,7 +77,30 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
         }
         waitText.text = "checking file..."
         pdfPref = activity?.getSharedPreferences("pdf",Context.MODE_PRIVATE)!!
-        getData()
+
+
+        if(pdfPref.getString("lastURL","")==""){
+            getData()
+        }else{
+            CoroutineScope(IO).launch {
+                context?.let {
+                    val dao = MDatabase(it).getFilesDao()
+                    val path = dao.getInternalPath(pdfPref.getString("lastURL","")!!)
+                    if(path.isEmpty()){
+                        getData()
+                    }else{
+                        withContext(Main){
+                            showPDF(path)
+                        }
+                    }
+
+               }
+
+
+            }
+
+        }
+
         PDFDownloadComplete.instance.setListener(this)
         return view
     }
@@ -118,30 +142,9 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
                 if (hasFile) {
                     //show pdf
                     mLog.i(TAG, "showing pdf")
+                     pdfPref.edit().putString("lastURL",serverURL).apply()
                      path = dao.getInternalPath(serverURL)
-                    pdfView.fromFile(File(path))
-                        .scrollHandle(DefaultScrollHandle(context))
-                        .defaultPage(pdfPref.getInt(path,0)).onError{
-                       mToast.showToast(context,"corrupted pdf")
-                            MaterialAlertDialogBuilder(context).setTitle("Alert")
-                                .setMessage("The downloaded pdf is missing or corrupted. Would you like to download again?")
-                                .setPositiveButton("download"){dialogInterface, i ->
-                                    dialogInterface.dismiss()
-                                    directDownload()
-                                }.setNegativeButton("cancel"){dialogInterface, i ->
-                                    dialogInterface.dismiss()
-                                }.create().show()
-
-                        }.onPageChange { page, _ ->
-                            currentPage = page
-                        }
-                        .load().let {
-                            activity?.runOnUiThread {
-                                waitText.visibility = GONE
-                                animation.cancelAnimation()
-                                animation.visibility = GONE
-                            }
-                        }
+                     showPDF(path)
 
                 } else {
                     //start download
@@ -162,6 +165,33 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
                 }
             }
         }
+    }
+
+    private fun showPDF(path: String) {
+        pdfView.fromFile(File(path))
+            .scrollHandle(DefaultScrollHandle(context))
+            .defaultPage(pdfPref.getInt(path,0)).onError{
+                mToast.showToast(context,"corrupted pdf")
+                MaterialAlertDialogBuilder(context).setTitle("Alert")
+                    .setMessage("The downloaded pdf is missing or corrupted. Would you like to download again?")
+                    .setPositiveButton("download"){dialogInterface, i ->
+                        dialogInterface.dismiss()
+                        getData()
+                    }.setNegativeButton("cancel"){dialogInterface, i ->
+                        dialogInterface.dismiss()
+                    }.create().show()
+
+            }.onPageChange { page, _ ->
+                currentPage = page
+            }
+            .load().let {
+                activity?.runOnUiThread {
+                    waitText.visibility = GONE
+                    animation.cancelAnimation()
+                    animation.visibility = GONE
+                }
+            }
+
     }
 
     private fun directDownload() {

@@ -3,12 +3,12 @@ package orionedutech.`in`.lmstrainerapp.fragments.batch
 
 import android.animation.ObjectAnimator
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView
@@ -22,15 +22,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import orionedutech.`in`.lmstrainerapp.R
-import orionedutech.`in`.lmstrainerapp.adapters.recyclerviews.BatchAdapter
 import orionedutech.`in`.lmstrainerapp.adapters.recyclerviews.BatchAdapterAlt
 import orionedutech.`in`.lmstrainerapp.database.MDatabase
-import orionedutech.`in`.lmstrainerapp.interfaces.RecyclerItemClick
-import orionedutech.`in`.lmstrainerapp.mLog
-import orionedutech.`in`.lmstrainerapp.mLog.TAG
 import orionedutech.`in`.lmstrainerapp.mToast
 import orionedutech.`in`.lmstrainerapp.mToast.showToast
-import orionedutech.`in`.lmstrainerapp.model.BatchModel
 import orionedutech.`in`.lmstrainerapp.network.NetworkOps
 import orionedutech.`in`.lmstrainerapp.network.Urls
 import orionedutech.`in`.lmstrainerapp.network.dataModels.DCBatchesLong
@@ -42,10 +37,8 @@ import java.util.concurrent.atomic.AtomicBoolean
  * A simple [Fragment] subclass.
  */
 
-class BatchFragment : Fragment(), RecyclerItemClick {
-    override fun click(itempos: Int) {
-        showToast(context, "$itempos clicked")
-    }
+class BatchFragment : Fragment() {
+
 
     private var uid: String = ""
     private var centerID: String = ""
@@ -74,8 +67,6 @@ class BatchFragment : Fragment(), RecyclerItemClick {
         recyclerView.layoutManager = LinearLayoutManager(context)
         adapter = BatchAdapterAlt(arrayList)
         recyclerView.adapter = adapter
-
-
         adapter.notifyDataSetChanged()
 
         val ascendingName =
@@ -92,11 +83,15 @@ class BatchFragment : Fragment(), RecyclerItemClick {
                 batchName.setCompoundDrawablesWithIntrinsicBounds(null, null, ascendingName, null)
                 ascendingNames.set(false)
                 //sort by descending names
-                val templist = arrayList.sortedWith(compareByDescending(DCBatchesLong::batch_name))
-                arrayList.clear()
-                arrayList.addAll(templist)
-                adapter.notifyDataSetChanged()
-
+                CoroutineScope(IO).launch {
+                    val templist =
+                        arrayList.sortedWith(compareByDescending(DCBatchesLong::batch_name))
+                    arrayList.clear()
+                    arrayList.addAll(templist)
+                    withContext(Main){
+                        adapter.notifyDataSetChanged()
+                    }
+                }
             } else {
                 val animator =
                     ObjectAnimator.ofInt(descendingName, "level", 0, 10000).setDuration(500)
@@ -134,11 +129,14 @@ class BatchFragment : Fragment(), RecyclerItemClick {
                 )
                 ascendingCenters.set(false)
                 //sort by descending centers
-                val templist = arrayList.sortedWith(compareByDescending(DCBatchesLong::batch_center))
-                arrayList.clear()
-                arrayList.addAll(templist)
-                adapter.notifyDataSetChanged()
-
+                CoroutineScope(IO).launch {
+                    val templist = arrayList.sortedWith(compareByDescending(DCBatchesLong::batch_center))
+                    arrayList.clear()
+                    arrayList.addAll(templist)
+                    withContext(Main){
+                        adapter.notifyDataSetChanged()
+                    }
+                }
             } else {
                 val animator =
                     ObjectAnimator.ofInt(descendingCenter, "level", 0, 10000).setDuration(500)
@@ -151,10 +149,14 @@ class BatchFragment : Fragment(), RecyclerItemClick {
                 )
                 ascendingCenters.set(true)
                 //sort by ascending centers
-                val templist = arrayList.sortedWith(compareBy(DCBatchesLong::batch_center))
-                arrayList.clear()
-                arrayList.addAll(templist)
-                adapter.notifyDataSetChanged()
+                CoroutineScope(IO).launch {
+                    val templist = arrayList.sortedWith(compareBy(DCBatchesLong::batch_center))
+                    arrayList.clear()
+                    arrayList.addAll(templist)
+                    withContext(Main){
+                        adapter.notifyDataSetChanged()
+                    }
+                }
 
             }
         }

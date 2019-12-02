@@ -16,6 +16,9 @@ import com.cooltechworks.views.shimmer.ShimmerRecyclerView
 import com.google.android.material.button.MaterialButton
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_feedback_list.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
 import orionedutech.`in`.lmstrainerapp.R
@@ -46,7 +49,7 @@ class FeedbackListFragment : Fragment(), FeedBackInterface {
     internal var arrayList = ArrayList<FeedbackModel>()
     private var adapter: FeedbackAdapter? = null
     lateinit var animation: LottieAnimationView
-    lateinit var button : MaterialButton
+    lateinit var button: MaterialButton
     var courseID: String = ""
     var userID: String = ""
     lateinit var swipe: SwipeRefreshLayout
@@ -63,7 +66,7 @@ class FeedbackListFragment : Fragment(), FeedBackInterface {
         recyclerView.adapter = adapter
         animation = view.progress
         swipe = view.swipe
-          button = view.submit
+        button = view.submit
         courseID = arguments!!.getString("course_id")!!
         userID = arguments!!.getString("user_id")!!
 
@@ -98,14 +101,14 @@ class FeedbackListFragment : Fragment(), FeedBackInterface {
                         activity?.runOnUiThread {
                             animation.cancelAnimation()
                             animation.visibility = GONE
-                           button.text = "submit success"
+                            button.text = "submit success"
                             Handler().postDelayed({
-                                mToast.showToast(context,"feedback submitted successfully")
+                                mToast.showToast(context, "feedback submitted successfully")
                                 activity!!.onBackPressed()
-                            },1500)
+                            }, 1500)
                         }
                     } else {
-                    onCallFailed()
+                        onCallFailed()
                     }
                 }
 
@@ -126,72 +129,83 @@ class FeedbackListFragment : Fragment(), FeedBackInterface {
             }
         }
 
-        getFeedBackQuestions()
+
         swipe.setOnRefreshListener {
             swipe.isRefreshing = false
             if (!busy) {
                 getFeedBackQuestions()
             }
         }
+
+        Handler().postDelayed(
+            {
+                getFeedBackQuestions()
+            }, 1000
+        )
+
         return view
     }
 
     private fun getFeedBackQuestions() {
-        adapter!!.reset()
-        busy = true
-        recyclerView.showShimmerAdapter()
-        val json = JSONObject()
-        json.put("user_type", "2")
-        json.put("course_id", courseID)
-        NetworkOps.post(Urls.feedbackUrl, json.toString(), context, object : response {
-            override fun onrespose(string: String?) {
-                val feedback = Gson().fromJson(string, DCFeedback::class.java)
-                if (feedback == null) {
-                    activity?.runOnUiThread {
-                        mToast.showToast(context, "data error")
-                    }
-                    return
-                }
-                if (feedback.success == "1") {
-                    val feedbackList = feedback.response
-                    if (feedbackList.isEmpty()) {
+        CoroutineScope(IO).launch {
+            activity!!.runOnUiThread {
+                adapter!!.reset()
+                busy = true
+                recyclerView.showShimmerAdapter()
+            }
+            val json = JSONObject()
+            json.put("user_type", "2")
+            json.put("course_id", courseID)
+            NetworkOps.post(Urls.feedbackUrl, json.toString(), context, object : response {
+                override fun onrespose(string: String?) {
+                    val feedback = Gson().fromJson(string, DCFeedback::class.java)
+                    if (feedback == null) {
                         activity?.runOnUiThread {
-                            mToast.showToast(context, "no questions found")
-                            activity?.onBackPressed()
+                            mToast.showToast(context, "data error")
                         }
                         return
                     }
-                    arrayList.clear()
-                    feedbackList.forEach {
-                        val feedbackModel = FeedbackModel(it.feedback_question, it.feedback_id, "")
-                        arrayList.add(feedbackModel)
+                    if (feedback.success == "1") {
+                        val feedbackList = feedback.response
+                        if (feedbackList.isEmpty()) {
+                            activity?.runOnUiThread {
+                                mToast.showToast(context, "no questions found")
+                                activity?.onBackPressed()
+                            }
+                            return
+                        }
+                        arrayList.clear()
+                        feedbackList.forEach {
+                            val feedbackModel =
+                                FeedbackModel(it.feedback_question, it.feedback_id, "")
+                            arrayList.add(feedbackModel)
+                        }
+                        activity?.runOnUiThread {
+                            adapter!!.notifyDataSetChanged()
+                            recyclerView.hideShimmerAdapter()
+                            busy = false
+                        }
+                    } else {
+                        onCallFailed()
                     }
-                    activity?.runOnUiThread {
-                        adapter!!.notifyDataSetChanged()
-                        recyclerView.hideShimmerAdapter()
-                        busy = false
-                    }
-                } else {
+
+                }
+
+                override fun onfailure() {
                     onCallFailed()
                 }
 
-            }
-
-            override fun onfailure() {
-                onCallFailed()
-            }
-
-            override fun onInternetfailure() {
-                activity?.runOnUiThread {
-                    mToast.noInternetSnackBar(activity!!)
+                override fun onInternetfailure() {
+                    activity?.runOnUiThread {
+                        mToast.noInternetSnackBar(activity!!)
+                    }
+                    onCallFailed()
                 }
-                onCallFailed()
+
+            }) { _, _, _ ->
+
             }
-
-        }) { _, _, _ ->
-
         }
-
     }
 
     private fun onCallFailed() {

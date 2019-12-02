@@ -173,12 +173,17 @@ class DashFragment : BaseFragment() {
 
 
                         } else {
-                            mToast.showToast(context, "failed")
+                            activity!!.runOnUiThread {
+                                mToast.showToast(context, "failed")
+                            }
+
                         }
                     }
 
                     override fun onfailure() {
-                        mToast.showToast(context, "failed")
+                        activity!!.runOnUiThread {
+                            mToast.showToast(context, "failed")
+                        }
                         Handler().postDelayed({
                             if (!activity!!.isFinishing) {
                                 getDashboardData()
@@ -190,8 +195,8 @@ class DashFragment : BaseFragment() {
                         mToast.noInternetSnackBar(activity!!)
                     }
 
-                }, progress { _, _, _ ->
-                })
+                }) { _, _, _ ->
+                }
             }
         }
     }

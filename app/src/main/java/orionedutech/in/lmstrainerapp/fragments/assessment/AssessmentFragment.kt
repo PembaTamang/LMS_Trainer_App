@@ -304,6 +304,7 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
                 intent.putExtra("batch_id",selectedBatchID)
                 intent.putExtra("center_id",centerID)
                 startActivity(intent)
+                activity!!.overridePendingTransition(R.anim.enter_from_right,R.anim.exit_to_left)
             }
             .setNegativeButton("cancel"){dialogInterface, i ->
                 dialogInterface.dismiss()

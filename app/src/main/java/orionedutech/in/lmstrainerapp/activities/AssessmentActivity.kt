@@ -48,6 +48,10 @@ class AssessmentActivity : AppCompatActivity(), ActivityAns, CountDownInterface 
         lastAnswerID = answer
     }
 
+    override fun finish() {
+        super.finish()
+    overridePendingTransition(R.anim.enter_from_left,R.anim.exit_to_right)
+    }
     private var ft: FragmentTransaction? = null
     private var lastAnswerID = ""
     lateinit var animation: LottieAnimationView
@@ -237,9 +241,9 @@ class AssessmentActivity : AppCompatActivity(), ActivityAns, CountDownInterface 
                     runFailureCode()
                     return
                 }
+                val database = MDatabase(this@AssessmentActivity)
                 CoroutineScope(IO).launch {
-                    applicationContext?.let { it ->
-                        val database = MDatabase(it)
+
                         val answerDao = database.getAssessmentAnswersDao()
                         if (mainjson.success == "1") {
                             timeinMins = mainjson.assesment_time
@@ -280,7 +284,7 @@ class AssessmentActivity : AppCompatActivity(), ActivityAns, CountDownInterface 
 
                         }
 
-                    }
+
                 }
 
             }

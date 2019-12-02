@@ -122,6 +122,12 @@ class LoginActivity : BaseActivity() {
                 mLog.i(TAG,"res : $string")
                 val gson = Gson()
                 val userModel = gson.fromJson(string, DCUserData::class.java)
+                if(userModel ==null){
+                    runOnUiThread {
+                        loginFailed()
+                    }
+                    return
+                }
                 if (userModel.success == "1") {
                     mLog.i(TAG, "success")
                     val userData = userModel.userdata
