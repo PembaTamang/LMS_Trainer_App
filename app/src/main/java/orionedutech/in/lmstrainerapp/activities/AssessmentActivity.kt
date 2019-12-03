@@ -110,6 +110,7 @@ class AssessmentActivity : AppCompatActivity(), ActivityAns, CountDownInterface 
                     )
                     button.text = "Next"
                     status.visibility = GONE
+                    mainStatus.visibility = GONE
                     currentQuestion += 1
                     questionTV.text = String.format("%s / %s ", currentQuestion, totalQuestions)
                     lastquestionID = id
@@ -273,12 +274,13 @@ class AssessmentActivity : AppCompatActivity(), ActivityAns, CountDownInterface 
                             }
 
                             runOnUiThread {
+                                totalQuestions = questionsarrayList.size
                                 animation.visibility = GONE
                                 animation.cancelAnimation()
                                 status.text = "PRESS START TO BEGIN"
                                 button.isEnabled = true
-                                mainStatus.visibility = GONE
-                                totalQuestions = questionsarrayList.size
+                                mainStatus.text = "You have $timeinMins minutes to attempt $totalQuestions questions"
+
 
                             }
 

@@ -4,8 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragments.course.StudentListFragment">
+    tools:context=".fragments.course.StudentListFragment"
+ >
     <TextView
         android:id="@+id/textView21"
         android:layout_width="0dp"
@@ -104,5 +107,21 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/batchAnimation"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:elevation="3dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/markAttendance"
+        app:layout_constraintEnd_toEndOf="@+id/markAttendance"
+        app:layout_constraintStart_toStartOf="@+id/markAttendance"
+        app:layout_constraintTop_toTopOf="@+id/markAttendance"
+        app:lottie_autoPlay="false"
+        app:lottie_colorFilter="@color/white"
+        app:lottie_fileName="loading.json"
+        app:lottie_loop="true" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

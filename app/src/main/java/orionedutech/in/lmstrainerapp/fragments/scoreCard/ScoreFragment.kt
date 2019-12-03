@@ -132,7 +132,7 @@ class ScoreFragment : Fragment(), RecyclerItemClick {
 
     private fun runFailureCode() {
         activity!!.runOnUiThread{
-            mToast.showToast(context, "failed")
+            mToast.showToast(context, "no data found")
             recyclerView.hideShimmerAdapter()
         }
     }

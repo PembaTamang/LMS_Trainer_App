@@ -57,7 +57,7 @@
                 android:textColor="@color/default_text"
                 android:textStyle="bold" />
 
-            <Spinner
+            <orionedutech.in.lmstrainerapp.NDSpinner
                 android:id="@+id/batch_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -142,7 +142,7 @@
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/materialCardView3"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"

@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
     android:animateLayoutChanges="true"
     tools:context=".fragments.assignment.AssignmentUploadFragment">
 
@@ -57,15 +59,16 @@
                 android:textAppearance="@style/OpenSansRegular"
                 android:textColor="@color/default_text"
                 android:textStyle="bold" />
+            <Spinner
+                android:id="@+id/batch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/spinner_bg"
+                tools:layout_editor_absoluteX="156dp"
+                tools:layout_editor_absoluteY="215dp" />
         </LinearLayout>
 
-        <Spinner
-            android:id="@+id/batch"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/spinner_bg"
-            tools:layout_editor_absoluteX="156dp"
-            tools:layout_editor_absoluteY="215dp" />
+
 
     </com.google.android.material.card.MaterialCardView>
 
@@ -142,9 +145,9 @@
             android:gravity="top|start"
             android:hint="Description"
             android:inputType="textMultiLine"
-            android:lines="11"
-            android:maxLines="15"
-            android:minLines="10"
+            android:lines="5"
+            android:maxLines="8"
+            android:minLines="5"
             android:padding="8dp"
             android:scrollbars="vertical" />
     </com.google.android.material.card.MaterialCardView>
@@ -158,6 +161,7 @@
         android:layout_marginTop="8dp"
         android:layout_toEndOf="@+id/icon"
         android:progress="20"
+        android:visibility="gone"
         android:progressDrawable="@drawable/curved_progress_bar"
         android:progressTint="@color/blue"
         app:layout_constraintEnd_toEndOf="@+id/upload"
@@ -205,6 +209,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/prog"
         app:layout_constraintStart_toStartOf="@+id/prog"
         app:layout_constraintTop_toBottomOf="@+id/prog" />

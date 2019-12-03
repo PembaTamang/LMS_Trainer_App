@@ -143,6 +143,8 @@ class AssignmentFragment : BaseFragment(), RecyclerItemClick {
             val model = TrainerAssignmentModel("name : $i", "batch : $i", "course : $i")
             arrayList.add(model)
         }*/
+
+
         recyclerView.layoutManager = LinearLayoutManager(context)
         adapter = AssignmentAdapter(arrayList, object : RecyclerItemClick{
             override fun click(itempos: Int) {
@@ -319,7 +321,7 @@ class AssignmentFragment : BaseFragment(), RecyclerItemClick {
         val sourceFile = File(path)
         if(sourceFile.exists()){
             val destinationFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath + "/"+sourceFile.name)
-            mLog.i(mLog.TAG,"destination path : ${destinationFile.absolutePath}")
+            mLog.i(TAG,"destination path : ${destinationFile.absolutePath}")
             destinationFile.parentFile!!.mkdirs()
             destinationFile.createNewFile()
             val inp = FileInputStream(sourceFile)
@@ -347,10 +349,10 @@ class AssignmentFragment : BaseFragment(), RecyclerItemClick {
             }
 
 
-            mLog.i(mLog.TAG,"copy complete")
+            mLog.i(TAG,"copy complete")
 
         }else{
-            mLog.i(mLog.TAG,"file does not exist")
+            mLog.i(TAG,"file does not exist")
         }
 
     }

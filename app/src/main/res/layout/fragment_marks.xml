@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
     tools:context=".fragments.assignment.MarksFragment">
 
     <TextView
@@ -41,14 +43,26 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view10">
-
-        <Spinner
-            android:id="@+id/batch"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/spinner_bg"
-            tools:layout_editor_absoluteX="156dp"
-            tools:layout_editor_absoluteY="215dp" />
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Batch"
+                android:textAppearance="@style/OpenSansRegular"
+                android:textStyle="bold"
+                android:layout_marginStart="16dp"/>
+            <Spinner
+                android:id="@+id/batch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/spinner_bg"
+                tools:layout_editor_absoluteX="156dp"
+                tools:layout_editor_absoluteY="215dp" />
+        </LinearLayout>
+
 
     </com.google.android.material.card.MaterialCardView>
 
@@ -64,11 +78,24 @@
         app:layout_constraintStart_toEndOf="@+id/materialCardView1"
         app:layout_constraintTop_toTopOf="@+id/materialCardView1">
 
-        <Spinner
-            android:id="@+id/studentSpinner"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/spinner_bg" />
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Course"
+                android:textAppearance="@style/OpenSansRegular"
+                android:textStyle="bold"
+                android:layout_marginStart="16dp"/>
+            <Spinner
+                android:id="@+id/studentSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/spinner_bg" />
+
+        </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
@@ -80,12 +107,24 @@
         app:layout_constraintEnd_toEndOf="@+id/materialCardView2"
         app:layout_constraintStart_toStartOf="@+id/materialCardView1"
         app:layout_constraintTop_toBottomOf="@+id/materialCardView1">
-
-        <Spinner
-            android:id="@+id/assignment_spinner"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/spinner_bg" />
+            android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Assignment"
+            android:textAppearance="@style/OpenSansRegular"
+            android:textStyle="bold"
+            android:layout_marginStart="16dp"/>
+            <Spinner
+                android:id="@+id/assignment_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/spinner_bg" />
+        </LinearLayout>
+
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView

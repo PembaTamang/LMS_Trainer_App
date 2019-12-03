@@ -47,6 +47,7 @@
         android:minWidth="0dp"
         android:minHeight="0dp"
         android:text="Present"
+        android:buttonTint="@color/radio_button_color"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintBottom_toBottomOf="@+id/name"
         app:layout_constraintEnd_toEndOf="parent"

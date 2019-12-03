@@ -29,14 +29,20 @@
         app:layout_constraintBottom_toBottomOf="@+id/pdfName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/pdfName" />
-    <com.github.barteksc.pdfviewer.PDFView
-        android:id="@+id/pdfView"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pdfName" />
+        app:layout_constraintTop_toBottomOf="@+id/pdfName" >
+        <com.github.barteksc.pdfviewer.PDFView
+            android:id="@+id/pdfView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animation1"
         android:layout_width="50dp"
@@ -54,8 +60,8 @@
         android:layout_height="wrap_content"
         android:text="please wait while the pdf is being downloaded..."
         android:textAppearance="@style/OpenSansRegular"
-        app:layout_constraintBottom_toBottomOf="@+id/pdfView"
+        app:layout_constraintBottom_toBottomOf="@+id/swipe"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/pdfView"
+        app:layout_constraintStart_toStartOf="@+id/swipe"
         app:layout_constraintTop_toBottomOf="@+id/pdfName" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -51,8 +51,10 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageButton
+                    android:id="@+id/notification"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
+                    android:visibility="gone"
                     android:background="?android:selectableItemBackgroundBorderless"
                     android:gravity="end"
                     android:src="@drawable/ic_notification"

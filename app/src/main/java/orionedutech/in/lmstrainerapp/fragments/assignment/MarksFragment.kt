@@ -185,6 +185,12 @@ class MarksFragment : Fragment() {
                 mToast.showToast(context, "please fill both the marks")
                 return@setOnClickListener
             }
+            if(selectedStudentID.isBlank()||selectedAssignmentID.isBlank()||selectedBatchID.isBlank()){
+                mToast.showToast(context, "please make all the proper choices")
+                return@setOnClickListener
+
+            }
+
             showAnimation()
             activity!!.runOnUiThread {
 
@@ -222,7 +228,12 @@ class MarksFragment : Fragment() {
                                     activity!!.supportFragmentManager.popBackStack()
                                 }
 
-                                "1" -> mToast.showToast(context, "marks already added.")
+                                "1" -> {
+                                    mToast.showToast(context, "marks already added.")
+                                    totalMarksET.isEnabled = true
+                                    studentMarksET.isEnabled = true
+                                    hideAnimation()
+                                }
 
                                 else -> mToast.showToast(context, "error")
 
@@ -271,9 +282,11 @@ class MarksFragment : Fragment() {
     }
 
     private fun getAssignmentData(batchID: String, studentID: String) {
+        showAnimation()
         val json = JSONObject()
         json.put("batch", batchID)
         json.put("student_id", studentID)
+        selectedAssignmentID = ""
         NetworkOps.post(
             Urls.assignmentListByBatchAndStudent,
             json.toString(),
@@ -298,6 +311,7 @@ class MarksFragment : Fragment() {
                     }
                     if (assignmentData.success == "1") {
                         val assignmentList = assignmentData.assignments
+
                         if (assignmentList.isNotEmpty()) {
                             assignmentSpinnerList.clear()
                             assignmentSpinnerList.addAll(assignmentList)
@@ -306,6 +320,7 @@ class MarksFragment : Fragment() {
                                 hideAnimation()
                             }
                         } else {
+                            mLog.i(TAG,"empty")
                             onfailure()
                         }
 
@@ -318,7 +333,7 @@ class MarksFragment : Fragment() {
                 override fun onfailure() {
                     activity!!.runOnUiThread {
                         hideAnimation()
-                        mToast.showToast(context, "failed")
+                        mToast.showToast(context, "failed to get data")
                     }
                 }
 
@@ -330,6 +345,7 @@ class MarksFragment : Fragment() {
 
     private fun getStudentData(batchID: String) {
         showAnimation()
+        selectedStudentID = ""
         val json = JSONObject()
         json.put("batch_id", batchID)
         NetworkOps.post(Urls.assignmentStudentList, json.toString(), context, object : response {

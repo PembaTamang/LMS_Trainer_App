@@ -13,6 +13,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.airbnb.lottie.LottieAnimationView
 import com.github.barteksc.pdfviewer.PDFView
 import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle
@@ -51,6 +52,7 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
     var path = ""
     var currentPage : Int = 0
     lateinit var pdfPref : SharedPreferences
+    lateinit var refresh : SwipeRefreshLayout
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,6 +64,7 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
         pdfView = view.pdfView
         animation = view.animation1
         waitText = view.wait
+        refresh = view.swipe
         view.export.setOnClickListener {
             MaterialAlertDialogBuilder(context).setTitle("Alert")
                 .setMessage("Do you want to export the file to storage?")
@@ -75,7 +78,7 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
                     }.create().show()
 
         }
-        waitText.text = "checking file..."
+
         pdfPref = activity?.getSharedPreferences("pdf",Context.MODE_PRIVATE)!!
 
         if(pdfPref.getString("lastURL","")==""){
@@ -98,11 +101,19 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
 
             }
         }
+        refresh.setOnRefreshListener {
+            refresh.isRefreshing = false
+            getData()
+        }
         PDFDownloadComplete.instance.setListener(this)
+
         return view
     }
 
     private fun getData() {
+        waitText.text = "checking file..."
+        waitText.visibility = VISIBLE
+        pdfView.visibility = GONE
         val json = "{\"user_type\":\"3\"}"
         NetworkOps.post(Urls.manualUrl, json, context, object : response {
             override fun onrespose(string: String?) {
@@ -137,6 +148,9 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
                 mLog.i(TAG, "hasFile $hasFile")
                 if (hasFile) {
                     //show pdf
+                    activity!!.runOnUiThread {
+                        mToast.showToast(context,"pdf is up to date")
+                    }
                     mLog.i(TAG, "showing pdf")
                      pdfPref.edit().putString("lastURL",serverURL).apply()
                      path = dao.getInternalPath(serverURL)
@@ -145,6 +159,8 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
                 } else {
                     //start download
                     activity?.runOnUiThread {
+                        waitText.visibility = VISIBLE
+                        pdfView.visibility = GONE
                         waitText.text = "please wait while the pdf is being downloaded..."
                         mToast.showToast(context, "download start")
                         animation.visibility = VISIBLE
@@ -164,6 +180,7 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
     }
 
     private fun showPDF(path: String) {
+        pdfView.visibility = VISIBLE
         pdfView.fromFile(File(path))
             .scrollHandle(DefaultScrollHandle(context))
             .defaultPage(pdfPref.getInt(path,0)).onError{

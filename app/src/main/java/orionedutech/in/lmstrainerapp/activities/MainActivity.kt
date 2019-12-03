@@ -30,6 +30,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.fragment_parent.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
@@ -84,6 +85,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         bottomNav = bottom_navigation
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
+
+        notification.setOnClickListener {
+            mLog.i(TAG,"clicked")
+        }
         setSupportActionBar(toolbar)
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val toggle = ActionBarDrawerToggle(

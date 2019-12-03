@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.TextUtils
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,9 +13,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.airbnb.lottie.LottieAnimationView
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_student_list.view.*
 import kotlinx.coroutines.CoroutineScope
@@ -25,15 +26,15 @@ import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.adapters.recyclerviews.NewAttendanceAdapter
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
-import orionedutech.`in`.lmstrainerapp.mToast
 import orionedutech.`in`.lmstrainerapp.mToast.noInternetSnackBar
 import orionedutech.`in`.lmstrainerapp.mToast.showToast
 import orionedutech.`in`.lmstrainerapp.model.AttendanceModel
 import orionedutech.`in`.lmstrainerapp.network.NetworkOps
 import orionedutech.`in`.lmstrainerapp.network.Urls
 import orionedutech.`in`.lmstrainerapp.network.dataModels.DCStudentAttendanceData
-import orionedutech.`in`.lmstrainerapp.network.progress
 import orionedutech.`in`.lmstrainerapp.network.response
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 /**
@@ -44,6 +45,7 @@ class StudentListFragment : Fragment() {
     var arrayList: ArrayList<AttendanceModel> = ArrayList()
     lateinit var recyclerView: ShimmerRecyclerView
     lateinit var attendanceAdapter: NewAttendanceAdapter
+    lateinit var animation : LottieAnimationView
 
     lateinit var allPresent: TextView
     var allPrsnt = true
@@ -52,7 +54,13 @@ class StudentListFragment : Fragment() {
     var selectedCourseID = ""
     var selectedModuleID = ""
     var selectedChapterID = ""
+    var selectedUnitID = ""
+    var selectedSubUnitID = ""
+    var trainerID = ""
+    var uniqueID = ""
 
+
+    lateinit var json: JSONObject
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -65,11 +73,28 @@ class StudentListFragment : Fragment() {
         attendanceAdapter = NewAttendanceAdapter(arrayList)
         recyclerView.adapter = attendanceAdapter
         markAttendance = view.markAttendance
+        animation = view.batchAnimation
+
         val bundle = arguments!!
+
         selectedBatchID = bundle.getString("batch_id", "")
         selectedCourseID = bundle.getString("course_id", "")
         selectedModuleID = bundle.getString("module_id", "")
         selectedChapterID = bundle.getString("chapter_id", "")
+        selectedUnitID = bundle.getString("unit_id", "")
+        selectedSubUnitID = bundle.getString("subunit_id", "")
+        trainerID = bundle.getString("user_id", "")
+        uniqueID = UUID.randomUUID().toString()
+
+        json = JSONObject()
+        json.put("trainer_id", trainerID)
+        json.put("batch_id", selectedBatchID)
+        json.put("course_id", selectedCourseID)
+        json.put("chapter_id", selectedChapterID)
+        json.put("module_id", selectedModuleID)
+        json.put("unit_id", selectedUnitID)
+        json.put("subunit_id", selectedSubUnitID)
+        json.put("uniqid", uniqueID)
 
 
         val rotatingCheck =
@@ -108,25 +133,56 @@ class StudentListFragment : Fragment() {
             attendanceAdapter.notifyDataSetChanged()
         }
 
-        markAttendance.setOnClickListener {
 
-
-            val json = JSONObject()
-            mLog.i(TAG, "size ${arrayList.size}")
-            arrayList.forEach {
-                json.put(it.id!!, it.status)
-            }
-            mLog.i(TAG, "json $json")
-            MaterialAlertDialogBuilder(context).setTitle("Alert")
-                .setMessage("Generated json : $json")
-                .create().show()
-        }
 
         CoroutineScope(IO).launch {
             Handler(Looper.getMainLooper()).postDelayed({
                 getStudentList(selectedBatchID)
-            },700)
+            }, 700)
         }
+
+        markAttendance.setOnClickListener {
+
+            val allIDs = ArrayList<String>()
+            val absentIDs = ArrayList<String>()
+
+            arrayList.forEach {
+                if (it.status == "absent") {
+                    absentIDs.add(it.id!!)
+                }
+                allIDs.add(it.id!!)
+            }
+            val a = TextUtils.join(",", allIDs)
+            val b = TextUtils.join(",", absentIDs)
+            json.put("students_present",a)
+            json.put("students_absent",b)
+
+            mLog.i(TAG,"json $json")
+
+          /*  NetworkOps.post(Urls.studentAttendanceSubmitUrl,json.toString(),context,object : response{
+                override fun onInternetfailure() {
+                activity!!.runOnUiThread {
+                    noInternetSnackBar(activity!!)
+                }
+               }
+
+                override fun onrespose(string: String?) {
+                mLog.i(TAG,"response $string")
+
+                }
+
+                override fun onfailure() {
+                  activity!!.runOnUiThread {
+                      showToast(context,"submission failed")
+                  }
+                }
+
+            }){ _, _, _ ->
+
+            }*/
+        }
+
+
 
 
         return view

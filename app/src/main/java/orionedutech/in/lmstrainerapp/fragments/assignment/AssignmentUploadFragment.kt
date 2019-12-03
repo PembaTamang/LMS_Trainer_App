@@ -13,8 +13,7 @@ import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.INVISIBLE
-import android.view.View.VISIBLE
+import android.view.View.*
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.*
@@ -38,6 +37,7 @@ import orionedutech.`in`.lmstrainerapp.database.MDatabase
 import orionedutech.`in`.lmstrainerapp.database.entities.Batch
 import orionedutech.`in`.lmstrainerapp.fragments.BaseFragment
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
+import orionedutech.`in`.lmstrainerapp.mToast.noInternetSnackBar
 import orionedutech.`in`.lmstrainerapp.mToast.showToast
 import orionedutech.`in`.lmstrainerapp.network.NetworkOps
 import orionedutech.`in`.lmstrainerapp.network.Urls
@@ -95,7 +95,7 @@ class AssignmentUploadFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        activity!!.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
+        activity!!.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_assignment_upload, container, false)
         courseSpinner = view.course
@@ -108,9 +108,6 @@ class AssignmentUploadFragment : BaseFragment() {
         browseButton = view.browse
         uploadButon = view.upload
         views = arrayListOf(nameET,descET,batchSpinner,courseSpinner,browseButton,uploadButon)
-
-        progress.visibility = INVISIBLE
-        progressText.visibility = INVISIBLE
 
         courseAdapter = CourseSpinAdapter(
             context!!,
@@ -265,7 +262,7 @@ class AssignmentUploadFragment : BaseFragment() {
                 override fun onInternetfailure() {
                     activity!!.runOnUiThread {
                         enableViews()
-                        mToast.noInternetSnackBar(activity!!)
+                   noInternetSnackBar(activity!!)
                     }
                 }
 
@@ -280,8 +277,6 @@ class AssignmentUploadFragment : BaseFragment() {
             }
 
         }
-
-
 
         return view
     }
@@ -347,7 +342,7 @@ class AssignmentUploadFragment : BaseFragment() {
                     context,
                     object : response {
                         override fun onInternetfailure() {
-                            mToast.noInternetSnackBar(activity!!)
+                       noInternetSnackBar(activity!!)
                         }
 
                         override fun onrespose(string: String?) {
@@ -400,8 +395,8 @@ class AssignmentUploadFragment : BaseFragment() {
     private fun hideAnimations() {
         activity!!.runOnUiThread {
             progress.isIndeterminate = false
-            progress.visibility = INVISIBLE
-            progressText.visibility = INVISIBLE
+            progress.visibility = GONE
+            progressText.visibility = GONE
             progressText.text = "Please wait"
         }
     }

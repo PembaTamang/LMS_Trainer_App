@@ -63,12 +63,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Please wait"
+        android:textAlignment="center"
         android:textAppearance="@style/OpenSansRegular"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/container"
-        app:layout_constraintEnd_toEndOf="@+id/lottie"
-        app:layout_constraintStart_toStartOf="@+id/lottie"
+        app:layout_constraintEnd_toEndOf="@+id/easyCountDownTextview"
+        app:layout_constraintStart_toStartOf="@+id/easyCountDownTextview"
         app:layout_constraintTop_toBottomOf="@+id/easyCountDownTextview" />
 
     <com.airbnb.lottie.LottieAnimationView

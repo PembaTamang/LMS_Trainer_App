@@ -187,7 +187,10 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
                 view.type.setCompoundDrawablesWithIntrinsicBounds(null, null, ascendingType, null)
                 ascendingTypes.set(false)
                 //sort by descending types
-
+                val templist = arrayList.sortedWith(compareByDescending(DCAssessmentList::assesment_q_type))
+                arrayList.clear()
+                arrayList.addAll(templist)
+                adapter.notifyDataSetChanged()
 
             } else {
                 val animator =
@@ -196,7 +199,10 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
                 view.type.setCompoundDrawablesWithIntrinsicBounds(null, null, descendingType, null)
                 ascendingTypes.set(true)
                 //sort by ascending types
-
+                val templist = arrayList.sortedWith(compareBy(DCAssessmentList::assesment_q_type))
+                arrayList.clear()
+                arrayList.addAll(templist)
+                adapter.notifyDataSetChanged()
 
             }
         }
@@ -219,6 +225,10 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
                 )
                 ascendingCenters.set(false)
                 //sort by descending centers
+                val templist = arrayList.sortedWith(compareByDescending(DCAssessmentList::assesment_centers))
+                arrayList.clear()
+                arrayList.addAll(templist)
+                adapter.notifyDataSetChanged()
             } else {
                 val animator =
                     ObjectAnimator.ofInt(descendingCenter, "level", 0, 10000).setDuration(500)
@@ -231,6 +241,10 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
                 )
                 ascendingCenters.set(true)
                 //sort by ascending centers
+                val templist = arrayList.sortedWith(compareBy(DCAssessmentList::assesment_centers))
+                arrayList.clear()
+                arrayList.addAll(templist)
+                adapter.notifyDataSetChanged()
             }
         }
 

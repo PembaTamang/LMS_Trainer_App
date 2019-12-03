@@ -76,6 +76,7 @@ class CourseFragment : BaseFragment() {
     var selectedModuleID = ""
     var selectedChapterID = ""
 
+    var userID = ""
 
     lateinit var getStudentList: MaterialButton
 
@@ -144,9 +145,6 @@ class CourseFragment : BaseFragment() {
                         moduleContainer.visibility = GONE
                         getModuleData()
                     }
-                    "2" -> {
-
-                    }
                     else -> {
                         showToast(context, "error")
                     }
@@ -199,7 +197,10 @@ class CourseFragment : BaseFragment() {
 
         CoroutineScope(Dispatchers.IO).launch {
             context?.let {
-                val dao = MDatabase(it).getBatchDao()
+                val db = MDatabase(it)
+                val dao = db.getBatchDao()
+                val userDao = db.getUserDao()
+                userID = userDao.getUserID()
                 if (dao.batchDataExists()) {
                     batchList.addAll(dao.getAllBatches())
                     withContext(Dispatchers.Main) {
@@ -215,11 +216,16 @@ class CourseFragment : BaseFragment() {
             //go to student list fragment
             val fragment = StudentListFragment()
             val bundle = Bundle()
-            bundle.putString("batch_id",selectedBatchID)
-            bundle.putString("course_id",selectedCourseID)
-            bundle.putString("module_id",selectedModuleID)
-            bundle.putString("chapter_id",selectedChapterID)
+            bundle.putString("batch_id", selectedBatchID)
+            bundle.putString("course_id", selectedCourseID)
+            bundle.putString("module_id", selectedModuleID)
+            bundle.putString("chapter_id", selectedChapterID)
+            bundle.putString("unit_id", "0")
+            bundle.putString("subunit_id", "0")
+            bundle.putString("user_id", userID)
+
             fragment.arguments = bundle
+
             val ft = activity?.supportFragmentManager!!.beginTransaction()
             ft.setCustomAnimations(
                 R.anim.enter_from_right,
@@ -283,6 +289,11 @@ class CourseFragment : BaseFragment() {
                         override fun onrespose(string: String?) {
                             mLog.i(TAG, "response : $string")
                             val courses = Gson().fromJson(string, DCCourseList::class.java)
+                            if (courses == null) {
+                                onfailure()
+                                return
+                            }
+
                             if (courses.success == "1") {
 
                                 val course = courses.courses
@@ -293,6 +304,7 @@ class CourseFragment : BaseFragment() {
                                         mLog.i(TAG, "done course lise ${courseList.size}")
                                         courseContainer.visibility = VISIBLE
                                         courseSpinner.onItemSelectedListener = null
+                                        selectedCourseID = courseList[0].course_id
                                         hideAnimation()
                                         enableSpinners()
                                         courseAdapter.notifyDataSetChanged()
@@ -354,6 +366,7 @@ class CourseFragment : BaseFragment() {
                         activity!!.runOnUiThread {
                             moduleContainer.visibility = VISIBLE
                             moduleSpinner.onItemSelectedListener = null
+                            selectedModuleID = moduleList[0].course_module_id
                             moduleAdapter.notifyDataSetChanged()
                             hideAnimation()
                             enableSpinners()
@@ -413,6 +426,7 @@ class CourseFragment : BaseFragment() {
                     getStudentList.isEnabled = true
                     chapterContainer.visibility = VISIBLE
                     chapterSpinner.onItemSelectedListener = null
+                    selectedChapterID = chapterList[0].chapter_id
                     chapterAdapter.notifyDataSetChanged()
                     enableSpinners()
                     hideAnimation()
