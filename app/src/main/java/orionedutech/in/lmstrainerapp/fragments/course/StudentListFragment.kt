@@ -1,14 +1,18 @@
 package orionedutech.`in`.lmstrainerapp.fragments.course
 
 
+import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Layout
 import android.text.TextUtils
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -16,7 +20,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.lottie.LottieAnimationView
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
+import kotlinx.android.synthetic.main.attendance_alert.view.*
 import kotlinx.android.synthetic.main.fragment_student_list.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
@@ -45,7 +51,7 @@ class StudentListFragment : Fragment() {
     var arrayList: ArrayList<AttendanceModel> = ArrayList()
     lateinit var recyclerView: ShimmerRecyclerView
     lateinit var attendanceAdapter: NewAttendanceAdapter
-    lateinit var animation : LottieAnimationView
+    lateinit var animation: LottieAnimationView
 
     lateinit var allPresent: TextView
     var allPrsnt = true
@@ -58,8 +64,7 @@ class StudentListFragment : Fragment() {
     var selectedSubUnitID = ""
     var trainerID = ""
     var uniqueID = ""
-
-
+    var allAbsent = false
     lateinit var json: JSONObject
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -73,7 +78,7 @@ class StudentListFragment : Fragment() {
         attendanceAdapter = NewAttendanceAdapter(arrayList)
         recyclerView.adapter = attendanceAdapter
         markAttendance = view.markAttendance
-        animation = view.batchAnimation
+        animation = view.anim
 
         val bundle = arguments!!
 
@@ -154,38 +159,109 @@ class StudentListFragment : Fragment() {
             }
             val a = TextUtils.join(",", allIDs)
             val b = TextUtils.join(",", absentIDs)
-            json.put("students_present",a)
-            json.put("students_absent",b)
+            json.put("students_present", a)
+            json.put("students_absent", b)
 
-            mLog.i(TAG,"json $json")
+            mLog.i(TAG, "json $json")
 
-          /*  NetworkOps.post(Urls.studentAttendanceSubmitUrl,json.toString(),context,object : response{
-                override fun onInternetfailure() {
-                activity!!.runOnUiThread {
-                    noInternetSnackBar(activity!!)
-                }
-               }
+            animation.visibility = VISIBLE
+            animation.playAnimation()
+            markAttendance.text = ""
+            NetworkOps.post(
+                Urls.studentAttendanceSubmitUrl,
+                json.toString(),
+                context,
+                object : response {
+                    override fun onInternetfailure() {
+                        activity!!.runOnUiThread {
+                            noInternetSnackBar(activity!!)
+                        }
+                    }
 
-                override fun onrespose(string: String?) {
-                mLog.i(TAG,"response $string")
+                    override fun onrespose(string: String?) {
+                    mLog.i(TAG,"attendance response: $string")
+                        if (string.isNullOrEmpty()) {
+                            onfailure()
+                        } else {
+                            val json = JSONObject(string)
+                            if (json.getString("success") == "1") {
+                                val absent = json.getString("total_absent")
+                                 allAbsent = absent.toInt() == arrayList.size
+                                 activity!!.runOnUiThread {
+                                    animation.visibility = GONE
+                                    animation.cancelAnimation()
+                                    markAttendance.text = "Mark Attendance"
+                                  //  markAttendance.isEnabled = false
+                                    showSuccessAlert()
 
-                }
+                                }
+                            } else {
+                                onfailure()
+                            }
+                        }
+                    }
 
-                override fun onfailure() {
-                  activity!!.runOnUiThread {
-                      showToast(context,"submission failed")
-                  }
-                }
+                    override fun onfailure() {
+                        activity!!.runOnUiThread {
+                            animation.visibility = GONE
+                            animation.cancelAnimation()
+                            showToast(context, "submission failed")
+                            markAttendance.text = "Mark Attendance"
+                        }
+                    }
 
-            }){ _, _, _ ->
+                }) { _, _, _ ->
 
-            }*/
+            }
         }
 
-
-
-
         return view
+    }
+
+    private fun showSuccessAlert() {
+        val view = LayoutInflater.from(context).inflate(R.layout.attendance_alert, null, false)
+        val builder = MaterialAlertDialogBuilder(context)
+        builder.background = ContextCompat.getDrawable(context!!, R.drawable.round_rect_white)
+        builder.setView(view)
+        builder.setCancelable(false)
+        val dialogue = builder.create()
+        val materialButton = view.startClass
+        val animation = view.imageView10
+        if(allAbsent){
+            materialButton.text = "dismiss class : 0 present"
+        }
+        materialButton.setOnClickListener {
+            dialogue.dismiss()
+            if(allAbsent){
+                activity!!.supportFragmentManager.popBackStack()
+            }
+            //start class here
+        }
+        dialogue.show()
+        Handler(Looper.getMainLooper()).postDelayed({
+            animation.visibility = VISIBLE
+            animation.playAnimation()
+            animation.addAnimatorListener(object : Animator.AnimatorListener{
+                override fun onAnimationRepeat(p0: Animator?) {
+
+                }
+
+                override fun onAnimationEnd(p0: Animator?) {
+                    materialButton.isEnabled = true
+                }
+
+                override fun onAnimationCancel(p0: Animator?) {
+
+                }
+
+                override fun onAnimationStart(p0: Animator?) {
+
+                }
+
+            })
+        },500)
+
+
     }
 
     private fun getStudentList(selectedBatchID: String?) {

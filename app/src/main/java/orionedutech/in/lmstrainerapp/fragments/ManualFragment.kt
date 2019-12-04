@@ -43,6 +43,7 @@ import java.io.*
 /**
  * A simple [Fragment] subclass.
  */
+
 class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
 
     lateinit var pdfView: PDFView
@@ -54,10 +55,7 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
     lateinit var pdfPref : SharedPreferences
     lateinit var refresh : SwipeRefreshLayout
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_manual, container, false)
 

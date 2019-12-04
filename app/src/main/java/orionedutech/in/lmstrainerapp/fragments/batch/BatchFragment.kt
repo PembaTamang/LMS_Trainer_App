@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -67,7 +68,7 @@ class BatchFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
         adapter = BatchAdapterAlt(arrayList)
         recyclerView.adapter = adapter
-        adapter.notifyDataSetChanged()
+
 
         val ascendingName =
             context?.let { ContextCompat.getDrawable(it, R.drawable.animated_ascending) }
@@ -88,7 +89,8 @@ class BatchFragment : Fragment() {
                         arrayList.sortedWith(compareByDescending(DCBatchesLong::batch_name))
                     arrayList.clear()
                     arrayList.addAll(templist)
-                    withContext(Main){
+                    withContext(Main) {
+                       // notifydatasetchanged()
                         adapter.notifyDataSetChanged()
                     }
                 }
@@ -103,9 +105,10 @@ class BatchFragment : Fragment() {
                     val templist = arrayList.sortedWith(compareBy(DCBatchesLong::batch_name))
                     arrayList.clear()
                     arrayList.addAll(templist)
-                   withContext(Main){
-                       adapter.notifyDataSetChanged()
-                   }
+                    withContext(Main) {
+                       // notifydatasetchanged()
+                        adapter.notifyDataSetChanged()
+                    }
 
                 }
             }
@@ -130,10 +133,12 @@ class BatchFragment : Fragment() {
                 ascendingCenters.set(false)
                 //sort by descending centers
                 CoroutineScope(IO).launch {
-                    val templist = arrayList.sortedWith(compareByDescending(DCBatchesLong::batch_center))
+                    val templist =
+                        arrayList.sortedWith(compareByDescending(DCBatchesLong::batch_center))
                     arrayList.clear()
                     arrayList.addAll(templist)
-                    withContext(Main){
+                    withContext(Main) {
+                       // notifydatasetchanged()
                         adapter.notifyDataSetChanged()
                     }
                 }
@@ -153,7 +158,8 @@ class BatchFragment : Fragment() {
                     val templist = arrayList.sortedWith(compareBy(DCBatchesLong::batch_center))
                     arrayList.clear()
                     arrayList.addAll(templist)
-                    withContext(Main){
+                    withContext(Main) {
+                       // notifydatasetchanged()
                         adapter.notifyDataSetChanged()
                     }
                 }
@@ -211,6 +217,7 @@ class BatchFragment : Fragment() {
                     arrayList.addAll(batch)
                     activity!!.runOnUiThread {
                         recyclerView.hideShimmerAdapter()
+                       // notifydatasetchanged()
                         adapter.notifyDataSetChanged()
                     }
                 } else {
@@ -235,6 +242,17 @@ class BatchFragment : Fragment() {
         ) { _, _, _ ->
 
         }
+    }
+
+    private fun notifydatasetchanged() {
+        val context = recyclerView.context
+        val controller = AnimationUtils.loadLayoutAnimation(
+            context,
+            R.anim.layout_animation_fall_down
+        )
+        recyclerView.layoutAnimation = controller
+        adapter.notifyDataSetChanged()
+        recyclerView.scheduleLayoutAnimation()
     }
 
     private fun runFailureCode() {
