@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView
@@ -54,6 +55,7 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
     var arrayList = ArrayList<String>()
     var unitData = ArrayList<TrainingIndividualUnitData>()
     var subUnitsData = ArrayList<TrainingIndividualSubUnitsData>()
+    lateinit var ft: FragmentTransaction
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -219,6 +221,21 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
         } else {
 
             showToast(context, subUnitsData[itempos].lesson_name)
+            //go to next fragment and play video
+            val fragment = VideoFragment()
+            val bundle = Bundle()
+            bundle.putString("url",subUnitsData[itempos].media_disk_path)
+            fragment.arguments = bundle
+            ft = activity!!.supportFragmentManager.beginTransaction()
+            ft.setCustomAnimations(
+                R.anim.enter_from_right,
+                R.anim.exit_to_left,
+                R.anim.enter_from_left,
+                R.anim.exit_to_right
+            )
+            ft.replace(R.id.chapterContainer, fragment)
+            ft.commit()
+
         }
     }
 }

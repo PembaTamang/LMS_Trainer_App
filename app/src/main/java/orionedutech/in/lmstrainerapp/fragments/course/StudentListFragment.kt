@@ -277,10 +277,7 @@ class StudentListFragment : Fragment() {
             intent.putExtra("uniqueID", uniqueID)
             intent.putExtra("chapter_type",chapterType)
             startActivity(intent)
-            Handler().postDelayed({
-                activity!!.supportFragmentManager.popBackStack()
-            }, 500)
-
+            activity!!.supportFragmentManager.popBackStack()
             activity!!.overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left)
         }
         dialogue.show()

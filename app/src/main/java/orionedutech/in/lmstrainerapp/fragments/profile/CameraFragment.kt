@@ -1,3 +1,4 @@
+/*
 package orionedutech.`in`.lmstrainerapp.fragments.profile
 
 
@@ -39,21 +40,23 @@ import java.io.*
 import java.util.*
 import java.util.concurrent.Executors
 
+*/
 /**
  * A simple [Fragment] subclass.
- */
+ *//*
+
 class CameraFragment : Fragment(), CaptureInterface.capture,UploadImage {
     override fun upload() {
 
     }
 
-    private var lensFacing = CameraX.LensFacing.FRONT
+    private var lensFacing = LensFacing.FRONT
     lateinit var texture: TextureView
     val aspectRatio = AspectRatio.RATIO_16_9
     lateinit var previewConfig: PreviewConfig
     lateinit var preview: Preview
     lateinit var imageCapture: ImageCapture
-    var flashMode: FlashMode = FlashMode.OFF
+    var flashMode: FlashMode = FlashMode.AUTO.
     lateinit var previewImage : ImageView
     lateinit var  okbtn : ImageView
     lateinit var cancelbtn : ImageView
@@ -165,9 +168,11 @@ class CameraFragment : Fragment(), CaptureInterface.capture,UploadImage {
 
         // Build the image capture use case and attach button click listener
         imageCapture = ImageCapture(imageCaptureConfig)
-        /* view!!.capture.setOnClickListener {
+        */
+/* view!!.capture.setOnClickListener {
 
-         }*/
+         }*//*
+
         CaptureInterface.theRealInstance.setListener(this)
         CameraX.bindToLifecycle(this, preview, imageCapture)
 
@@ -204,14 +209,16 @@ class CameraFragment : Fragment(), CaptureInterface.capture,UploadImage {
                     }
                     //  bitmap =  rotateBitmap(context!!, getFileUri(context!!,img),bitmap)
 
-                    /*  var os: OutputStream? = null
+                    */
+/*  var os: OutputStream? = null
                       try {
                           os = BufferedOutputStream(FileOutputStream(file))
                          roatatedbitmap!!.compress(Bitmap.CompressFormat.JPEG, 50, os)
                           os.close()
                       } catch (e: Exception) {
                           e.printStackTrace()
-                      }*/
+                      }*//*
+
 
                     val path1 = context!!.filesDir.path + "/profile1.jpg"
                     img1 = File(path1)
@@ -265,7 +272,8 @@ class CameraFragment : Fragment(), CaptureInterface.capture,UploadImage {
                             animation.cancelAnimation()
                             animation.visibility = GONE
                         }
-                        /* activity!!.runOnUiThread {
+                        */
+/* activity!!.runOnUiThread {
 
 
                          val preview =
@@ -291,7 +299,8 @@ class CameraFragment : Fragment(), CaptureInterface.capture,UploadImage {
 
 
                          dialogue.show()
-                     }*/
+                     }*//*
+
                     }
 
 
@@ -442,3 +451,4 @@ class CameraFragment : Fragment(), CaptureInterface.capture,UploadImage {
     }
 
 }
+*/

@@ -112,7 +112,7 @@ class ParentFragment : BaseFragment(), UCropFragmentCallback, flashtoggle.captur
         view.camera.setOnClickListener {
             //start camera intent
             if (barPreferences.getBoolean("move", true)) {
-                moveToFragment(CameraFragment())
+              //  moveToFragment(())
                 MoveNavBar.theRealInstance.refresh()
                 profilebooleantoggle.theRealInstance.toggle(false)
             } else {

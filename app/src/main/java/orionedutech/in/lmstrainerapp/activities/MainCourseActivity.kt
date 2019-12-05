@@ -7,6 +7,7 @@ import android.view.View.VISIBLE
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentTransaction
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.button.MaterialButton
@@ -129,5 +130,7 @@ class MainCourseActivity : AppCompatActivity(), ShowActivityViews {
     override fun show(show: Boolean) {
         mLog.i(TAG, "show $show")
         //todo make views visible
+        fragContainer.background = ContextCompat.getDrawable(this,R.drawable.round_rect_white_stroke)
+        showActivityViews()
     }
 }
