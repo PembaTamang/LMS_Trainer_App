@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.recycler_student_list.view.*
 import orionedutech.`in`.lmstrainerapp.R
+import orionedutech.`in`.lmstrainerapp.fragments.course.StudentListFragment
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
 import orionedutech.`in`.lmstrainerapp.model.AttendanceModel
@@ -43,29 +44,41 @@ class NewAttendanceAdapter(private val arrayList: ArrayList<AttendanceModel>) :
         holder.slNo.text = (position+1).toString()
         holder.name.text = m.name
         holder.radio.setOnClickListener {
-            if(m.status=="present"){
-                mLog.i(TAG,"false")
+            if (!StudentListFragment.disable) {
+
+            if (m.status == "present") {
+                mLog.i(TAG, "false")
                 m.status = "absent"
                 holder.radio.text = "Absent"
                 holder.radio.isChecked = false
                 android.os.Handler().postDelayed({
-                    holder.radio.buttonTintList = ColorStateList.valueOf(ContextCompat.getColor(context!!,R.color.radio_button_color))
+                    holder.radio.buttonTintList = ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            context!!,
+                            R.color.radio_button_color
+                        )
+                    )
                     holder.radio.isChecked = true
 
-                },500)
+                }, 500)
 
-            }else{
-                mLog.i(TAG,"true")
+            } else {
+                mLog.i(TAG, "true")
                 m.status = "present"
                 holder.radio.text = "Present"
                 holder.radio.isChecked = false
                 android.os.Handler().postDelayed({
-                    holder.radio.buttonTintList = ColorStateList.valueOf(ContextCompat.getColor(context!!,R.color.radio_button_color1))
+                    holder.radio.buttonTintList = ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            context!!,
+                            R.color.radio_button_color1
+                        )
+                    )
                     holder.radio.isChecked = true
 
-                },500)
+                }, 500)
             }
-
+        }
         }
 
 

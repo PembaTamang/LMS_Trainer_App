@@ -3,13 +3,16 @@ package orionedutech.`in`.lmstrainerapp.fragments.course
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.Layout
 import android.text.TextUtils
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -29,6 +32,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import orionedutech.`in`.lmstrainerapp.R
+import orionedutech.`in`.lmstrainerapp.activities.MainCourseActivity
 import orionedutech.`in`.lmstrainerapp.adapters.recyclerviews.NewAttendanceAdapter
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
@@ -65,7 +69,15 @@ class StudentListFragment : Fragment() {
     var trainerID = ""
     var uniqueID = ""
     var allAbsent = false
+    var trainingID = ""
+    var chapterType = ""
+
     lateinit var json: JSONObject
+
+    companion object {
+        var disable = false
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -90,6 +102,9 @@ class StudentListFragment : Fragment() {
         selectedSubUnitID = bundle.getString("subunit_id", "")
         trainerID = bundle.getString("user_id", "")
         uniqueID = UUID.randomUUID().toString()
+
+        val uniquePrefs = activity!!.getSharedPreferences("uid", Context.MODE_PRIVATE)
+        uniquePrefs.edit().putString(uniqueID, uniqueID).apply()
 
         json = JSONObject()
         json.put("trainer_id", trainerID)
@@ -148,6 +163,7 @@ class StudentListFragment : Fragment() {
 
         markAttendance.setOnClickListener {
 
+
             val allIDs = ArrayList<String>()
             val absentIDs = ArrayList<String>()
 
@@ -178,22 +194,30 @@ class StudentListFragment : Fragment() {
                         }
                     }
 
+                    @SuppressLint("ClickableViewAccessibility")
                     override fun onrespose(string: String?) {
-                    mLog.i(TAG,"attendance response: $string")
+                        mLog.i(TAG, "attendance response: $string")
                         if (string.isNullOrEmpty()) {
                             onfailure()
                         } else {
                             val json = JSONObject(string)
                             if (json.getString("success") == "1") {
                                 val absent = json.getString("total_absent")
-                                 allAbsent = absent.toInt() == arrayList.size
-                                 activity!!.runOnUiThread {
+                                val trainingID = json.getString("training_id")
+                                chapterType = json.getString("chapter_link_type")
+                                mLog.i(TAG,"chapter link type $chapterType")
+                                allAbsent = absent.toInt() == arrayList.size
+                                activity!!.runOnUiThread {
                                     animation.visibility = GONE
                                     animation.cancelAnimation()
-                                    markAttendance.text = "Mark Attendance"
-                                  //  markAttendance.isEnabled = false
-                                    showSuccessAlert()
-
+                                    markAttendance.visibility = GONE
+                                    recyclerView.isEnabled = false
+                                    allPresent.isEnabled = false
+                                    disable = true
+                                    recyclerView.alpha = 0.5f
+                                    Handler(Looper.getMainLooper()).postDelayed({
+                                        showSuccessAlert(uniqueID, trainingID)
+                                    }, 500)
                                 }
                             } else {
                                 onfailure()
@@ -203,45 +227,67 @@ class StudentListFragment : Fragment() {
 
                     override fun onfailure() {
                         activity!!.runOnUiThread {
+
                             animation.visibility = GONE
                             animation.cancelAnimation()
                             showToast(context, "submission failed")
                             markAttendance.text = "Mark Attendance"
+
                         }
                     }
 
                 }) { _, _, _ ->
 
             }
+
+
         }
 
         return view
     }
 
-    private fun showSuccessAlert() {
+    private fun showSuccessAlert(uniqueID: String, trainingID: String) {
         val view = LayoutInflater.from(context).inflate(R.layout.attendance_alert, null, false)
         val builder = MaterialAlertDialogBuilder(context)
-        builder.background = ContextCompat.getDrawable(context!!, R.drawable.round_rect_white)
         builder.setView(view)
         builder.setCancelable(false)
         val dialogue = builder.create()
         val materialButton = view.startClass
         val animation = view.imageView10
-        if(allAbsent){
+        if (allAbsent) {
             materialButton.text = "dismiss class : 0 present"
         }
         materialButton.setOnClickListener {
             dialogue.dismiss()
-            if(allAbsent){
+            if (allAbsent) {
                 activity!!.supportFragmentManager.popBackStack()
+                return@setOnClickListener
             }
+
             //start class here
+            val intent = Intent(context, MainCourseActivity::class.java)
+            intent.putExtra("trainerID", trainerID)
+            intent.putExtra("courseID", selectedCourseID)
+            intent.putExtra("moduleID", selectedModuleID)
+            intent.putExtra("chapterID", selectedChapterID)
+            intent.putExtra("batchID", selectedBatchID)
+            intent.putExtra("unitID", selectedUnitID)
+            intent.putExtra("subunitID", selectedSubUnitID)
+            intent.putExtra("trainingID", trainingID)
+            intent.putExtra("uniqueID", uniqueID)
+            intent.putExtra("chapter_type",chapterType)
+            startActivity(intent)
+            Handler().postDelayed({
+                activity!!.supportFragmentManager.popBackStack()
+            }, 500)
+
+            activity!!.overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left)
         }
         dialogue.show()
         Handler(Looper.getMainLooper()).postDelayed({
             animation.visibility = VISIBLE
             animation.playAnimation()
-            animation.addAnimatorListener(object : Animator.AnimatorListener{
+            animation.addAnimatorListener(object : Animator.AnimatorListener {
                 override fun onAnimationRepeat(p0: Animator?) {
 
                 }
@@ -259,7 +305,7 @@ class StudentListFragment : Fragment() {
                 }
 
             })
-        },500)
+        }, 500)
 
 
     }

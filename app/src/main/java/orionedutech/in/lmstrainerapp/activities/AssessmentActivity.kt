@@ -77,7 +77,6 @@ class AssessmentActivity : AppCompatActivity(), ActivityAns, CountDownInterface 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assessment)
-        title = "Trainer Assessment"
         val assessmentID = intent.getStringExtra("assessmentID")!!
         val uid = intent.getStringExtra("uid")!!
         val batchID = intent.getStringExtra("batch_id")!!

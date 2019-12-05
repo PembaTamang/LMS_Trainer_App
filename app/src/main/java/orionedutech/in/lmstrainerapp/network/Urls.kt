@@ -25,4 +25,5 @@ object Urls {
     const val moduleLinkedChapters = "https://orionedutech.co.in/cglms_app_demo/appscoursemodulelinks"
     const val studentListUrl = "https://orionedutech.co.in/cglms_app_demo/appgetbatchstudents"
     const val studentAttendanceSubmitUrl = "https://orionedutech.co.in/cglms_app_demo/apptaddattendance"
+    const val trainingContent = "https://orionedutech.co.in/cglms_app_demo/apptrainigdata"
 }

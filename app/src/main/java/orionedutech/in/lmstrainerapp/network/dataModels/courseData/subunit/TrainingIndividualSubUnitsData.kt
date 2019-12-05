@@ -1,0 +1,33 @@
+package orionedutech.`in`.lmstrainerapp.network.dataModels.courseData.subunit
+
+data class TrainingIndividualSubUnitsData(
+    val admin_type: String,
+    val created_at: String,
+    val created_by: String,
+    val deleted_by: String,
+    val deleted_date: Any,
+    val is_deleted: String,
+    val is_org_activity_file: String,
+    val lesson_description: String,
+    val lesson_id: String,
+    val lesson_name: String,
+    val lesson_snapshot: Any,
+    val media_disk_encoded: Any,
+    val media_disk_name: String,
+    val media_disk_path: String,
+    val media_disk_path_relative: String,
+    val media_disk_path_relative_h: String,
+    val media_mime: String,
+    val media_org_name: String,
+    val media_page: String,
+    val media_seek: String,
+    val media_size: String,
+    val media_size2: String,
+    val media_type: String,
+    val media_type_2: String,
+    val media_type_data_id: String,
+    val media_uploaded_by: String,
+    val storage_id: String,
+    val storage_unique_id: String,
+    val updated_at: Any
+)

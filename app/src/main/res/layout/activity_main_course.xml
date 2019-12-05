@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     tools:context=".activities.AssessmentActivity">
-
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -40,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginStart="8dp"
-                android:text="Trainer Assessment"
+                android:text="Course Material"
                 android:textAppearance="@style/Baloo"
                 android:textColor="@color/white"
                 android:textSize="18sp"
@@ -56,10 +55,10 @@
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Assessment Name"
+        android:text="Chapter Name"
         android:textAppearance="@style/Baloo"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
@@ -71,6 +70,7 @@
         android:layout_marginEnd="16dp"
         android:textAppearance="@style/OpenSansRegular"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/name" />
 
@@ -78,6 +78,7 @@
         android:id="@+id/easyCountDownTextview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:layout_centerInParent="true"
         android:layout_marginTop="8dp"
         android:background="@drawable/round_rect_grey"
@@ -93,16 +94,15 @@
         app:textSize="25sp" />
 
     <FrameLayout
-        android:id="@+id/container"
+        android:id="@+id/chapterContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/next"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/easyCountDownTextview" />
+
 
     <TextView
         android:id="@+id/topstatus"
@@ -113,7 +113,8 @@
         android:textAppearance="@style/OpenSansRegular"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/container"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/chapterContainer"
         app:layout_constraintEnd_toEndOf="@+id/easyCountDownTextview"
         app:layout_constraintStart_toStartOf="@+id/easyCountDownTextview"
         app:layout_constraintTop_toBottomOf="@+id/easyCountDownTextview" />
@@ -122,8 +123,9 @@
         android:id="@+id/lottie"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        app:layout_constraintEnd_toEndOf="@+id/container"
-        app:layout_constraintStart_toStartOf="@+id/container"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/chapterContainer"
+        app:layout_constraintStart_toStartOf="@+id/chapterContainer"
         app:layout_constraintTop_toBottomOf="@+id/topstatus"
         app:lottie_autoPlay="false"
         app:lottie_colorFilter="@color/greyText"
@@ -136,6 +138,7 @@
         android:layout_height="wrap_content"
         android:text="Checking for questions..."
         android:textSize="16sp"
+        android:visibility="gone"
         android:textAppearance="@style/OpenSansRegular"
         app:layout_constraintEnd_toEndOf="@+id/lottie"
         app:layout_constraintStart_toStartOf="@+id/lottie"
@@ -149,6 +152,7 @@
         android:backgroundTint="@color/blue"
         android:text="Start"
         android:padding="8dp"
+        android:visibility="gone"
         android:textAppearance="@style/Baloo"
         android:textColor="@color/white"
         android:textSize="16sp"
