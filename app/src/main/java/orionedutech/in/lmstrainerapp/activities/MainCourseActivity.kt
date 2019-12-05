@@ -8,6 +8,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.button.MaterialButton
@@ -131,6 +132,12 @@ class MainCourseActivity : AppCompatActivity(), ShowActivityViews {
         mLog.i(TAG, "show $show")
         //todo make views visible
         fragContainer.background = ContextCompat.getDrawable(this,R.drawable.round_rect_white_stroke)
+        val layoutParams : FrameLayout.LayoutParams = FrameLayout.LayoutParams(0,0)
+        layoutParams.topMargin = 16
+        layoutParams.bottomMargin = 16
+        layoutParams.marginStart = 16
+        layoutParams.marginEnd = 16
+        fragContainer.layoutParams = layoutParams
         showActivityViews()
     }
 }
