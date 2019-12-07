@@ -75,7 +75,7 @@ class CourseFragment : BaseFragment() {
     var selectedCourseID = ""
     var selectedModuleID = ""
     var selectedChapterID = ""
-
+    var selectedCourseName = ""
     var userID = ""
 
     lateinit var getStudentList: MaterialButton
@@ -139,6 +139,7 @@ class CourseFragment : BaseFragment() {
                 mLog.i(TAG, "going")
                 val course = courseList[p2]
                 selectedCourseID = course.course_id
+                selectedCourseName = course.course_name
                 when (course.course_links_to) {
                     "1" -> {
                         getStudentList.isEnabled = false
@@ -223,7 +224,7 @@ class CourseFragment : BaseFragment() {
             bundle.putString("unit_id", "0")
             bundle.putString("subunit_id", "0")
             bundle.putString("user_id", userID)
-
+            bundle.putString("course_name",selectedCourseName)
             fragment.arguments = bundle
 
             val ft = activity?.supportFragmentManager!!.beginTransaction()
@@ -336,6 +337,7 @@ class CourseFragment : BaseFragment() {
 
     private fun getModuleData() {
         activity!!.runOnUiThread {
+            chapterContainer.visibility = GONE
             selectedChapterID = ""
             getStudentList.isEnabled = false
             showWaitAnimation()

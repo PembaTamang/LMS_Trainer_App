@@ -11,11 +11,14 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_chapter.view.*
 import org.json.JSONObject
+import org.w3c.dom.Text
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.adapters.recyclerviews.ChapterAdapter
+import orionedutech.`in`.lmstrainerapp.adapters.recyclerviews.ChapterAdapter.Companion.isUnitData
 import orionedutech.`in`.lmstrainerapp.interfaces.RecyclerItemClick
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
@@ -35,11 +38,10 @@ import orionedutech.`in`.lmstrainerapp.network.response
  */
 
 class ChapterFragment : Fragment(), RecyclerItemClick {
-    companion object{
-        var isUnitData = false
-    }
+
     lateinit var name: TextView
     lateinit var recyclerView: ShimmerRecyclerView
+    lateinit var cType: TextView
     var trainerID = ""
     var batchID = ""
     var courseID = ""
@@ -56,7 +58,7 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
     var unitData = ArrayList<TrainingIndividualUnitData>()
     var subUnitsData = ArrayList<TrainingIndividualSubUnitsData>()
     lateinit var ft: FragmentTransaction
-
+    var isUnit = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -66,6 +68,7 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
         name = view.heading
         refreshLayout = view.swipe
         recyclerView = view.recycler
+        cType = view.title
         recyclerView.layoutManager = LinearLayoutManager(context)
         adapter = ChapterAdapter(arrayList, this)
         recyclerView.adapter = adapter
@@ -82,10 +85,15 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
         when (chapterType) {
             "1" -> {
                 isUnitData = true
+                isUnit =true
+                cType.text = "Unit List"
                 getUnitData()
             }
 
             "2" -> {
+                isUnit = false
+                isUnitData = false
+                cType.text = "Subunit List"
                 getSubUnitData()
             }
             else -> {
@@ -94,69 +102,15 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
         }
         refreshLayout.setOnRefreshListener {
             refreshLayout.isRefreshing = false
-            if(isUnitData){
+            if (isUnitData) {
                 getUnitData()
-            }else{
+            } else {
                 getSubUnitData()
             }
         }
         return view
     }
 
-    private fun getSubUnitData() {
-
-        val json = JSONObject()
-        json.put("trainer_id", trainerID)
-        json.put("training_id", trainingID)
-        json.put("uniqid", uniqueID)
-        json.put("training_course", courseID)
-        json.put("training_module", moduleID)
-        json.put("training_chapter", chapterID)
-        json.put("training_batch", batchID)
-
-        recyclerView.showShimmerAdapter()
-        NetworkOps.post(Urls.trainingContent, json.toString(), context, object : response {
-            override fun onInternetfailure() {
-                activity!!.runOnUiThread {
-                    noInternetSnackBar(activity)
-                }
-            }
-
-            override fun onrespose(string: String?) {
-                val data = Gson().fromJson(string, DCSubUnitMainData::class.java)
-                if (data == null) {
-                    onfailure()
-                    return
-                }
-                val data1 = data.training_data
-                activity!!.runOnUiThread {
-                    name.text = data1.training_chapter_name
-                }
-                val subunits = data1.training_sub_units_data
-                subUnitsData.clear()
-                subUnitsData.addAll(subunits)
-                arrayList.clear()
-                subUnitsData.forEach {
-                    arrayList.add(it.lesson_name)
-                }
-                mLog.i(TAG,"subunits ${arrayList.size}")
-                activity!!.runOnUiThread {
-                    recyclerView.hideShimmerAdapter()
-                    adapter.notifyDataSetChanged()
-                }
-
-
-            }
-
-            override fun onfailure() {
-                activity!!.runOnUiThread {
-                    showToast(context, "failed to get data")
-                }
-            }
-
-        }) { _, _, _ ->
-        }
-    }
 
     private fun getUnitData() {
 
@@ -193,7 +147,7 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
                 unitData.forEach {
                     arrayList.add(it.course_unit_name)
                 }
-                mLog.i(TAG,"units ${arrayList.size}")
+                mLog.i(TAG, "units ${arrayList.size}")
                 activity!!.runOnUiThread {
                     recyclerView.hideShimmerAdapter()
                     adapter.notifyDataSetChanged()
@@ -213,18 +167,72 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
 
     }
 
+    private fun getSubUnitData() {
+
+        val json = JSONObject()
+        json.put("trainer_id", trainerID)
+        json.put("training_id", trainingID)
+        json.put("uniqid", uniqueID)
+        json.put("training_course", courseID)
+        json.put("training_module", moduleID)
+        json.put("training_chapter", chapterID)
+        json.put("training_batch", batchID)
+
+        recyclerView.showShimmerAdapter()
+        NetworkOps.post(Urls.trainingContent, json.toString(), context, object : response {
+            override fun onInternetfailure() {
+                activity!!.runOnUiThread {
+                    noInternetSnackBar(activity)
+                }
+            }
+
+            override fun onrespose(string: String?) {
+                mLog.i(TAG, "response $string")
+                val data = Gson().fromJson(string, DCSubUnitMainData::class.java)
+                if (data == null) {
+                    onfailure()
+                    return
+                }
+                val data1 = data.training_data
+                activity!!.runOnUiThread {
+                    name.text = data1.training_chapter_name
+                }
+                val subunits = data1.training_sub_units_data
+                subUnitsData.clear()
+                subUnitsData.addAll(subunits)
+                arrayList.clear()
+                subUnitsData.forEach {
+                    arrayList.add(it.lesson_name)
+                }
+                mLog.i(TAG, "subunits ${arrayList.size}")
+                activity!!.runOnUiThread {
+                    recyclerView.hideShimmerAdapter()
+                    adapter.notifyDataSetChanged()
+                }
+
+
+            }
+
+            override fun onfailure() {
+                activity!!.runOnUiThread {
+                    showToast(context, "failed to get data")
+                }
+            }
+
+        }) { _, _, _ ->
+        }
+    }
+
     override fun click(itempos: Int) {
-        if (isUnitData) {
+        if (isUnit) {
 
             showToast(context, unitData[itempos].course_unit_name)
 
-        } else {
-
-            showToast(context, subUnitsData[itempos].lesson_name)
-            //go to next fragment and play video
-            val fragment = VideoFragment()
+            //go to sub - unit fragment
+            val fragment = SubUnitFragment()
             val bundle = Bundle()
-            bundle.putString("url",subUnitsData[itempos].media_disk_path)
+            bundle.putString("unit_name",unitData[itempos].course_unit_name)
+            bundle.putString("unit_id", unitData[itempos].course_unit_id)
             fragment.arguments = bundle
             ft = activity!!.supportFragmentManager.beginTransaction()
             ft.setCustomAnimations(
@@ -233,8 +241,36 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
                 R.anim.enter_from_left,
                 R.anim.exit_to_right
             )
-            ft.replace(R.id.chapterContainer, fragment)
+            ft.add(R.id.chapterContainer, fragment)
+            ft.addToBackStack(null)
             ft.commit()
+
+        } else {
+
+
+            //go to next fragment and play video
+            MaterialAlertDialogBuilder(context).setTitle("Alert")
+                .setMessage("Do you want to play  ${subUnitsData[itempos].lesson_name} ?")
+                .setCancelable(true)
+                .setPositiveButton("play video") { dialogInterface, i ->
+                    dialogInterface.dismiss()
+                    val fragment = VideoFragment()
+                    val bundle = Bundle()
+                    bundle.putString("name", subUnitsData[itempos].lesson_name)
+                    bundle.putString("url", subUnitsData[itempos].media_disk_path_relative)
+                    fragment.arguments = bundle
+                    ft = activity!!.supportFragmentManager.beginTransaction()
+                    ft.setCustomAnimations(
+                        R.anim.enter_from_right,
+                        R.anim.exit_to_left,
+                        R.anim.enter_from_left,
+                        R.anim.exit_to_right
+                    )
+                    ft.replace(R.id.chapterContainer, fragment)
+                    ft.commit()
+
+                }.create().show()
+
 
         }
     }

@@ -1,24 +1,15 @@
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="4dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="8dp"
-    android:minHeight="0dp"
-    app:cardUseCompatPadding="true"
-    tools:layout_editor_absoluteX="6dp"
-    android:layout_gravity="bottom"
-    tools:layout_editor_absoluteY="8dp">
+    android:layout_gravity="top">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:minHeight="0dp"
         android:orientation="horizontal">
 
         <ImageButton
@@ -26,7 +17,7 @@
             style="@style/ExoMediaButton.Play"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:tint="@color/greyText"
+            android:tint="@color/white"
             tools:layout_editor_absoluteX="8dp"
             tools:layout_editor_absoluteY="8dp" />
 
@@ -35,7 +26,7 @@
             style="@style/ExoMediaButton.Pause"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:tint="@color/greyText" />
+            android:tint="@color/white" />
 
 
         <TextView
@@ -44,6 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="00:00"
+            android:textColor="@color/white"
             android:textAppearance="@style/OpenSansRegular"
             tools:layout_editor_absoluteX="63dp"
             tools:layout_editor_absoluteY="24dp" />
@@ -55,7 +47,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             app:played_color="@color/colorPrimaryDark"
-            app:unplayed_color="@color/greyText"
+            app:unplayed_color="@color/white"
             tools:layout_editor_absoluteX="63dp"
             tools:layout_editor_absoluteY="22dp" />
         <TextView
@@ -64,6 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="00:00"
+            android:textColor="@color/white"
             android:textAppearance="@style/OpenSansRegular"
             tools:layout_editor_absoluteX="337dp"
             tools:layout_editor_absoluteY="24dp" />
@@ -74,11 +67,9 @@
             android:background="@android:color/transparent"
             android:padding="10dp"
             android:src="@drawable/ic_volume_on"
-            android:tint="@color/greyText"
+            android:tint="@color/white"
             tools:layout_editor_absoluteX="341dp"
             tools:layout_editor_absoluteY="8dp" />
 
     </LinearLayout>
-
-
-</com.google.android.material.card.MaterialCardView>
+</FrameLayout>

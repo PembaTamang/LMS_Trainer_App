@@ -2,8 +2,10 @@ package orionedutech.`in`.lmstrainerapp.fragments.assessment
 
 
 import android.animation.ObjectAnimator
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -64,7 +66,20 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
     ): View? {
 
         val view = inflater.inflate(R.layout.fragment_trainer_assessment, container, false)
-
+        val assessmentPref = activity!!.getSharedPreferences("assessment", Context.MODE_PRIVATE)
+        if(assessmentPref.getBoolean("show",true)){
+            Handler().postDelayed({
+                MaterialAlertDialogBuilder(context).setTitle("Alert")
+                    .setMessage("You can give your assessments by selecting them from the list. \n\nPress ok to dismiss. \n\nPress cancel if you want to see this reminder the next time.")
+                    .setPositiveButton("ok"){dialogInterface, i ->
+                        dialogInterface.dismiss()
+                        assessmentPref.edit().putBoolean("show",false).apply()
+                    }
+                    .setNegativeButton("cancel"){dialogInterface, i ->
+                        dialogInterface.dismiss()
+                    }.create().show()
+            },500)
+        }
         view.upload.setOnClickListener {
             //upload code here
             val ft = activity?.supportFragmentManager!!.beginTransaction()

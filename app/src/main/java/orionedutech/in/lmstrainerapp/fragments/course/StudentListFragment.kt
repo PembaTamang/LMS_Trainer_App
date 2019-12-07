@@ -71,7 +71,7 @@ class StudentListFragment : Fragment() {
     var allAbsent = false
     var trainingID = ""
     var chapterType = ""
-
+    var courseName = ""
     lateinit var json: JSONObject
 
     companion object {
@@ -101,6 +101,7 @@ class StudentListFragment : Fragment() {
         selectedUnitID = bundle.getString("unit_id", "")
         selectedSubUnitID = bundle.getString("subunit_id", "")
         trainerID = bundle.getString("user_id", "")
+        courseName = bundle.getString("course_name","")
         uniqueID = UUID.randomUUID().toString()
 
         val uniquePrefs = activity!!.getSharedPreferences("uid", Context.MODE_PRIVATE)
@@ -276,6 +277,7 @@ class StudentListFragment : Fragment() {
             intent.putExtra("trainingID", trainingID)
             intent.putExtra("uniqueID", uniqueID)
             intent.putExtra("chapter_type",chapterType)
+            intent.putExtra("course_name",courseName)
             startActivity(intent)
             activity!!.supportFragmentManager.popBackStack()
             activity!!.overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left)

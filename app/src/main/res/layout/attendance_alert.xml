@@ -51,7 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:enabled="false"
-        android:backgroundTint="@color/orangegrey"
+        android:backgroundTint="@color/orangebutton"
         android:textColor="@color/whitebuttontext"
         android:text="start class"
         app:cornerRadius="16dp"

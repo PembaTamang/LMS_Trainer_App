@@ -34,12 +34,14 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/titleText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginStart="8dp"
                 android:text="Course Material"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:textAppearance="@style/Baloo"
                 android:textColor="@color/white"
                 android:textSize="18sp"
@@ -81,6 +83,7 @@
         android:visibility="gone"
         android:layout_centerInParent="true"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/round_rect_grey"
         android:padding="8dp"
         app:colonColor="@color/white"
@@ -97,8 +100,6 @@
         android:id="@+id/chapterContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/next"
         app:layout_constraintEnd_toEndOf="parent"

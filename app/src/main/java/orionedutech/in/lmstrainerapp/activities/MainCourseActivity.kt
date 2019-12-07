@@ -1,12 +1,15 @@
 package orionedutech.`in`.lmstrainerapp.activities
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -31,7 +34,7 @@ class MainCourseActivity : AppCompatActivity(), ShowActivityViews {
     var trainingID = ""
     var uniqueID = ""
     var chapterType = ""
-
+    var courseName = ""
     lateinit var heading: TextView
     lateinit var count: TextView
     lateinit var topStatus: TextView
@@ -39,7 +42,7 @@ class MainCourseActivity : AppCompatActivity(), ShowActivityViews {
     lateinit var animation: LottieAnimationView
     lateinit var nextQuestion: MaterialButton
     lateinit var countDownTimer: EasyCountDownTextview
-
+    lateinit var courseNameTV : TextView
     lateinit var ft: FragmentTransaction
     lateinit var fragContainer : FrameLayout
     var extraViews: ArrayList<View> = ArrayList()
@@ -55,6 +58,7 @@ class MainCourseActivity : AppCompatActivity(), ShowActivityViews {
         nextQuestion = next
         countDownTimer = easyCountDownTextview
         fragContainer = chapterContainer
+        courseNameTV = titleText
         extraViews =
             arrayListOf(count, heading, topStatus, lowerStatus, nextQuestion, countDownTimer)
         val intent = intent!!
@@ -68,6 +72,8 @@ class MainCourseActivity : AppCompatActivity(), ShowActivityViews {
         unitID = intent.getStringExtra("unitID")!!
         subUnitID = intent.getStringExtra("subunitID")!!
         chapterType = intent.getStringExtra("chapter_type")!!
+        courseName = intent.getStringExtra("course_name")!!
+        courseNameTV.text = courseName
         mLog.i(TAG, "chapter type : $chapterType")
 
 
@@ -130,14 +136,22 @@ class MainCourseActivity : AppCompatActivity(), ShowActivityViews {
 
     override fun show(show: Boolean) {
         mLog.i(TAG, "show $show")
-        //todo make views visible
         fragContainer.background = ContextCompat.getDrawable(this,R.drawable.round_rect_white_stroke)
-        val layoutParams : FrameLayout.LayoutParams = FrameLayout.LayoutParams(0,0)
-        layoutParams.topMargin = 16
-        layoutParams.bottomMargin = 16
-        layoutParams.marginStart = 16
-        layoutParams.marginEnd = 16
+        val layoutParams  =  fragContainer.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.setMargins(16,16,16,16)
         fragContainer.layoutParams = layoutParams
+        fragContainer.requestLayout()
         showActivityViews()
+
+    }
+
+    override fun onBackPressed() {
+        mLog.i(TAG,"clicked")
+        mLog.i(TAG," count ${supportFragmentManager.backStackEntryCount}")
+        if(supportFragmentManager.backStackEntryCount>=1){
+            supportFragmentManager.popBackStack()
+        }else{
+            super.onBackPressed()
+        }
     }
 }

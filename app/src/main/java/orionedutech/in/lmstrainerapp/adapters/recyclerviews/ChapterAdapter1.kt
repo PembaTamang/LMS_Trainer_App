@@ -14,10 +14,8 @@ import orionedutech.`in`.lmstrainerapp.interfaces.RecyclerItemClick
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
 
-class ChapterAdapter(val arrayList: ArrayList<String>, val recyclerItemClick: RecyclerItemClick) : RecyclerView.Adapter<ChapterAdapter.CVH>() {
-    companion object{
-        var isUnitData = false
-    }
+class ChapterAdapter1(val arrayList: ArrayList<String>, val recyclerItemClick: RecyclerItemClick) : RecyclerView.Adapter<ChapterAdapter1.CVH>() {
+
     lateinit var context: Context
     inner class CVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val sl = itemView.serial!!
@@ -41,12 +39,8 @@ class ChapterAdapter(val arrayList: ArrayList<String>, val recyclerItemClick: Re
     override fun onBindViewHolder(holder: CVH, position: Int) {
         holder.sl.text = (position + 1).toString()
         holder.name.text = arrayList[position]
-        mLog.i(TAG,"isUnitData :  $isUnitData")
-        if(isUnitData){
-           holder.image.visibility = GONE
-        }else{
-            holder.image.visibility = VISIBLE
-        }
+        holder.image.visibility = VISIBLE
+
         holder.bg.setBackgroundColor(if (position % 2 == 0) context.let { ContextCompat.getColor(it,R.color.white) } else context.let { ContextCompat.getColor(it,R.color.light_grey) })
     }
 }
