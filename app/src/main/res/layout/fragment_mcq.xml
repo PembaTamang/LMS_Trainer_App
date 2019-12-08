@@ -49,7 +49,7 @@
         app:layout_constraintStart_toStartOf="@+id/question"
         app:layout_constraintTop_toBottomOf="@+id/question" />
 
-    <LinearLayout
+    <RadioGroup
         android:id="@+id/container11"
         android:layout_width="0dp"
         android:layout_height="0dp"

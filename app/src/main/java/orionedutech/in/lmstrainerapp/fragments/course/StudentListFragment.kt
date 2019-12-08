@@ -247,6 +247,11 @@ class StudentListFragment : Fragment() {
         return view
     }
 
+    override fun onDetach() {
+        super.onDetach()
+    disable = false
+
+    }
     private fun showSuccessAlert(uniqueID: String, trainingID: String) {
         val view = LayoutInflater.from(context).inflate(R.layout.attendance_alert, null, false)
         val builder = MaterialAlertDialogBuilder(context)

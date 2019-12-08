@@ -44,6 +44,7 @@ class NewAttendanceAdapter(private val arrayList: ArrayList<AttendanceModel>) :
         holder.slNo.text = (position+1).toString()
         holder.name.text = m.name
         holder.radio.setOnClickListener {
+            mLog.i(TAG,"boolean value  ${StudentListFragment.disable}")
             if (!StudentListFragment.disable) {
 
             if (m.status == "present") {

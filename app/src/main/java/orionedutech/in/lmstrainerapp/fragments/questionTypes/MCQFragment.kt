@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
+import android.widget.RadioGroup
 import kotlinx.android.synthetic.main.activity_assessment.view.*
 import kotlinx.android.synthetic.main.fragment_mcq.view.*
 import kotlinx.coroutines.CoroutineScope
@@ -41,24 +42,25 @@ class MCQFragment : Fragment(), View.OnClickListener {
     }
 
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        view1  = inflater.inflate(R.layout.fragment_mcq, container, false)
+        view1 = inflater.inflate(R.layout.fragment_mcq, container, false)
 
-        val boxContainer = view1.container11
+        val boxContainer: RadioGroup = view1.container11
         val context = context!!
+/*
 
         val qid = arguments!!.getString("qid")
         val qString = arguments!!.getString("qString")
+*/
 
-        view1.question.text = qString
+        view1.question.text = "Sample question"
 
-         mLog.i(TAG,"qid : $qid")
-         CoroutineScope(IO).launch {
+        // mLog.i(TAG,"qid : $qid")
+/*         CoroutineScope(IO).launch {
              context?.let {
                  val ansDao = MDatabase(it).getAssessmentAnswersDao()
                  val answers = ansDao.getAllAssesmentAnswers(qid!!)
@@ -75,24 +77,28 @@ class MCQFragment : Fragment(), View.OnClickListener {
                      radioButtons.add(radioButton)
                  }
              }
-         }
+         }*/
 
+        for (i in 0 until 4) {
+            val radioButton = RadioButton(context)
+            radioButton.text = "option $i"
+            radioButton.tag = "tag $i"
+            radioButton.setOnClickListener(this@MCQFragment)
+            radioButton.setButtonDrawable(R.drawable.custom_button)
+            boxContainer.addView(radioButton)
+            radioButtons.add(radioButton)
+        }
+        boxContainer.setOnCheckedChangeListener { group, i ->
+            val m = view1.findViewById(i) as RadioButton
+            activityAns!!.answer(m.tag.toString())
+        }
         return view1
     }
+
     override fun onClick(p0: View?) {
-        val m = p0 as RadioButton
-        if (checks.contains(m)) {
-            checks.remove(m)
-        } else {
-            if (checks.size < choiceLimit) {
-                checks.add(m)
-            } else {
-                checks.removeAt(choiceLimit - checks.size)
-                checks.add(m)
-            }
-        }
-        refreshStates()
+
     }
+
     private fun refreshStates() {
         var choices = 0
         val userchoices = arrayOfNulls<String>(choiceLimit)
@@ -104,7 +110,7 @@ class MCQFragment : Fragment(), View.OnClickListener {
             } else {
                 m.isChecked = checks.contains(m)
             }
-            activityAns!!.answer(if (choices < choiceLimit) "" else userchoices[choiceLimit - 1]!! )
+            activityAns!!.answer(if (choices < choiceLimit) "" else userchoices[choiceLimit - 1]!!)
         }
     }
 }

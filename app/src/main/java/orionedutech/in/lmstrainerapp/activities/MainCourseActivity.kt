@@ -15,15 +15,21 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.button.MaterialButton
+import ir.samanjafari.easycountdowntimer.CountDownInterface
 import ir.samanjafari.easycountdowntimer.EasyCountDownTextview
 import kotlinx.android.synthetic.main.activity_main_course.*
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.fragments.mainCourse.ChapterFragment
+import orionedutech.`in`.lmstrainerapp.fragments.mainCourse.VideoFragment
+import orionedutech.`in`.lmstrainerapp.fragments.questionTypes.MCQFragment
+import orionedutech.`in`.lmstrainerapp.interfaces.ActivityAns
 import orionedutech.`in`.lmstrainerapp.interfaces.ShowActivityViews
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
+import orionedutech.`in`.lmstrainerapp.mToast
 
-class MainCourseActivity : AppCompatActivity(), ShowActivityViews {
+class MainCourseActivity : AppCompatActivity(), ShowActivityViews , ActivityAns,
+    CountDownInterface {
     var trainerID = ""
     var batchID = ""
     var courseID = ""
@@ -47,6 +53,9 @@ class MainCourseActivity : AppCompatActivity(), ShowActivityViews {
     lateinit var fragContainer : FrameLayout
     var extraViews: ArrayList<View> = ArrayList()
 
+    override fun answer(answer: String) {
+        mToast.showToast(this,answer)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_course)
@@ -120,6 +129,27 @@ class MainCourseActivity : AppCompatActivity(), ShowActivityViews {
         extraViews.forEach {
             it.visibility = VISIBLE
         }
+        animation.visibility  = VISIBLE
+        animation.playAnimation()
+        ft = supportFragmentManager.beginTransaction()
+        ft.remove(supportFragmentManager.findFragmentById(R.id.chapterContainer)!!)
+        ft.commit()
+        nextQuestion.text = "Next"
+        Handler().postDelayed({
+            animation.visibility  = GONE
+            animation.cancelAnimation()
+            topStatus.visibility = GONE
+            lowerStatus.visibility = GONE
+            countDownTimer.setOnTick(this)
+            countDownTimer.setTime(0,15, 0)
+            countDownTimer.startTimer()
+            val fragment = MCQFragment()
+            ft = supportFragmentManager.beginTransaction()
+            ft.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
+            ft.replace(R.id.chapterContainer, fragment)
+            ft.commit()
+        },2000)
+
     }
 
     fun hideActivityViews() {
@@ -153,5 +183,11 @@ class MainCourseActivity : AppCompatActivity(), ShowActivityViews {
         }else{
             super.onBackPressed()
         }
+    }
+
+    override fun onFinish() {
+    }
+
+    override fun onTick(time: Long) {
     }
 }
