@@ -26,7 +26,7 @@ import java.util.*
 /**
  * A simple [Fragment] subclass.
  */
-class MCQFragment : Fragment(), View.OnClickListener {
+class MCQFragment : Fragment() {
 
 
     private lateinit var view1: View
@@ -51,16 +51,16 @@ class MCQFragment : Fragment(), View.OnClickListener {
 
         val boxContainer: RadioGroup = view1.container11
         val context = context!!
-/*
+
 
         val qid = arguments!!.getString("qid")
         val qString = arguments!!.getString("qString")
-*/
 
-        view1.question.text = "Sample question"
 
-        // mLog.i(TAG,"qid : $qid")
-/*         CoroutineScope(IO).launch {
+        view1.question.text = qString
+
+         mLog.i(TAG,"qid : $qid")
+       CoroutineScope(IO).launch {
              context?.let {
                  val ansDao = MDatabase(it).getAssessmentAnswersDao()
                  val answers = ansDao.getAllAssesmentAnswers(qid!!)
@@ -69,7 +69,6 @@ class MCQFragment : Fragment(), View.OnClickListener {
                      radioButton.text = ans.answer_value
                      mLog.i(TAG,"loaded ans id ${ans.question_ans_id}")
                      radioButton.tag = ans.question_ans_id
-                     radioButton.setOnClickListener(this@MCQFragment)
                      radioButton.setButtonDrawable(R.drawable.custom_button)
                      withContext(Main){
                          boxContainer.addView(radioButton)
@@ -77,9 +76,9 @@ class MCQFragment : Fragment(), View.OnClickListener {
                      radioButtons.add(radioButton)
                  }
              }
-         }*/
+         }
 
-        for (i in 0 until 4) {
+     /*   for (i in 0 until 4) {
             val radioButton = RadioButton(context)
             radioButton.text = "option $i"
             radioButton.tag = "tag $i"
@@ -87,7 +86,7 @@ class MCQFragment : Fragment(), View.OnClickListener {
             radioButton.setButtonDrawable(R.drawable.custom_button)
             boxContainer.addView(radioButton)
             radioButtons.add(radioButton)
-        }
+        }*/
         boxContainer.setOnCheckedChangeListener { group, i ->
             val m = view1.findViewById(i) as RadioButton
             activityAns!!.answer(m.tag.toString())
@@ -95,9 +94,6 @@ class MCQFragment : Fragment(), View.OnClickListener {
         return view1
     }
 
-    override fun onClick(p0: View?) {
-
-    }
 
     private fun refreshStates() {
         var choices = 0
