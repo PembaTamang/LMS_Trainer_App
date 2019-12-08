@@ -125,6 +125,9 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
         recyclerView.showShimmerAdapter()
         NetworkOps.post(Urls.trainingContent, json.toString(), context, object : response {
             override fun onInternetfailure() {
+                if(activity==null){
+                    return
+                }
                 activity!!.runOnUiThread {
                     noInternetSnackBar(activity)
                 }
@@ -137,6 +140,9 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
                     return
                 }
                 val data1 = data.training_data
+                if(activity==null){
+                    return
+                }
                 activity!!.runOnUiThread {
                     name.text = data1.training_chapter_name
                 }
@@ -148,6 +154,9 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
                     arrayList.add(it.course_unit_name)
                 }
                 mLog.i(TAG, "units ${arrayList.size}")
+                if(activity==null){
+                    return
+                }
                 activity!!.runOnUiThread {
                     recyclerView.hideShimmerAdapter()
                     adapter.notifyDataSetChanged()
@@ -157,6 +166,9 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
             }
 
             override fun onfailure() {
+                if(activity==null){
+                    return
+                }
                 activity!!.runOnUiThread {
                     showToast(context, "failed to get data")
                 }
@@ -181,6 +193,9 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
         recyclerView.showShimmerAdapter()
         NetworkOps.post(Urls.trainingContent, json.toString(), context, object : response {
             override fun onInternetfailure() {
+                if(activity==null){
+                    return
+                }
                 activity!!.runOnUiThread {
                     noInternetSnackBar(activity)
                 }
@@ -194,6 +209,9 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
                     return
                 }
                 val data1 = data.training_data
+                if(activity==null){
+                    return
+                }
                 activity!!.runOnUiThread {
                     name.text = data1.training_chapter_name
                 }
@@ -205,6 +223,9 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
                     arrayList.add(it.lesson_name)
                 }
                 mLog.i(TAG, "subunits ${arrayList.size}")
+                if(activity==null){
+                    return
+                }
                 activity!!.runOnUiThread {
                     recyclerView.hideShimmerAdapter()
                     adapter.notifyDataSetChanged()
@@ -214,6 +235,9 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
             }
 
             override fun onfailure() {
+                if(activity==null){
+                    return
+                }
                 activity!!.runOnUiThread {
                     showToast(context, "failed to get data")
                 }

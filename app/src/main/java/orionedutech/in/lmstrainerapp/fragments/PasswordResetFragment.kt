@@ -161,6 +161,9 @@ class PasswordResetFragment : BaseFragment() {
                         val password = Gson().fromJson(string, DCPassword::class.java)
                         if (password != null) {
                             if (password.success == "1") {
+                                if(activity==null){
+                                    return
+                                }
                                 activity!!.runOnUiThread {
                                     animation.visibility = View.GONE
                                     animation.cancelAnimation()
@@ -200,6 +203,9 @@ class PasswordResetFragment : BaseFragment() {
         }
     }
     private fun runFailureCode() {
+        if(activity==null){
+            return
+        }
         activity!!.runOnUiThread {
             busy = false
             oldTil.isEnabled = true

@@ -283,6 +283,9 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
                     }
                     arrayList.clear()
                     arrayList.addAll(assessmentList)
+                    if (activity == null){
+                        return
+                    }
                     activity!!.runOnUiThread {
                         if (nodata) {
                             showToast(context, "There is no data to display")
@@ -300,6 +303,9 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
             }
 
             override fun onInternetfailure() {
+                if(activity==null){
+                    return
+                }
                 activity!!.runOnUiThread {
                     recyclerView.hideShimmerAdapter()
                 }
@@ -312,6 +318,9 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
     }
 
     private fun runfailureCode() {
+        if(activity==null){
+            return
+        }
         showToast(context, "failed")
         activity!!.runOnUiThread {
             recyclerView.hideShimmerAdapter()

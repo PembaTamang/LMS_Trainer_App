@@ -148,6 +148,9 @@ class FeedbackListFragment : Fragment(), FeedBackInterface {
 
     private fun getFeedBackQuestions() {
         CoroutineScope(IO).launch {
+            if(activity==null){
+                return@launch
+            }
             activity!!.runOnUiThread {
                 adapter!!.reset()
                 busy = true

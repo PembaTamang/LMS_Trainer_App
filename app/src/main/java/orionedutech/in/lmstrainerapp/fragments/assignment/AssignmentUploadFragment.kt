@@ -230,7 +230,9 @@ class AssignmentUploadFragment : BaseFragment() {
             val hashmap: HashMap<String, String> = HashMap()
             hashmap["data_json"] = json.toString()
             hashmap["file_path"] = filepath
-
+            if(activity==null){
+                return@setOnClickListener
+            }
             activity!!.runOnUiThread {
                 progress.visibility = VISIBLE
                 progress.max = 100
@@ -243,6 +245,9 @@ class AssignmentUploadFragment : BaseFragment() {
 
                     mLog.i(TAG, "response $string ")
                     if(JSONObject(string!!).optString("success")=="1"){
+                        if(activity==null){
+                            return
+                        }
                         activity!!.runOnUiThread {
                             hideAnimations()
                             showToast(context,"assignment successfully uploaded")
@@ -253,6 +258,9 @@ class AssignmentUploadFragment : BaseFragment() {
 
                 override fun onfailure() {
                     mLog.i(TAG, "failed")
+                    if(activity==null){
+                        return
+                    }
                     activity!!.runOnUiThread {
                         showToast(context, "failed to submit")
                         enableViews()
@@ -260,6 +268,9 @@ class AssignmentUploadFragment : BaseFragment() {
                 }
 
                 override fun onInternetfailure() {
+                    if(activity==null){
+                        return
+                    }
                     activity!!.runOnUiThread {
                         enableViews()
                    noInternetSnackBar(activity!!)
@@ -268,6 +279,9 @@ class AssignmentUploadFragment : BaseFragment() {
 
             }) { pg, speed, secs ->
                 mLog.i(TAG, "progress $progress speed $speed secs $secs ")
+                if(activity==null){
+                    return@postMultipart
+                }
                 activity!!.runOnUiThread {
                     progress.isIndeterminate = false
                     progress.progress = pg.roundToInt()
@@ -387,12 +401,18 @@ class AssignmentUploadFragment : BaseFragment() {
     }
 
     private fun failedCourse() {
+        if(activity==null){
+            return
+        }
         activity!!.runOnUiThread {
             showToast(context, "failed")
         }
     }
 
     private fun hideAnimations() {
+        if(activity==null){
+            return
+        }
         activity!!.runOnUiThread {
             progress.isIndeterminate = false
             progress.visibility = GONE
@@ -402,6 +422,9 @@ class AssignmentUploadFragment : BaseFragment() {
     }
 
     private fun showAnimation() {
+        if(activity==null){
+            return
+        }
         activity!!.runOnUiThread {
             progress.isIndeterminate = true
             progress.visibility = VISIBLE

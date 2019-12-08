@@ -190,6 +190,9 @@ class StudentListFragment : Fragment() {
                 context,
                 object : response {
                     override fun onInternetfailure() {
+                        if(activity==null){
+                            return
+                        }
                         activity!!.runOnUiThread {
                             noInternetSnackBar(activity!!)
                         }
@@ -227,6 +230,9 @@ class StudentListFragment : Fragment() {
                     }
 
                     override fun onfailure() {
+                        if (activity == null){
+                            return
+                        }
                         activity!!.runOnUiThread {
 
                             animation.visibility = GONE

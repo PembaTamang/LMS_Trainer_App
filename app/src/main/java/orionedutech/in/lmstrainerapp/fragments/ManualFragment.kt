@@ -146,6 +146,9 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
                 mLog.i(TAG, "hasFile $hasFile")
                 if (hasFile) {
                     //show pdf
+                    if(activity==null){
+                        return@let
+                    }
                     activity!!.runOnUiThread {
                         mToast.showToast(context,"pdf is up to date")
                     }

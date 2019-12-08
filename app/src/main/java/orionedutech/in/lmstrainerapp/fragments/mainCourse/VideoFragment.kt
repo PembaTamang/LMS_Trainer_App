@@ -159,6 +159,9 @@ class VideoFragment : Fragment(), Player.EventListener{
         controls.setControlDispatcher(PositionLimitingControlDispatcher())
         player.prepare(mediaSource, false, false)
         timer = fixedRateTimer("timer",false,0,1000){
+            if(activity==null){
+                return@fixedRateTimer
+            }
             activity!!.runOnUiThread {
                 updateUI()
             }

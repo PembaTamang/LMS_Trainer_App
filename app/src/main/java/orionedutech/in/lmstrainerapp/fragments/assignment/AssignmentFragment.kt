@@ -285,6 +285,9 @@ class AssignmentFragment : BaseFragment(), RecyclerItemClick {
                         } else {
                             mToast.showToast(context, "no assignment found")
                         }
+                        if (activity == null){
+                            return
+                        }
                         activity?.runOnUiThread {
                             adapter.notifyDataSetChanged()
                             recyclerView.hideShimmerAdapter()

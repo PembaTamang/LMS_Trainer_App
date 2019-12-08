@@ -72,6 +72,9 @@ class SubUnitFragment : Fragment(), RecyclerItemClick {
         recyclerView.showShimmerAdapter()
         NetworkOps.post(Urls.subunitUrl, json.toString(), context, object : response {
             override fun onInternetfailure() {
+                if(activity==null){
+                    return
+                }
                 activity!!.runOnUiThread {
                     noInternetSnackBar(activity)
                 }
@@ -105,6 +108,9 @@ class SubUnitFragment : Fragment(), RecyclerItemClick {
             }
 
             override fun onfailure() {
+                if(activity==null){
+                    return
+                }
                 activity!!.runOnUiThread {
                     recyclerView.hideShimmerAdapter()
                     showToast(context, "failed")

@@ -198,6 +198,9 @@ class BatchFragment : Fragment() {
     }
 
     private fun getBatches(json: String) {
+        if(activity==null){
+            return
+        }
         activity!!.runOnUiThread {
             recyclerView.showShimmerAdapter()
         }
@@ -206,6 +209,9 @@ class BatchFragment : Fragment() {
                 val batchData = Gson().fromJson(string, DCBatchesLongList::class.java)
 
                 if (batchData == null) {
+                    if(activity==null){
+                        return
+                    }
                     activity!!.runOnUiThread {
                         showToast(context, "data error")
                         return@runOnUiThread
@@ -215,6 +221,9 @@ class BatchFragment : Fragment() {
                     val batch = batchData.batches
                     arrayList.clear()
                     arrayList.addAll(batch)
+                    if (activity == null){
+                    return
+                    }
                     activity!!.runOnUiThread {
                         recyclerView.hideShimmerAdapter()
                        // notifydatasetchanged()
@@ -232,6 +241,9 @@ class BatchFragment : Fragment() {
             }
 
             override fun onInternetfailure() {
+                if(activity==null){
+                    return
+                }
                 activity!!.runOnUiThread {
                     recyclerView.hideShimmerAdapter()
                     mToast.noInternetSnackBar(activity!!)
@@ -256,6 +268,9 @@ class BatchFragment : Fragment() {
     }
 
     private fun runFailureCode() {
+        if (activity == null){
+            return
+        }
         activity!!.runOnUiThread {
             recyclerView.hideShimmerAdapter()
         }

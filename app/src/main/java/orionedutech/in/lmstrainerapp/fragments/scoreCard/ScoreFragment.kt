@@ -105,6 +105,9 @@ class ScoreFragment : Fragment(), RecyclerItemClick {
                     if(arrayList.size==0){
                         noData.visibility = VISIBLE
                     }
+                    if(activity==null){
+                        return
+                    }
                     activity!!.runOnUiThread {
                         recyclerView.hideShimmerAdapter()
                         adapter.notifyDataSetChanged()
@@ -120,6 +123,9 @@ class ScoreFragment : Fragment(), RecyclerItemClick {
             }
 
             override fun onInternetfailure() {
+                if(activity==null){
+                    return
+                }
                 activity!!.runOnUiThread {
                     mToast.noInternetSnackBar(activity)
                 }

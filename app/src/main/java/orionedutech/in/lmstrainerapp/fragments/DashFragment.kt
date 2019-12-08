@@ -141,6 +141,9 @@ class DashFragment : BaseFragment() {
                 val dao = MDatabase(it).getUserDao()
                 val userID = dao.getUserID()
                 val naam = dao.getadminName()
+                if(activity==null){
+                    return@let
+                }
                 activity!!.runOnUiThread {
                     name.text = naam
                 }
@@ -153,6 +156,9 @@ class DashFragment : BaseFragment() {
                         val dash = Gson().fromJson(string, DCDash::class.java)
                         if (dash != null) {
                             mLog.i(TAG,"success")
+                            if(activity==null){
+                                return
+                            }
                             activity!!.runOnUiThread {
                                 courseCount.text = String.format(" %d COURSE(S)", dash.total_courses)
                                 batchCount.text = String.format("%d BATCHE(S",dash.total_batches)
@@ -173,6 +179,9 @@ class DashFragment : BaseFragment() {
 
 
                         } else {
+                            if(activity==null){
+                                return
+                            }
                             activity!!.runOnUiThread {
                                 mToast.showToast(context, "failed")
                             }
@@ -181,6 +190,9 @@ class DashFragment : BaseFragment() {
                     }
 
                     override fun onfailure() {
+                        if(activity==null){
+                            return
+                        }
                         activity!!.runOnUiThread {
                             mToast.showToast(context, "failed")
                         }

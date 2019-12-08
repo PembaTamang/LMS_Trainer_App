@@ -192,6 +192,9 @@ class MarksFragment : Fragment() {
             }
 
             showAnimation()
+            if(activity==null){
+                return@setOnClickListener
+            }
             activity!!.runOnUiThread {
 
                 totalMarksET.isEnabled = false
@@ -211,6 +214,9 @@ class MarksFragment : Fragment() {
                 context,
                 object : response {
                     override fun onInternetfailure() {
+                        if(activity==null){
+                            return
+                        }
                         activity!!.runOnUiThread {
                             mToast.noInternetSnackBar(activity!!)
                         }
@@ -219,6 +225,9 @@ class MarksFragment : Fragment() {
                     override fun onrespose(string: String?) {
                         mLog.i(TAG, "response : $string ")
                         val success = JSONObject(string!!).getString("success")
+                        if (activity == null){
+                            return
+                        }
                         activity!!.runOnUiThread {
                             when (success) {
                                 "Marks added successfully" ->{ mToast.showToast(
@@ -245,6 +254,9 @@ class MarksFragment : Fragment() {
                     }
 
                     override fun onfailure() {
+                        if(activity==null){
+                            return
+                        }
                         activity!!.runOnUiThread {
                             totalMarksET.isEnabled = true
                             studentMarksET.isEnabled = true
@@ -293,6 +305,9 @@ class MarksFragment : Fragment() {
             context,
             object : response {
                 override fun onInternetfailure() {
+                    if(activity==null){
+                        return
+                    }
                     activity!!.runOnUiThread {
                         hideAnimation()
                         mToast.noInternetSnackBar(activity)
@@ -304,6 +319,9 @@ class MarksFragment : Fragment() {
                     val assignmentData =
                         Gson().fromJson(string, DCAssignmentByBatchAndStudent::class.java)
                     if (assignmentData == null) {
+                        if(activity==null){
+                            return
+                        }
                         activity!!.runOnUiThread {
                             mToast.showToast(context, "no data")
                         }
@@ -315,6 +333,9 @@ class MarksFragment : Fragment() {
                         if (assignmentList.isNotEmpty()) {
                             assignmentSpinnerList.clear()
                             assignmentSpinnerList.addAll(assignmentList)
+                            if(activity==null){
+                                return
+                            }
                             activity!!.runOnUiThread {
                                 assignmentAdapter.notifyDataSetChanged()
                                 hideAnimation()
@@ -331,6 +352,9 @@ class MarksFragment : Fragment() {
                 }
 
                 override fun onfailure() {
+                    if(activity==null){
+                        return
+                    }
                     activity!!.runOnUiThread {
                         hideAnimation()
                         mToast.showToast(context, "failed to get data")
@@ -353,6 +377,9 @@ class MarksFragment : Fragment() {
                 val studentData = Gson().fromJson(string, DCStudentData::class.java)
 
                 if (studentData == null) {
+                    if(activity==null){
+                        return
+                    }
                     activity!!.runOnUiThread {
                         mToast.showToast(context, "error")
                     }
@@ -363,6 +390,9 @@ class MarksFragment : Fragment() {
                     val students = studentData.students_list
                     studentSpinnerList.clear()
                     studentSpinnerList.addAll(students)
+                    if(activity==null){
+                        return
+                    }
                     activity!!.runOnUiThread {
                         studentAdapter.notifyDataSetChanged()
                     }
@@ -373,12 +403,18 @@ class MarksFragment : Fragment() {
             }
 
             override fun onfailure() {
+                if(activity==null){
+                    return
+                }
                 activity!!.runOnUiThread {
                     mToast.showToast(context, "error")
                 }
             }
 
             override fun onInternetfailure() {
+                if(activity==null){
+                    return
+                }
                 activity!!.runOnUiThread {
                     mToast.noInternetSnackBar(activity!!)
                 }
@@ -391,6 +427,9 @@ class MarksFragment : Fragment() {
     }
 
     private fun showAnimation() {
+        if(activity==null){
+            return
+        }
         activity!!.runOnUiThread {
             submit.text = " "
             progress.visibility = VISIBLE
@@ -399,6 +438,9 @@ class MarksFragment : Fragment() {
     }
 
     fun hideAnimation() {
+        if(activity==null){
+            return
+        }
         activity!!.runOnUiThread {
             submit.text = "Give Marks"
             progress.visibility = INVISIBLE

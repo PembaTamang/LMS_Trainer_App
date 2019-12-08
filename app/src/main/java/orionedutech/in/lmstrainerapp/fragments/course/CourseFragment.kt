@@ -266,6 +266,9 @@ class CourseFragment : BaseFragment() {
     }
 
     fun getCourseData(batchId: String?) {
+        if(activity==null){
+            return
+        }
         activity!!.runOnUiThread {
             moduleContainer.visibility = GONE
             chapterContainer.visibility = GONE
@@ -301,6 +304,9 @@ class CourseFragment : BaseFragment() {
                                 if (course.isNotEmpty()) {
                                     courseList.clear()
                                     courseList.addAll(course)
+                                    if (activity == null){
+                                        return
+                                    }
                                     activity!!.runOnUiThread {
                                         mLog.i(TAG, "done course lise ${courseList.size}")
                                         courseContainer.visibility = VISIBLE
@@ -323,6 +329,9 @@ class CourseFragment : BaseFragment() {
                         }
 
                         override fun onfailure() {
+                            if(activity==null){
+                                return
+                            }
                             activity!!.runOnUiThread {
                                 enableSpinners()
                                 hideAnimation()
@@ -336,6 +345,9 @@ class CourseFragment : BaseFragment() {
     }
 
     private fun getModuleData() {
+        if(activity==null){
+            return
+        }
         activity!!.runOnUiThread {
             chapterContainer.visibility = GONE
             selectedChapterID = ""
@@ -348,6 +360,9 @@ class CourseFragment : BaseFragment() {
         json.put("course_links_to", "1")
         NetworkOps.post(Urls.courseLinkedModules, json.toString(), context, object : response {
             override fun onInternetfailure() {
+                if(activity==null){
+                    return
+                }
                 activity!!.runOnUiThread {
                     noInternetSnackBar(activity!!)
                 }
@@ -365,6 +380,9 @@ class CourseFragment : BaseFragment() {
                     if (!modules.isNullOrEmpty()) {
                         moduleList.clear()
                         moduleList.addAll(modules)
+                        if (activity == null){
+                            return
+                        }
                         activity!!.runOnUiThread {
                             moduleContainer.visibility = VISIBLE
                             moduleSpinner.onItemSelectedListener = null
@@ -386,6 +404,9 @@ class CourseFragment : BaseFragment() {
             }
 
             override fun onfailure() {
+                if(activity==null){
+                    return
+                }
                 activity!!.runOnUiThread {
                     enableSpinners()
                     hideAnimation()
@@ -399,6 +420,9 @@ class CourseFragment : BaseFragment() {
 
 
     private fun getChapterData(courseModuleId: String) {
+        if(activity==null){
+            return
+        }
         activity!!.runOnUiThread {
             chapterContainer.visibility = GONE
             getStudentList.isEnabled = false
@@ -424,6 +448,9 @@ class CourseFragment : BaseFragment() {
                 val chapters = chapterDataOne.module_chapters
                 chapterList.clear()
                 chapterList.addAll(chapters)
+                if (activity == null){
+                    return
+                }
                 activity!!.runOnUiThread {
                     getStudentList.isEnabled = true
                     chapterContainer.visibility = VISIBLE
@@ -439,6 +466,9 @@ class CourseFragment : BaseFragment() {
             }
 
             override fun onfailure() {
+                if (activity == null){
+                    return
+                }
                 activity!!.runOnUiThread {
                     enableSpinners()
                     hideAnimation()

@@ -102,6 +102,9 @@ class ScoreListFragment : Fragment() {
                     val scorelist = scoredata.response
                     arrayList.clear()
                     arrayList.addAll(scorelist)
+                    if(activity==null){
+                        return
+                    }
                     activity!!.runOnUiThread {
                         title.text = assessmentTitle
                         email.text = mail
@@ -125,6 +128,9 @@ class ScoreListFragment : Fragment() {
             }
 
             override fun onInternetfailure() {
+                if(activity==null){
+                    return
+                }
                 activity!!.runOnUiThread {
                     mToast.noInternetSnackBar(activity)
                 }
@@ -136,7 +142,10 @@ class ScoreListFragment : Fragment() {
     }
 
     private fun runFailureCode() {
-        activity!!.run {
+        if(activity==null){
+            return
+        }
+        activity!!.runOnUiThread{
             mToast.showToast(context, "failed")
             recyclerView.hideShimmerAdapter()
         }
