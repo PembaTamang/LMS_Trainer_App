@@ -2,10 +2,11 @@ package orionedutech.`in`.lmstrainerapp.fragments.mainCourse
 
 
 import android.app.Dialog
-import android.content.Context
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,67 +23,73 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
+import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.custom_player_layout.view.*
 import kotlinx.android.synthetic.main.fragment_video.view.*
 import orionedutech.`in`.lmstrainerapp.R
-import orionedutech.`in`.lmstrainerapp.interfaces.ShowActivityViews
+import orionedutech.`in`.lmstrainerapp.activities.TrainerActivity
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
 import orionedutech.`in`.lmstrainerapp.mToast
+import orionedutech.`in`.lmstrainerapp.mToast.showToast
 import java.util.*
 import kotlin.concurrent.fixedRateTimer
 
 /**
  * A simple [Fragment] subclass.
  */
-class VideoFragment : Fragment(), Player.EventListener{
-    private lateinit var playerV : PlayerView
+class VideoFragment : Fragment(), Player.EventListener {
+    private lateinit var playerV: PlayerView
     private lateinit var player: ExoPlayer
     private var playWhenReady = true
     private var currentWindow = 0
     private var playbackPosition: Long = 0
-    private lateinit var playbackStateListener : PlaybackStateListener
-    lateinit var buffering : LottieAnimationView
+    private lateinit var playbackStateListener: PlaybackStateListener
+    lateinit var buffering: LottieAnimationView
     private var mediaUrl = ""
-    private lateinit var showActivityViews : ShowActivityViews
+    private var chapterid = ""
     lateinit var mute: ImageButton
     private var muteAudio = false
     private var currentAudioLevel = 0f
     private lateinit var controls: PlayerControlView
     private lateinit var timer: Timer
-    private lateinit var currentTime : TextView
-    lateinit var screenName : TextView
-    lateinit var totalTime : TextView
-    lateinit var fullScreen : ImageButton
+    private lateinit var currentTime: TextView
+    lateinit var screenName: TextView
+    lateinit var totalTime: TextView
+    lateinit var fullScreen: ImageButton
+    lateinit var startActivity: MaterialButton
     var full = false
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-       showActivityViews = context as ShowActivityViews
-    }
+    var isTimerRunning = false
+    private lateinit var fullscreendialog: Dialog
+    lateinit var fullScreenPlayerView : PlayerView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view =  inflater.inflate(R.layout.fragment_video, container, false)
+        val view = inflater.inflate(R.layout.fragment_video, container, false)
 
         val bundle = arguments
         playerV = view.playerView
-        playerV.defaultArtwork  = ContextCompat.getDrawable(context!!,R.drawable.exo_icon_play)
+        playerV.defaultArtwork = ContextCompat.getDrawable(context!!, R.drawable.exo_icon_play)
         buffering = view.lottie
         screenName = view.heading
         mediaUrl = bundle!!.getString("url")!!
         screenName.text = bundle.getString("name")!!
+        chapterid = bundle.getString("chapter_id")!!
         controls = view.controlview
         currentTime = controls.current_time
         totalTime = controls.total_time
-        currentTime.text = "time"
-        totalTime.text = "mtime"
         mute = controls.mute
         fullScreen = controls.full
+        startActivity = view.button
 
-        view.button.setOnClickListener {
-        showActivityViews.show(true)
+        startActivity.setOnClickListener {
+           //go to activity
+            val intent = Intent(context,TrainerActivity::class.java)
+            intent.putExtra("chapter_id",chapterid)
+            startActivity(intent)
+            activity!!.overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left)
         }
 
         playbackStateListener = PlaybackStateListener()
@@ -99,7 +106,8 @@ class VideoFragment : Fragment(), Player.EventListener{
                 )
                 muteAudio = true
             } else {
-                player.audioComponent!!.volume = if (currentAudioLevel == 0f) 50f else currentAudioLevel
+                player.audioComponent!!.volume =
+                    if (currentAudioLevel == 0f) 50f else currentAudioLevel
                 mute.setImageDrawable(
                     ContextCompat.getDrawable(
                         context!!,
@@ -110,36 +118,39 @@ class VideoFragment : Fragment(), Player.EventListener{
             }
         }
         fullScreen.setOnClickListener {
-            if(!full){
+            if (!full) {
                 full = true
                 activity!!.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                val fullScreenPlayerView = PlayerView(context)
-                val dialog = object : Dialog(context!!, android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
-                    override fun onBackPressed() {
-                        activity!!.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                        PlayerView.switchTargetView(player, fullScreenPlayerView, playerV)
-                        super.onBackPressed()
+                fullScreenPlayerView = PlayerView(context)
+                fullscreendialog =
+                    object : Dialog(context!!, android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
+                        override fun onBackPressed() {
+                            activity!!.requestedOrientation =
+                                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                            PlayerView.switchTargetView(player, fullScreenPlayerView, playerV)
+                            full = false
+                            super.onBackPressed()
+                        }
                     }
-                }
-                fullScreenPlayerView.setControlDispatcher(PositionLimitingControlDispatcher())
-                dialog.addContentView(
+                //todo uncomment later
+                //fullScreenPlayerView.setControlDispatcher(PositionLimitingControlDispatcher())
+                fullscreendialog.addContentView(
                     fullScreenPlayerView,
                     ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT
                     )
                 )
-                dialog.show()
+                fullscreendialog.show()
                 PlayerView.switchTargetView(player, playerV, fullScreenPlayerView)
 
-            }else{
-                full  = false
             }
 
         }
         return view
 
     }
+
     private fun buildMediaSource(uri: Uri): MediaSource? {
         val dataSourceFactory: DataSource.Factory =
             DefaultDataSourceFactory(context, "exoplayer-codelab")
@@ -156,17 +167,12 @@ class VideoFragment : Fragment(), Player.EventListener{
         val mediaSource = buildMediaSource(uri)
         player.addListener(playbackStateListener)
         player.playWhenReady = playWhenReady
-        controls.setControlDispatcher(PositionLimitingControlDispatcher())
+        //todo uncomment later
+      //  controls.setControlDispatcher(PositionLimitingControlDispatcher())
         player.prepare(mediaSource, false, false)
-        timer = fixedRateTimer("timer",false,0,1000){
-            if(activity==null){
-                return@fixedRateTimer
-            }
-            activity!!.runOnUiThread {
-                updateUI()
-            }
-        }
+
     }
+
     private fun updateUI() {
         if (player != null) {
             val current = player.contentPosition
@@ -200,6 +206,7 @@ class VideoFragment : Fragment(), Player.EventListener{
             initializePlayer()
         }
     }
+
     override fun onPause() {
         super.onPause()
         if (Util.SDK_INT < 24) {
@@ -223,7 +230,8 @@ class VideoFragment : Fragment(), Player.EventListener{
             timer.cancel()
         }
     }
-  inner class PlaybackStateListener : Player.EventListener {
+
+    inner class PlaybackStateListener : Player.EventListener {
         override fun onPlayerStateChanged(
             playWhenReady: Boolean,
             playbackState: Int
@@ -234,24 +242,30 @@ class VideoFragment : Fragment(), Player.EventListener{
 
                     stateString = "ExoPlayer.STATE_IDLE      -"
                     buffering.visibility = View.INVISIBLE
+                    startActivity.isEnabled = false
                 }
                 ExoPlayer.STATE_BUFFERING -> {
                     stateString = "ExoPlayer.STATE_BUFFERING -"
                     buffering.setAnimation("loading.json")
                     buffering.visibility = View.VISIBLE
                     buffering.playAnimation()
+                    startActivity.isEnabled = false
                 }
                 ExoPlayer.STATE_READY -> {
                     stateString = "ExoPlayer.STATE_READY     -"
-
+                    startActivity.isEnabled = false
                     buffering.visibility = View.INVISIBLE
                     buffering.cancelAnimation()
-
+                    if (!isTimerRunning) {
+                        runTimer()
+                        isTimerRunning = true
+                    }
                 }
                 ExoPlayer.STATE_ENDED -> {
                     stateString = "ExoPlayer.STATE_ENDED     -"
                     buffering.visibility = View.INVISIBLE
                     buffering.cancelAnimation()
+                    startActivity.isEnabled = true
                 }
                 else -> stateString = "UNKNOWN_STATE             -"
             }
@@ -259,6 +273,17 @@ class VideoFragment : Fragment(), Player.EventListener{
                 TAG, "changed state to " + stateString
                         + " playWhenReady: " + playWhenReady
             )
+        }
+    }
+
+    fun runTimer() {
+        timer = fixedRateTimer("timer", false, 0, 1000) {
+            if (activity == null) {
+                return@fixedRateTimer
+            }
+            activity!!.runOnUiThread {
+                updateUI()
+            }
         }
     }
 
@@ -290,6 +315,7 @@ class VideoFragment : Fragment(), Player.EventListener{
         mToast.showToast(context, "$errorString has occurred")
 
     }
+
     private class PositionLimitingControlDispatcher :
         DefaultControlDispatcher() {
         private var maxPlayedPositionMs: Long = 0

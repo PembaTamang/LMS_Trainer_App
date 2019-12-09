@@ -53,114 +53,15 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Chapter Name"
-        android:textAppearance="@style/Baloo"
-        android:textStyle="bold"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
-    <TextView
-        android:id="@+id/textView13"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:textAppearance="@style/OpenSansRegular"
-        android:textStyle="bold"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name" />
-
-    <ir.samanjafari.easycountdowntimer.EasyCountDownTextview
-        android:id="@+id/easyCountDownTextview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/round_rect_grey"
-        android:padding="8dp"
-        app:colonColor="@color/white"
-        app:digitBackground="@color/greyText"
-        app:layout_constraintEnd_toEndOf="@+id/name"
-        app:layout_constraintStart_toStartOf="@+id/name"
-        app:layout_constraintTop_toBottomOf="@+id/textView13"
-        app:setAnimation="true"
-        app:showOnlySecond="false"
-        app:textColor="@color/white"
-        app:textSize="25sp" />
-
     <FrameLayout
         android:id="@+id/chapterContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/next"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/easyCountDownTextview" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
-
-    <TextView
-        android:id="@+id/topstatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Please wait"
-        android:textAlignment="center"
-        android:textAppearance="@style/OpenSansRegular"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/chapterContainer"
-        app:layout_constraintEnd_toEndOf="@+id/easyCountDownTextview"
-        app:layout_constraintStart_toStartOf="@+id/easyCountDownTextview"
-        app:layout_constraintTop_toBottomOf="@+id/easyCountDownTextview" />
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottie"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@+id/chapterContainer"
-        app:layout_constraintStart_toStartOf="@+id/chapterContainer"
-        app:layout_constraintTop_toBottomOf="@+id/topstatus"
-        app:lottie_autoPlay="false"
-        app:lottie_colorFilter="@color/greyText"
-        app:lottie_fileName="loading.json"
-        app:lottie_loop="true" />
-
-    <TextView
-        android:id="@+id/data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Checking for questions..."
-        android:textSize="16sp"
-        android:visibility="gone"
-        android:textAppearance="@style/OpenSansRegular"
-        app:layout_constraintEnd_toEndOf="@+id/lottie"
-        app:layout_constraintStart_toStartOf="@+id/lottie"
-        app:layout_constraintTop_toBottomOf="@+id/lottie" />
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/next"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/blue"
-        android:text="Start"
-        android:padding="8dp"
-        android:visibility="gone"
-        android:textAppearance="@style/Baloo"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        app:cornerRadius="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

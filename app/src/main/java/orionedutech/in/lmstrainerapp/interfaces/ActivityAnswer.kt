@@ -1,5 +1,5 @@
 package orionedutech.`in`.lmstrainerapp.interfaces
 
-interface ActivityAns {
+interface ActivityAnswer {
     fun answer(answer: String)
 }

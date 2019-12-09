@@ -1,35 +1,18 @@
 package orionedutech.`in`.lmstrainerapp.activities
 
 import android.os.Bundle
-import android.os.Handler
-import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
-import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import com.airbnb.lottie.LottieAnimationView
-import com.google.android.material.button.MaterialButton
-import ir.samanjafari.easycountdowntimer.CountDownInterface
-import ir.samanjafari.easycountdowntimer.EasyCountDownTextview
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.android.synthetic.main.activity_main_course.*
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.fragments.mainCourse.ChapterFragment
-import orionedutech.`in`.lmstrainerapp.fragments.mainCourse.VideoFragment
-import orionedutech.`in`.lmstrainerapp.fragments.questionTypes.MCQFragment
-import orionedutech.`in`.lmstrainerapp.interfaces.ActivityAns
-import orionedutech.`in`.lmstrainerapp.interfaces.ShowActivityViews
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
-import orionedutech.`in`.lmstrainerapp.mToast
 
-class MainCourseActivity : AppCompatActivity(), ShowActivityViews , ActivityAns,
-    CountDownInterface {
+
+class MainCourseActivity : AppCompatActivity() {
     var trainerID = ""
     var batchID = ""
     var courseID = ""
@@ -41,35 +24,17 @@ class MainCourseActivity : AppCompatActivity(), ShowActivityViews , ActivityAns,
     var uniqueID = ""
     var chapterType = ""
     var courseName = ""
-    lateinit var heading: TextView
-    lateinit var count: TextView
-    lateinit var topStatus: TextView
-    lateinit var lowerStatus: TextView
-    lateinit var animation: LottieAnimationView
-    lateinit var nextQuestion: MaterialButton
-    lateinit var countDownTimer: EasyCountDownTextview
-    lateinit var courseNameTV : TextView
-    lateinit var ft: FragmentTransaction
-    lateinit var fragContainer : FrameLayout
-    var extraViews: ArrayList<View> = ArrayList()
 
-    override fun answer(answer: String) {
-        mToast.showToast(this,answer)
-    }
+    lateinit var courseNameTV: TextView
+    lateinit var ft: FragmentTransaction
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_course)
-        heading = name
-        count = textView13
-        topStatus = topstatus
-        animation = lottie
-        lowerStatus = data
-        nextQuestion = next
-        countDownTimer = easyCountDownTextview
-        fragContainer = chapterContainer
+
         courseNameTV = titleText
-        extraViews =
-            arrayListOf(count, heading, topStatus, lowerStatus, nextQuestion, countDownTimer)
+
         val intent = intent!!
         trainerID = intent.getStringExtra("trainerID")!!
         trainingID = intent.getStringExtra("trainingID")!!
@@ -84,9 +49,6 @@ class MainCourseActivity : AppCompatActivity(), ShowActivityViews , ActivityAns,
         courseName = intent.getStringExtra("course_name")!!
         courseNameTV.text = courseName
         mLog.i(TAG, "chapter type : $chapterType")
-
-
-
         when (chapterType) {
             "1" -> {
                 val fragment = ChapterFragment()
@@ -101,7 +63,8 @@ class MainCourseActivity : AppCompatActivity(), ShowActivityViews , ActivityAns,
                 bundle.putString("type", "1")
                 fragment.arguments = bundle
                 ft = supportFragmentManager.beginTransaction()
-                ft.replace(R.id.chapterContainer, fragment)
+                ft.add(R.id.chapterContainer, fragment)
+                ft.addToBackStack(null)
                 ft.commit()
             }
             else -> {
@@ -117,7 +80,8 @@ class MainCourseActivity : AppCompatActivity(), ShowActivityViews , ActivityAns,
                 bundle.putString("type", "2")
                 fragment.arguments = bundle
                 ft = supportFragmentManager.beginTransaction()
-                ft.replace(R.id.chapterContainer, fragment)
+                ft.add(R.id.chapterContainer, fragment)
+                ft.addToBackStack(null)
                 ft.commit()
             }
         }
@@ -125,69 +89,34 @@ class MainCourseActivity : AppCompatActivity(), ShowActivityViews , ActivityAns,
 
     }
 
-    fun showActivityViews() {
-        extraViews.forEach {
-            it.visibility = VISIBLE
-        }
-        animation.visibility  = VISIBLE
-        animation.playAnimation()
-        ft = supportFragmentManager.beginTransaction()
-        ft.remove(supportFragmentManager.findFragmentById(R.id.chapterContainer)!!)
-        ft.commit()
-        nextQuestion.text = "Next"
-        Handler().postDelayed({
-            animation.visibility  = GONE
-            animation.cancelAnimation()
-            topStatus.visibility = GONE
-            lowerStatus.visibility = GONE
-            countDownTimer.setOnTick(this)
-            countDownTimer.setTime(0,15, 0)
-            countDownTimer.startTimer()
-            val fragment = MCQFragment()
-            ft = supportFragmentManager.beginTransaction()
-            ft.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
-            ft.replace(R.id.chapterContainer, fragment)
-            ft.commit()
-        },2000)
 
-    }
 
-    fun hideActivityViews() {
-        extraViews.forEach {
-            it.visibility = GONE
+
+    override fun onBackPressed() {
+        mLog.i(TAG, "clicked")
+        mLog.i(TAG, " count ${supportFragmentManager.backStackEntryCount}")
+        val fragCount = supportFragmentManager.backStackEntryCount
+        when {
+            fragCount > 1 -> {
+                supportFragmentManager.popBackStack()
+            }
+            fragCount == 1 -> {
+                MaterialAlertDialogBuilder(this).setTitle("Alert")
+                    .setMessage("Do you want to go back to the previous screen?")
+                    .setPositiveButton("Yes") { dialogInterface, i ->
+                        dialogInterface.dismiss()
+                        finish()
+                    }
+                    .setNegativeButton("cancel") { dialogInterface, i ->
+                        dialogInterface.dismiss()
+                    }.create().show()
+            }
         }
     }
-
 
     override fun finish() {
         super.finish()
         overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right)
     }
 
-    override fun show(show: Boolean) {
-        mLog.i(TAG, "show $show")
-        fragContainer.background = ContextCompat.getDrawable(this,R.drawable.round_rect_white_stroke)
-        val layoutParams  =  fragContainer.layoutParams as ViewGroup.MarginLayoutParams
-        layoutParams.setMargins(16,16,16,16)
-        fragContainer.layoutParams = layoutParams
-        fragContainer.requestLayout()
-        showActivityViews()
-
-    }
-
-    override fun onBackPressed() {
-        mLog.i(TAG,"clicked")
-        mLog.i(TAG," count ${supportFragmentManager.backStackEntryCount}")
-        if(supportFragmentManager.backStackEntryCount>=1){
-            supportFragmentManager.popBackStack()
-        }else{
-            super.onBackPressed()
-        }
-    }
-
-    override fun onFinish() {
-    }
-
-    override fun onTick(time: Long) {
-    }
 }

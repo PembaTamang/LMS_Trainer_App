@@ -1,11 +1,18 @@
 package orionedutech.`in`.lmstrainerapp.fragments.mainCourse
 
 
+import android.graphics.Typeface
+import android.os.Build
 import android.os.Bundle
+import android.text.Html
+import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.RequiresApi
+import androidx.core.text.HtmlCompat
+import androidx.core.text.bold
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,7 +20,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
+import kotlinx.android.synthetic.main.custom_default_alert.view.*
 import kotlinx.android.synthetic.main.fragment_sub_unit.view.*
+import kotlinx.android.synthetic.main.fragment_sub_unit.view.title
 import org.json.JSONObject
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.adapters.recyclerviews.ChapterAdapter
@@ -36,6 +45,7 @@ import orionedutech.`in`.lmstrainerapp.network.response
 
 class SubUnitFragment : Fragment(), RecyclerItemClick {
     private var unitid = ""
+    private var chapterid = ""
     lateinit var name: TextView
     lateinit var recyclerView: ShimmerRecyclerView
     lateinit var cType: TextView
@@ -51,8 +61,9 @@ class SubUnitFragment : Fragment(), RecyclerItemClick {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_sub_unit, container, false)
         val bundle = arguments!!
-        unitid = bundle.getString("unit_id", "")
         name = view.heading
+        unitid = bundle.getString("unit_id", "")
+        chapterid = bundle.getString("chapter_id", "")
         name.text = bundle.getString("unit_name", "")
         refreshLayout = view.swipe
         recyclerView = view.recycler
@@ -123,29 +134,46 @@ class SubUnitFragment : Fragment(), RecyclerItemClick {
 
     }
 
-    override fun click(itempos: Int) {
-        MaterialAlertDialogBuilder(context).setTitle("Alert")
-            .setMessage("Do you want to play  ${subUnitsData[itempos].lesson_name} ?")
-            .setCancelable(true)
-            .setPositiveButton("play video") { dialogInterface, i ->
-                dialogInterface.dismiss()
-                val fragment = VideoFragment()
-                val bundle = Bundle()
-                bundle.putString("name", subUnitsData[itempos].lesson_name)
-                bundle.putString("url", subUnitsData[itempos].media_disk_path_relative)
-                fragment.arguments = bundle
-                ft = activity!!.supportFragmentManager.beginTransaction()
-                ft.setCustomAnimations(
-                    R.anim.enter_from_right,
-                    R.anim.exit_to_left,
-                    R.anim.enter_from_left,
-                    R.anim.exit_to_right
-                )
-                ft.replace(R.id.chapterContainer, fragment)
-                ft.commit()
 
-            }.create().show()
-    }
+    override fun click(itempos: Int) {
+
+        val dialogueView = LayoutInflater.from(context)
+            .inflate(R.layout.custom_default_alert, null, false)
+      val builder =   MaterialAlertDialogBuilder(context)
+            .setCancelable(true)
+          .setView(dialogueView)
+        val dialogue = builder.create()
+        val ok = dialogueView.button
+        ok.text = "play video"
+        val dmessage  = dialogueView.message
+        val title = dialogueView.titlee
+        title.text = "Alert"
+       val message  = SpannableStringBuilder()
+           .append("Do you want to play ")
+            .bold {append("${subUnitsData[itempos].lesson_name} ?")}
+        dmessage.text = message
+        ok.setOnClickListener {
+            dialogue.dismiss()
+            val fragment = VideoFragment()
+            val bundle = Bundle()
+            bundle.putString("chapter_id",chapterid)
+            bundle.putString("name", subUnitsData[itempos].lesson_name)
+            bundle.putString("url", subUnitsData[itempos].media_disk_path_relative)
+            fragment.arguments = bundle
+            ft = activity!!.supportFragmentManager.beginTransaction()
+            ft.setCustomAnimations(
+                R.anim.enter_from_right,
+                R.anim.exit_to_left,
+                R.anim.enter_from_left,
+                R.anim.exit_to_right
+            )
+            ft.add(R.id.chapterContainer, fragment)
+            ft.addToBackStack(null)
+            ft.commit()
+
+        }
+        dialogue.show()
+        }
 
 
 }

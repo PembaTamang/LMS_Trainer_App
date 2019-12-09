@@ -23,8 +23,8 @@ import org.json.JSONObject
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.database.MDatabase
 import orionedutech.`in`.lmstrainerapp.database.entities.AssesmentQuestion
-import orionedutech.`in`.lmstrainerapp.fragments.questionTypes.MCQFragment
-import orionedutech.`in`.lmstrainerapp.interfaces.ActivityAns
+import orionedutech.`in`.lmstrainerapp.fragments.assessmentquestionTypes.AssessmentMCQFragment
+import orionedutech.`in`.lmstrainerapp.interfaces.AssessmentAnswer
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
 import orionedutech.`in`.lmstrainerapp.mToast
@@ -36,7 +36,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class AssessmentActivity : AppCompatActivity(), ActivityAns, CountDownInterface {
+class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInterface {
     override fun onFinish() {
     }
 
@@ -327,7 +327,7 @@ class AssessmentActivity : AppCompatActivity(), ActivityAns, CountDownInterface 
         )
         when (type) {
             "1" -> {
-                val fragment = MCQFragment()
+                val fragment = AssessmentMCQFragment()
                 val bundle = Bundle()
                 bundle.putString("qid", qid)
                 bundle.putString("qString", qString)

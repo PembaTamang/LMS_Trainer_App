@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.assessmentquestionTypes.AssessmentMCQFragment">
-
-
+    tools:context=".fragments.activityquestionTypes.ActivityMCQFragment">
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/sl"
         android:layout_width="25dp"

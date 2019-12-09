@@ -1,11 +1,18 @@
 package orionedutech.`in`.lmstrainerapp.fragments.mainCourse
 
 
+import android.graphics.Typeface
+import android.os.Build
 import android.os.Bundle
+import android.text.Html
+import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.RequiresApi
+import androidx.core.text.HtmlCompat
+import androidx.core.text.bold
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,6 +20,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
+import kotlinx.android.synthetic.main.custom_default_alert.view.*
 import kotlinx.android.synthetic.main.fragment_chapter.view.*
 import org.json.JSONObject
 import org.w3c.dom.Text
@@ -85,7 +93,7 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
         when (chapterType) {
             "1" -> {
                 isUnitData = true
-                isUnit =true
+                isUnit = true
                 cType.text = "Unit List"
                 getUnitData()
             }
@@ -125,7 +133,7 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
         recyclerView.showShimmerAdapter()
         NetworkOps.post(Urls.trainingContent, json.toString(), context, object : response {
             override fun onInternetfailure() {
-                if(activity==null){
+                if (activity == null) {
                     return
                 }
                 activity!!.runOnUiThread {
@@ -140,7 +148,7 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
                     return
                 }
                 val data1 = data.training_data
-                if(activity==null){
+                if (activity == null) {
                     return
                 }
                 activity!!.runOnUiThread {
@@ -154,7 +162,7 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
                     arrayList.add(it.course_unit_name)
                 }
                 mLog.i(TAG, "units ${arrayList.size}")
-                if(activity==null){
+                if (activity == null) {
                     return
                 }
                 activity!!.runOnUiThread {
@@ -166,7 +174,7 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
             }
 
             override fun onfailure() {
-                if(activity==null){
+                if (activity == null) {
                     return
                 }
                 activity!!.runOnUiThread {
@@ -193,7 +201,7 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
         recyclerView.showShimmerAdapter()
         NetworkOps.post(Urls.trainingContent, json.toString(), context, object : response {
             override fun onInternetfailure() {
-                if(activity==null){
+                if (activity == null) {
                     return
                 }
                 activity!!.runOnUiThread {
@@ -209,7 +217,7 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
                     return
                 }
                 val data1 = data.training_data
-                if(activity==null){
+                if (activity == null) {
                     return
                 }
                 activity!!.runOnUiThread {
@@ -223,7 +231,7 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
                     arrayList.add(it.lesson_name)
                 }
                 mLog.i(TAG, "subunits ${arrayList.size}")
-                if(activity==null){
+                if (activity == null) {
                     return
                 }
                 activity!!.runOnUiThread {
@@ -235,7 +243,7 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
             }
 
             override fun onfailure() {
-                if(activity==null){
+                if (activity == null) {
                     return
                 }
                 activity!!.runOnUiThread {
@@ -247,15 +255,14 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
         }
     }
 
+
     override fun click(itempos: Int) {
         if (isUnit) {
-
-            showToast(context, unitData[itempos].course_unit_name)
-
             //go to sub - unit fragment
             val fragment = SubUnitFragment()
             val bundle = Bundle()
-            bundle.putString("unit_name",unitData[itempos].course_unit_name)
+            bundle.putString("chapter_id",chapterID)
+            bundle.putString("unit_name", unitData[itempos].course_unit_name)
             bundle.putString("unit_id", unitData[itempos].course_unit_id)
             fragment.arguments = bundle
             ft = activity!!.supportFragmentManager.beginTransaction()
@@ -270,30 +277,42 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
             ft.commit()
 
         } else {
-
-
-            //go to next fragment and play video
-            MaterialAlertDialogBuilder(context).setTitle("Alert")
-                .setMessage("Do you want to play  ${subUnitsData[itempos].lesson_name} ?")
+            val dialogueView = LayoutInflater.from(context)
+                .inflate(R.layout.custom_default_alert, null, false)
+            val builder =   MaterialAlertDialogBuilder(context)
                 .setCancelable(true)
-                .setPositiveButton("play video") { dialogInterface, i ->
-                    dialogInterface.dismiss()
-                    val fragment = VideoFragment()
-                    val bundle = Bundle()
-                    bundle.putString("name", subUnitsData[itempos].lesson_name)
-                    bundle.putString("url", subUnitsData[itempos].media_disk_path_relative)
-                    fragment.arguments = bundle
-                    ft = activity!!.supportFragmentManager.beginTransaction()
-                    ft.setCustomAnimations(
-                        R.anim.enter_from_right,
-                        R.anim.exit_to_left,
-                        R.anim.enter_from_left,
-                        R.anim.exit_to_right
-                    )
-                    ft.replace(R.id.chapterContainer, fragment)
-                    ft.commit()
+            builder.setView(dialogueView)
+            val dialogue = builder.create()
+            val ok = dialogueView.button
+            ok.text = "play video"
+            val dmessage  = dialogueView.message
+            val title = dialogueView.titlee
+            title.text = "Alert"
+            val message  = SpannableStringBuilder()
+                .append("Do you want to play ")
+                .bold {append("${subUnitsData[itempos].lesson_name} ?")}
 
-                }.create().show()
+            dmessage.text = message
+            ok.setOnClickListener {
+                dialogue.dismiss()
+                val fragment = VideoFragment()
+                val bundle = Bundle()
+                bundle.putString("chapter_id",chapterID)
+                bundle.putString("name", subUnitsData[itempos].lesson_name)
+                bundle.putString("url", subUnitsData[itempos].media_disk_path_relative)
+                fragment.arguments = bundle
+                ft = activity!!.supportFragmentManager.beginTransaction()
+                ft.setCustomAnimations(
+                    R.anim.enter_from_right,
+                    R.anim.exit_to_left,
+                    R.anim.enter_from_left,
+                    R.anim.exit_to_right
+                )
+                ft.add(R.id.chapterContainer, fragment)
+                ft.addToBackStack(null)
+                ft.commit()
+            }
+            dialogue.show()
 
 
         }

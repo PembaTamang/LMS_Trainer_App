@@ -19,8 +19,9 @@ import androidx.core.content.FileProvider
 import com.google.android.material.snackbar.Snackbar
 import java.io.File
 import android.provider.MediaStore
-
-
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.StyleSpan
 
 
 @SuppressLint("InflateParams")
@@ -108,5 +109,6 @@ fun getFileUri(context : Context,file : File) : Uri {
     cursor = null
     return orientation
 }
+
 
 
