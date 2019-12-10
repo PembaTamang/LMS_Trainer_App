@@ -10,6 +10,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -122,6 +123,7 @@ class VideoFragment : Fragment(), Player.EventListener {
                 full = true
                 activity!!.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
                 fullScreenPlayerView = PlayerView(context)
+                val fullvideoContainer = FrameLayout(context!!)
                 fullscreendialog =
                     object : Dialog(context!!, android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
                         override fun onBackPressed() {
@@ -134,8 +136,9 @@ class VideoFragment : Fragment(), Player.EventListener {
                     }
                 //todo uncomment later
                 //fullScreenPlayerView.setControlDispatcher(PositionLimitingControlDispatcher())
+                fullvideoContainer.addView(fullScreenPlayerView)
                 fullscreendialog.addContentView(
-                    fullScreenPlayerView,
+                    fullvideoContainer,
                     ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT

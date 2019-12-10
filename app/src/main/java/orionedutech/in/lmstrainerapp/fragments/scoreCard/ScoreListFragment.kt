@@ -110,8 +110,8 @@ class ScoreListFragment : Fragment() {
                         email.text = mail
                         name.text = naam
                         time.text = String.format("Time : %s minutes",samay)
-                        totalQ.text = String.format("Total Questions : %s ",totalQues)
-                        rightans.text = String.format("Right answers : %d ",correct)
+                        totalQ.text = String.format("Total Ques : %s ",totalQues)
+                        rightans.text = String.format("Right Ans : %d ",correct)
                         dates.text = String.format("Start and End Date :  %s - %s",startDate,endDate)
                         progressBar.progress = percentage.toFloat()
                         percentageTV.text = String.format(" %d %% ",percentage)

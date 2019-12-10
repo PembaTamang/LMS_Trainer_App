@@ -10,32 +10,35 @@ import android.provider.OpenableColumns
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.*
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatImageButton
-import com.google.android.material.button.MaterialButton
+import androidx.fragment.app.Fragment
+import com.developer.filepicker.model.DialogConfigs
+import com.developer.filepicker.model.DialogProperties
+import com.developer.filepicker.view.FilePickerDialog
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.custom_alert.view.*
 import kotlinx.android.synthetic.main.fragment_assignment_upload.view.*
-import kotlinx.android.synthetic.main.notification_download.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
-import orionedutech.`in`.lmstrainerapp.*
+import orionedutech.`in`.lmstrainerapp.PathUtil
+import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.adapters.spinners.BatchSpinAdapter
 import orionedutech.`in`.lmstrainerapp.adapters.spinners.CourseSpinAdapter
 import orionedutech.`in`.lmstrainerapp.database.MDatabase
 import orionedutech.`in`.lmstrainerapp.database.entities.Batch
 import orionedutech.`in`.lmstrainerapp.fragments.BaseFragment
+import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
 import orionedutech.`in`.lmstrainerapp.mToast.noInternetSnackBar
 import orionedutech.`in`.lmstrainerapp.mToast.showToast
@@ -43,7 +46,6 @@ import orionedutech.`in`.lmstrainerapp.network.NetworkOps
 import orionedutech.`in`.lmstrainerapp.network.Urls
 import orionedutech.`in`.lmstrainerapp.network.dataModels.DCCourse
 import orionedutech.`in`.lmstrainerapp.network.dataModels.DCCourseList
-import orionedutech.`in`.lmstrainerapp.network.progress
 import orionedutech.`in`.lmstrainerapp.network.response
 import java.io.File
 import java.util.*
@@ -87,10 +89,10 @@ class AssignmentUploadFragment : BaseFragment() {
 
     lateinit var progress: ProgressBar
     lateinit var progressText: TextView
-    lateinit var browseButton : AppCompatButton
-    lateinit var uploadButon : AppCompatImageButton
-
-    var views :ArrayList<View> =  ArrayList()
+    lateinit var browseButton: AppCompatButton
+    lateinit var uploadButon: AppCompatImageButton
+    val FILE_REQUEST_CODE = 121
+    var views: ArrayList<View> = ArrayList()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -107,7 +109,7 @@ class AssignmentUploadFragment : BaseFragment() {
         batchSpinner = view.batch
         browseButton = view.browse
         uploadButon = view.upload
-        views = arrayListOf(nameET,descET,batchSpinner,courseSpinner,browseButton,uploadButon)
+        views = arrayListOf(nameET, descET, batchSpinner, courseSpinner, browseButton, uploadButon)
 
         courseAdapter = CourseSpinAdapter(
             context!!,
@@ -202,8 +204,23 @@ class AssignmentUploadFragment : BaseFragment() {
 
         browseButton.setOnClickListener {
             //browse code
-            val intent = getCustomFileChooserIntent(DOC, PDF, DOCX)
-            startActivityForResult(intent, PICKFILE_REQUEST_CODE)
+
+            val properties = DialogProperties()
+            properties.selection_mode = DialogConfigs.SINGLE_MODE
+            properties.selection_type = DialogConfigs.FILE_SELECT
+            properties.root =    File(DialogConfigs.DEFAULT_DIR)
+            properties.error_dir =  File(DialogConfigs.DEFAULT_DIR)
+            properties.offset =  File(DialogConfigs.DEFAULT_DIR)
+            properties.extensions = arrayOf("pdf")
+            properties.show_hidden_files = false
+                val dialogue = FilePickerDialog(activity!!,properties,R.style.mAlertDialogTheme)
+            dialogue.setTitle("Choose a pdf")
+            dialogue.setDialogSelectionListener {
+                mLog.i(TAG,"path ${it[0]}")
+                filepath = it[0]
+                fileNameTV.text = filepath.substring(filepath.lastIndexOf("/")+1)
+            }
+        dialogue.show()
         }
 
 
@@ -230,27 +247,27 @@ class AssignmentUploadFragment : BaseFragment() {
             val hashmap: HashMap<String, String> = HashMap()
             hashmap["data_json"] = json.toString()
             hashmap["file_path"] = filepath
-            if(activity==null){
+            if (activity == null) {
                 return@setOnClickListener
             }
             activity!!.runOnUiThread {
                 progress.visibility = VISIBLE
                 progress.max = 100
                 progressText.visibility = VISIBLE
-               disableViews()
+                disableViews()
             }
             showAnimation()
             NetworkOps.postMultipart(Urls.assignmentUploadUrl, hashmap, context, object : response {
                 override fun onrespose(string: String?) {
 
                     mLog.i(TAG, "response $string ")
-                    if(JSONObject(string!!).optString("success")=="1"){
-                        if(activity==null){
+                    if (JSONObject(string!!).optString("success") == "1") {
+                        if (activity == null) {
                             return
                         }
                         activity!!.runOnUiThread {
                             hideAnimations()
-                            showToast(context,"assignment successfully uploaded")
+                            showToast(context, "assignment successfully uploaded")
                             activity!!.onBackPressed()
                         }
                     }
@@ -258,7 +275,7 @@ class AssignmentUploadFragment : BaseFragment() {
 
                 override fun onfailure() {
                     mLog.i(TAG, "failed")
-                    if(activity==null){
+                    if (activity == null) {
                         return
                     }
                     activity!!.runOnUiThread {
@@ -268,24 +285,29 @@ class AssignmentUploadFragment : BaseFragment() {
                 }
 
                 override fun onInternetfailure() {
-                    if(activity==null){
+                    if (activity == null) {
                         return
                     }
                     activity!!.runOnUiThread {
                         enableViews()
-                   noInternetSnackBar(activity!!)
+                        noInternetSnackBar(activity!!)
                     }
                 }
 
             }) { pg, speed, secs ->
                 mLog.i(TAG, "progress $progress speed $speed secs $secs ")
-                if(activity==null){
+                if (activity == null) {
                     return@postMultipart
                 }
                 activity!!.runOnUiThread {
                     progress.isIndeterminate = false
                     progress.progress = pg.roundToInt()
-                    val string = String.format("Progress: %s%% Time and Speed: %s / %s ",pg,getSpeed(speed),getSecs(secs))
+                    val string = String.format(
+                        "Progress: %s%% Time and Speed: %s / %s ",
+                        pg,
+                        getSpeed(speed),
+                        getSecs(secs)
+                    )
                     progressText.text = string
                 }
             }
@@ -356,7 +378,7 @@ class AssignmentUploadFragment : BaseFragment() {
                     context,
                     object : response {
                         override fun onInternetfailure() {
-                       noInternetSnackBar(activity!!)
+                            noInternetSnackBar(activity!!)
                         }
 
                         override fun onrespose(string: String?) {
@@ -401,7 +423,7 @@ class AssignmentUploadFragment : BaseFragment() {
     }
 
     private fun failedCourse() {
-        if(activity==null){
+        if (activity == null) {
             return
         }
         activity!!.runOnUiThread {
@@ -410,7 +432,7 @@ class AssignmentUploadFragment : BaseFragment() {
     }
 
     private fun hideAnimations() {
-        if(activity==null){
+        if (activity == null) {
             return
         }
         activity!!.runOnUiThread {
@@ -422,7 +444,7 @@ class AssignmentUploadFragment : BaseFragment() {
     }
 
     private fun showAnimation() {
-        if(activity==null){
+        if (activity == null) {
             return
         }
         activity!!.runOnUiThread {
@@ -476,13 +498,14 @@ class AssignmentUploadFragment : BaseFragment() {
             String.format(Locale.getDefault(), "%.2f Mbps", speed / 1024)
         }
     }
-        private fun enableViews(){
-            views.forEach {
-                it.isEnabled = true
-            }
-        }
 
-    private fun disableViews(){
+    private fun enableViews() {
+        views.forEach {
+            it.isEnabled = true
+        }
+    }
+
+    private fun disableViews() {
         views.forEach {
             it.isEnabled = false
         }

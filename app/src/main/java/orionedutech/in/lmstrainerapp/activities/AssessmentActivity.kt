@@ -3,13 +3,16 @@ package orionedutech.`in`.lmstrainerapp.activities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.view.View.GONE
-import android.view.View.VISIBLE
+import android.view.View
+import android.view.View.*
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentTransaction
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import ir.samanjafari.easycountdowntimer.CountDownInterface
 import ir.samanjafari.easycountdowntimer.EasyCountDownTextview
@@ -65,6 +68,7 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
     var totalQuestions = 0
     var currentQuestion = 0
     var firstQ = true
+    var examOn = false
     var questionsarrayList: MutableList<AssesmentQuestion> = ArrayList()
     var lastquestionID = ""
     var answerjson = JSONObject()
@@ -73,7 +77,7 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
     var timeinMins = ""
     var answerID: HashMap<String, String> = HashMap()
     var dual = false
-
+    var extraViews: ArrayList<View> = ArrayList()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assessment)
@@ -95,6 +99,8 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
         status = data
         button.isEnabled = false
         questionTV = textView13
+        extraViews = arrayListOf(assessmentName,questionTV,button,countdown)
+
         button.setOnClickListener {
             if (currentQuestion < totalQuestions) {
 
@@ -113,8 +119,8 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
                     currentQuestion += 1
                     questionTV.text = String.format("%s / %s ", currentQuestion, totalQuestions)
                     lastquestionID = id
+                    countdown.setTime(0,timeinMins.toInt(),0)
                     countdown.setOnTick(this)
-                    countdown.setTime(0, timeinMins.toInt(), 0)
                     countdown.startTimer()
                     return@setOnClickListener
 
@@ -163,15 +169,14 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
                 mainJSON.put("ans_data", questionJSON)
                 countdown.stopTimer()
                 mLog.i(TAG, "json : $mainJSON")
-                countdown.alpha = 0.2f
-                fragContainter.visibility = GONE
+                fragContainter.alpha = 0.0f
                 animation.visibility = VISIBLE
                 animation.playAnimation()
                 status.visibility = VISIBLE
                 mainStatus.text = "Assessment Over"
                 mainStatus.visibility = VISIBLE
                 status.text = "Pushing data to server...please wait"
-                button.visibility = GONE
+                button.isEnabled = false
                 uploadJson(mainJSON)
             }
 
@@ -191,8 +196,19 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
                 val json = JSONObject(string!!)
                 if (json.getString("success") == "1") {
                     runOnUiThread {
-                        mToast.showToast(this@AssessmentActivity, "answers successfully submitted")
-                        onBackPressed()
+                        examOn = false
+                      //  mToast.showToast(this@AssessmentActivity, "answers successfully submitted")
+                        animation.visibility = INVISIBLE
+                        animation.cancelAnimation()
+                        status.visibility = INVISIBLE
+                        mainStatus.visibility = INVISIBLE
+                       MaterialAlertDialogBuilder(this@AssessmentActivity).setTitle("Assessment Submitted Successfully")
+                           .setCancelable(false)
+                           .setMessage("press ok to exit")
+                           .setPositiveButton("ok"){dialogInterface, i ->
+                               dialogInterface.dismiss()
+                               onBackPressed()
+                           }.create().show()
                     }
                 } else {
                     runUploadfailurecode()
@@ -235,6 +251,7 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
 
         NetworkOps.post(Urls.assessmentQuestionsUrl, json, this, object : response {
             override fun onrespose(string: String?) {
+                mLog.i(TAG,"assessmesnt response : $string")
                 val mainjson = Gson().fromJson(string, DCAsseessmentQ::class.java)
 
                 if (mainjson == null) {
@@ -279,9 +296,36 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
                                 status.text = "PRESS START TO BEGIN"
                                 button.isEnabled = true
                                 mainStatus.text = "You have $timeinMins minutes to attempt $totalQuestions questions"
+                                examOn = true
+
+                                fragContainter.background =
+                                    ContextCompat.getDrawable(this@AssessmentActivity, R.drawable.round_rect_white_stroke)
+                                val layoutParams = fragContainter.layoutParams as ViewGroup.MarginLayoutParams
+                                layoutParams.setMargins(16, 16, 16, 16)
+                                fragContainter.layoutParams = layoutParams
+                                fragContainter.requestLayout()
+                                    extraViews.forEach {
+                                        it.visibility = VISIBLE
+                                    }
 
 
                             }
+
+                        }else{
+                           runOnUiThread {
+                               animation.visibility = GONE
+                               animation.cancelAnimation()
+                               topstatus.visibility = GONE
+                               status.visibility = GONE
+                               MaterialAlertDialogBuilder(this@AssessmentActivity).setTitle("Alert")
+                                   .setCancelable(false)
+                                   .setMessage(mainjson.response)
+                                   .setPositiveButton("Go back"){
+                                           dialogInterface, i ->
+                                       dialogInterface.dismiss()
+                                       finish()
+                                   }.create().show()
+                           }
 
                         }
 
@@ -339,11 +383,20 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
             }
             "2" -> {
                 dual = true
+                mToast.showToast(this,"new undefined data")
 
             }
             else -> {
 
             }
+        }
+    }
+
+    override fun onBackPressed() {
+        if(examOn){
+         mToast.showToast(this,"Please complete the assessment before leaving")
+        }else {
+            super.onBackPressed()
         }
     }
 }

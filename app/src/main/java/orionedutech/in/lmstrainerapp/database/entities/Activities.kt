@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "activity_table")
 data class Activities (
     val activity_chapter_id: String,
-    val activity_description: Any,
+    val activity_description: String?,
     val activity_id: String,
     val activity_name: String
 ){

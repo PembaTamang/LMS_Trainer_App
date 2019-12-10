@@ -1,12 +1,14 @@
 package orionedutech.`in`.lmstrainerapp.database.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import orionedutech.`in`.lmstrainerapp.database.entities.ActivityAnswers
 
 @Dao
 interface ActivityAnswerDao {
+    @Insert
     suspend fun ins(activity: MutableList<ActivityAnswers>)
 
     @Query("delete from activity_answers")
@@ -19,9 +21,10 @@ interface ActivityAnswerDao {
     }
 
     @Query(" select * from activity_answers where question_id = :qid ")
-    suspend fun getAllAssesmentAnswers(qid: String) :List<ActivityAnswers>
+    fun getAllAnswers(qid: String) :List<ActivityAnswers>
 
     @Query("select answer_right_wrong from activity_answers where question_id = :qid and question_ans_id =:aid")
-    suspend fun getAnswerValue(qid: String,aid : String) : String
+    fun getAnswerValue(qid: String,aid : String) : String
+
 
 }

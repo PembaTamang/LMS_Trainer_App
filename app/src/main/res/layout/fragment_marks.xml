@@ -129,7 +129,7 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/materialCardView10"
-        android:layout_width="186dp"
+        android:layout_width="0dp"
         android:layout_height="?actionBarSize"
         android:layout_marginTop="8dp"
         app:cardElevation="4dp"
@@ -148,9 +148,10 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/materialCardView9"
-        android:layout_width="186dp"
+        android:layout_width="0dp"
         android:layout_height="?actionBarSize"
         app:cardElevation="4dp"
+        app:layout_constraintEnd_toEndOf="@+id/materialCardView8"
         app:layout_constraintStart_toStartOf="@+id/materialCardView2"
         app:layout_constraintTop_toTopOf="@+id/materialCardView10">
 
@@ -160,7 +161,7 @@
             android:layout_height="match_parent"
             android:background="@color/white"
             android:hint="student marks"
-            android:padding="8dp"/>
+            android:padding="8dp" />
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.button.MaterialButton

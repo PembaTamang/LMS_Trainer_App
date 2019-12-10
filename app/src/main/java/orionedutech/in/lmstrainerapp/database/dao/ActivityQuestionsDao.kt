@@ -23,5 +23,14 @@ interface ActivityQuestionsDao {
     }
 
     @Query("select activity_qns_id from activity_questions where activity_id = :aid")
-    suspend fun getQuestionsByAcitivity(aid:String) : List<String>
+    fun getQuestionsByActivityID(aid:String) : List<String>
+
+    @Query("select activity_qns_type from activity_questions where activity_id = :aid and activity_qns_id = :qid")
+    fun getQuestionsTypeByID(aid:String, qid:String) : String
+
+    @Query("select activity_qns_value from activity_questions where activity_qns_id = :qid")
+    fun getQuestionString(qid:String) : String
+
+
+
 }

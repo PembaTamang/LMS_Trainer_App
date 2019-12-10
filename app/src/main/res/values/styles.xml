@@ -128,6 +128,19 @@
         <item name="cornerSize">8dp</item>
     </style>
 
+    <style name="mAlertDialogTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert.Bridge">
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle1</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle1</item>
+        <item name="android:colorAccent">@color/white</item>
+    </style>
+
+    <style name="NegativeButtonStyle1" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+    <style name="PositiveButtonStyle1" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
 
 
 </resources>

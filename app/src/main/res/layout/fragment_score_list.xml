@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:background="@color/white"
     android:clickable="true"
     android:focusable="true"
@@ -16,8 +17,8 @@
         android:background="@color/blue"
         android:gravity="start|center"
         android:paddingStart="16sp"
-        android:textAppearance="@style/Baloo"
         android:text="@string/loading"
+        android:textAppearance="@style/Baloo"
         android:textColor="@color/white"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,58 +36,70 @@
 
     <TextView
         android:id="@+id/name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
         android:text="@string/loading"
         android:textSize="12sp"
+        app:layout_constraintEnd_toStartOf="@+id/circularProgressBar"
         app:layout_constraintStart_toEndOf="@+id/imageView8"
         app:layout_constraintTop_toBottomOf="@+id/textView16" />
 
     <TextView
         android:id="@+id/email"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/loading"
         android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@+id/name"
         app:layout_constraintStart_toStartOf="@+id/name"
         app:layout_constraintTop_toBottomOf="@+id/name" />
 
     <TextView
         android:id="@+id/time"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/loading"
         android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@+id/email"
         app:layout_constraintStart_toStartOf="@+id/email"
         app:layout_constraintTop_toBottomOf="@+id/email" />
 
     <TextView
         android:id="@+id/totalQ"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
         android:text="@string/loading"
         android:textSize="12sp"
+        app:layout_constraintEnd_toStartOf="@+id/rightAns"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/imageView8"
         app:layout_constraintStart_toStartOf="@+id/time"
         app:layout_constraintTop_toBottomOf="@+id/time" />
 
     <TextView
         android:id="@+id/rightAns"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
         android:textColor="@color/green"
         android:textSize="12sp"
+        app:layout_constraintEnd_toStartOf="@+id/circularProgressBar"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/totalQ"
         app:layout_constraintTop_toTopOf="@+id/totalQ" />
 
     <TextView
         android:id="@+id/dates"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/loading"
         android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@+id/rightAns"
         app:layout_constraintStart_toStartOf="@+id/totalQ"
         app:layout_constraintTop_toBottomOf="@+id/totalQ" />
 
@@ -96,12 +109,12 @@
         android:layout_height="0dp"
         android:layout_marginEnd="16dp"
         app:cpb_background_progressbar_color="#DDDDDD"
-        app:cpb_background_progressbar_width="10dp"
+        app:cpb_background_progressbar_width="5dp"
         app:cpb_progress="50"
         app:cpb_progress_direction="to_right"
         app:cpb_progress_max="100"
         app:cpb_progressbar_color="#4CB906"
-        app:cpb_progressbar_width="10dp"
+        app:cpb_progressbar_width="4dp"
         app:cpb_round_border="false"
         app:layout_constraintBottom_toBottomOf="@+id/rightAns"
         app:layout_constraintEnd_toEndOf="parent"
@@ -116,6 +129,7 @@
         app:layout_constraintEnd_toEndOf="@+id/circularProgressBar"
         app:layout_constraintStart_toStartOf="@+id/circularProgressBar"
         app:layout_constraintTop_toTopOf="@+id/circularProgressBar" />
+
     <View
         android:id="@+id/view4"
         android:layout_width="0dp"
@@ -159,6 +173,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/textView27"
         app:layout_constraintEnd_toStartOf="@+id/textView28"
         app:layout_constraintTop_toTopOf="@+id/textView27" />
+
     <TextView
         android:id="@+id/textView25"
         android:layout_width="0dp"
@@ -184,10 +199,10 @@
         android:gravity="center"
         android:text="Question"
         android:textAlignment="center"
-        app:layout_constraintHorizontal_weight="1.8"
         android:textColor="@color/white"
         android:textSize="12sp"
         app:layout_constraintEnd_toStartOf="@+id/textView26"
+        app:layout_constraintHorizontal_weight="1.8"
         app:layout_constraintStart_toEndOf="@+id/textView25"
         app:layout_constraintTop_toBottomOf="@+id/dates" />
 
@@ -195,13 +210,13 @@
         android:id="@+id/textView26"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:gravity="center"
+        android:paddingStart="2dp"
+        android:paddingEnd="2dp"
         android:text="Correct Answer"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="12sp"
-        android:paddingStart="2dp"
-        android:paddingEnd="2dp"
-        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="@+id/textView24"
         app:layout_constraintEnd_toStartOf="@+id/textView27"
         app:layout_constraintHorizontal_bias="0.5"
@@ -214,10 +229,10 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_gravity="center"
-        android:text="Student Answer"
         android:gravity="center"
         android:paddingStart="2dp"
         android:paddingEnd="2dp"
+        android:text="Student Answer"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="12sp"
@@ -231,14 +246,14 @@
 
     <TextView
         android:id="@+id/textView28"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_gravity="center"
         android:layout_weight="1.4"
         android:gravity="center"
-        android:text="Status"
         android:paddingStart="2dp"
         android:paddingEnd="2dp"
+        android:text="Status"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="12sp"
@@ -256,10 +271,10 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        app:shimmer_demo_layout="@layout/shimmer_assignment"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView26"
+        app:shimmer_demo_layout="@layout/shimmer_assignment"
         tools:listitem="@layout/score_item" />
 </androidx.constraintlayout.widget.ConstraintLayout>

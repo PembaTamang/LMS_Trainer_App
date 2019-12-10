@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.recycler_score_item.view.*
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.interfaces.RecyclerItemClick
+import orionedutech.`in`.lmstrainerapp.mLog
+import orionedutech.`in`.lmstrainerapp.mLog.TAG
 import orionedutech.`in`.lmstrainerapp.network.dataModels.DCScore
 
 class ScoreAdapter(
@@ -41,7 +43,7 @@ class ScoreAdapter(
        }!! else context?.let { ContextCompat.getColor(it, R.color.light_grey) }!!)
         holder.slNo.text = (position+1).toString()
         holder.name.text = m.assesment_name
-        holder.percentage.text = m.percentage.toString()
+        holder.percentage.text = String.format("%s %%",m.percentage.toString())
     }
 
     inner class SVH(itemView: View) : RecyclerView.ViewHolder(itemView) {

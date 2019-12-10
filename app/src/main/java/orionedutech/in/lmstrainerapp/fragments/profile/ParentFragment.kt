@@ -110,14 +110,15 @@ class ParentFragment : BaseFragment(), UCropFragmentCallback, flashtoggle.captur
         animation = view.anim
         profileImage = view.circularImageView
         view.camera.setOnClickListener {
-            //start camera intent
+            takePhoto()
+           /* //start camera intent
             if (barPreferences.getBoolean("move", true)) {
               //  moveToFragment(())
                 MoveNavBar.theRealInstance.refresh()
                 profilebooleantoggle.theRealInstance.toggle(false)
             } else {
                 takePhoto()
-            }
+            }*/
         }
 
         view.camera.setOnLongClickListener {

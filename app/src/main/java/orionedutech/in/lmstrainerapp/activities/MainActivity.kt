@@ -26,6 +26,8 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Lifecycle
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
@@ -65,7 +67,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private var lastpop = false
     private var lastFrag: String = ""
     private lateinit var bottomNav: BottomNavigationView
-
+    lateinit var profilePref: SharedPreferences
     private val permissionCode = 100
     var permissions = arrayOf(
         android.Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -85,6 +87,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         bottomNav = bottom_navigation
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
+        profilePref = getSharedPreferences("profile", Context.MODE_PRIVATE)
 
         notification.setOnClickListener {
             mLog.i(TAG,"clicked")
@@ -144,6 +147,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         val headerView = nav_view.getHeaderView(0)
         headerView.profile_image
+        val imageURL = profilePref.getString("image", "")
+        if (imageURL != "") {
+            Glide.with(this).load(imageURL).skipMemoryCache(true).diskCacheStrategy(
+                DiskCacheStrategy.NONE).into(headerView.profile_image)
+        }
         launch {
             applicationContext?.let {
                 val dao = MDatabase(it).getUserDao()

@@ -21,7 +21,9 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
-        tools:replace="android:allowBackup">
+        tools:replace="android:allowBackup"
+
+        >
         <activity android:name=".activities.TrainerActivity"></activity>
         <activity
             android:name=".activities.MainCourseActivity"
@@ -67,6 +69,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
+            tools:replace="android:authorities"
             android:authorities="orionedutech.in.lmstrainerapp.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">

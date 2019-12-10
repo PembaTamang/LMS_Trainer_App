@@ -190,7 +190,7 @@ object MDownloader {
             notificationChannel.description = notiDesc
             notificationChannel.enableLights(true)
             notificationChannel.lightColor = Color.RED
-            notificationChannel.vibrationPattern = longArrayOf(0, 1000, 500, 1000)
+            notificationChannel.vibrationPattern = longArrayOf(0,500)
             notificationChannel.enableVibration(true)
             notificationChannel.setSound(
                 sound,

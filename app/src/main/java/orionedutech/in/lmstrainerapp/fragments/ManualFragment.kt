@@ -85,7 +85,7 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
             CoroutineScope(IO).launch {
                 context?.let {
                     val dao = MDatabase(it).getFilesDao()
-                    val path = dao.getInternalPath(pdfPref.getString("lastURL","")!!)
+                    path = dao.getInternalPath(pdfPref.getString("lastURL","")!!)
                     if(path.isEmpty()){
                         getData()
                     }else{
@@ -190,7 +190,7 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
                     .setMessage("The downloaded pdf is missing or corrupted. Would you like to download again?")
                     .setPositiveButton("download"){dialogInterface, i ->
                         dialogInterface.dismiss()
-                        getData()
+                    directDownload()
                     }.setNegativeButton("cancel"){dialogInterface, i ->
                         dialogInterface.dismiss()
                     }.create().show()
@@ -209,12 +209,47 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
     }
 
     private fun directDownload() {
-        val intent = Intent(context, MDownloaderService::class.java)
-        intent.putExtra("url", serverURL)
-        intent.putExtra("name", "manual.pdf")
-        intent.putExtra("pdf", true)
-        intent.action = MActions.start
-        context!!.startService(intent)
+        waitText.text = "checking file..."
+        waitText.visibility = VISIBLE
+        pdfView.visibility = GONE
+        val json = "{\"user_type\":\"3\"}"
+        NetworkOps.post(Urls.manualUrl, json, context, object : response {
+            override fun onrespose(string: String?) {
+                val jsonval = JSONObject(string!!)
+                if (jsonval.getString("success") == "1") {
+                    serverURL = jsonval.getString("response")
+                    activity?.runOnUiThread {
+                        waitText.visibility = VISIBLE
+                        pdfView.visibility = GONE
+                        waitText.text = "please wait while the pdf is being downloaded..."
+                        mToast.showToast(context, "download start")
+                        animation.visibility = VISIBLE
+                        animation.playAnimation()
+                    }
+
+                    val intent = Intent(context, MDownloaderService::class.java)
+                    intent.putExtra("url", serverURL)
+                    intent.putExtra("name", "manual.pdf")
+                    intent.putExtra("pdf", true)
+                    intent.action = MActions.start
+                    context!!.startService(intent)
+                } else {
+                    onFailure()
+                }
+            }
+
+            override fun onfailure() {
+                onFailure()
+            }
+
+            override fun onInternetfailure() {
+                onFailure()
+                mToast.noInternetSnackBar(activity!!)
+            }
+
+        }) { _, _, _ ->
+
+        }
     }
 
     private fun onFailure() {

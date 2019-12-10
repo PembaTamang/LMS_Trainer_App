@@ -70,12 +70,12 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
         if(assessmentPref.getBoolean("show",true)){
             Handler().postDelayed({
                 MaterialAlertDialogBuilder(context).setTitle("Alert")
-                    .setMessage("You can give your assessments by selecting them from the list. \n\nPress ok to dismiss. \n\nPress cancel if you want to see this reminder the next time.")
-                    .setPositiveButton("ok"){dialogInterface, i ->
+                    .setMessage("You can give your assessments by selecting them from the list.")
+                    .setPositiveButton("don't show again"){dialogInterface, i ->
                         dialogInterface.dismiss()
                         assessmentPref.edit().putBoolean("show",false).apply()
                     }
-                    .setNegativeButton("cancel"){dialogInterface, i ->
+                    .setNegativeButton("keep reminder"){dialogInterface, i ->
                         dialogInterface.dismiss()
                     }.create().show()
             },500)
