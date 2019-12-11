@@ -22,5 +22,5 @@ suspend fun insert(activity: MutableList<Activities>){
 }
 
 @Query("select activity_name from activity_table where activity_id = :aid")
-fun getActivityName(aid:String) : String
+suspend fun getActivityName(aid:String) : String
 }

@@ -111,7 +111,7 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
                     firstQ = false
                     changeFragment(
                         type,
-                        id, qString
+                        id, qString,currentQuestion
                     )
                     button.text = "Next"
                     status.visibility = GONE
@@ -140,7 +140,7 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
                     mLog.i(TAG, "")
                     changeFragment(
                         type, id, qString
-                    )
+                    ,currentQuestion)
                     lastquestionID = id
                     currentQuestion += 1
 
@@ -361,7 +361,7 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
         }
     }
 
-    private fun changeFragment(type: String, qid: String, qString: String) {
+    private fun changeFragment(type: String, qid: String, qString: String,sl : Int) {
         ft = supportFragmentManager.beginTransaction()
         ft!!.setCustomAnimations(
             R.anim.enter_from_right,
@@ -375,6 +375,7 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
                 val bundle = Bundle()
                 bundle.putString("qid", qid)
                 bundle.putString("qString", qString)
+                bundle.putString("sl",(sl+1).toString())
                 fragment.arguments = bundle
                 ft!!.replace(R.id.container, fragment, "tag")
                 ft!!.commit()

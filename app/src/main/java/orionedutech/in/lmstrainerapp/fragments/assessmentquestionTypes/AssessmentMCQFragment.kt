@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import android.widget.TextView
 import kotlinx.android.synthetic.main.fragment_mcq.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
@@ -30,7 +31,7 @@ class AssessmentMCQFragment : Fragment() {
 
     private lateinit var view1: View
     private var activityAns: AssessmentAnswer? = null
-
+    lateinit var qNo : TextView
     override fun onAttach(context: Context) {
         super.onAttach(context)
         activityAns = context as AssessmentAnswer
@@ -48,7 +49,8 @@ class AssessmentMCQFragment : Fragment() {
         val context = context!!
         val qid = arguments!!.getString("qid")
         val qString = arguments!!.getString("qString")
-
+        qNo = view1.sl
+        qNo.text = arguments!!.getString("sl")
         view1.question.text = qString
        CoroutineScope(IO).launch {
            context.let {

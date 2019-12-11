@@ -21,10 +21,13 @@ interface ActivityAnswerDao {
     }
 
     @Query(" select * from activity_answers where question_id = :qid ")
-    fun getAllAnswers(qid: String) :List<ActivityAnswers>
+    suspend fun getAllAnswers(qid: String) :List<ActivityAnswers>
 
     @Query("select answer_right_wrong from activity_answers where question_id = :qid and question_ans_id =:aid")
-    fun getAnswerValue(qid: String,aid : String) : String
+    suspend fun getAnswerValue(qid: String,aid : String) : String
+
+    @Query("select answer_value from activity_answers where question_id = :qid limit 1")
+    suspend fun getCorrectAnsString(qid: String) : String
 
 
 }

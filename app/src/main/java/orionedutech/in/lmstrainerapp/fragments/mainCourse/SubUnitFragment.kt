@@ -83,7 +83,7 @@ class SubUnitFragment : Fragment(), RecyclerItemClick {
         recyclerView.showShimmerAdapter()
         NetworkOps.post(Urls.subunitUrl, json.toString(), context, object : response {
             override fun onInternetfailure() {
-                if(activity==null){
+                if (activity == null) {
                     return
                 }
                 activity!!.runOnUiThread {
@@ -93,33 +93,36 @@ class SubUnitFragment : Fragment(), RecyclerItemClick {
 
             override fun onrespose(string: String?) {
                 mLog.i(TAG, "response $string ")
-                if(string.isNullOrEmpty()){
+                if (string.isNullOrEmpty()) {
                     onfailure()
                     return
                 }
-                val data= JSONObject(string)
-                if(data.getString("success")=="1"){
-                   val data1 = data.getJSONArray("response")
+                val data = JSONObject(string)
+                if (data.getString("success") == "1") {
+                    val data1 = data.getJSONArray("response")
 
-                    val founderArray = Gson().fromJson(data1.toString(), Array<TrainingIndividualSubUnitsData>::class.java)
+                    val founderArray = Gson().fromJson(
+                        data1.toString(),
+                        Array<TrainingIndividualSubUnitsData>::class.java
+                    )
                     subUnitsData.clear()
                     subUnitsData.addAll(founderArray)
                     arrayList.clear()
                     founderArray.forEach {
                         arrayList.add(it.lesson_name)
                     }
-                    activity!!.runOnUiThread{
+                    activity!!.runOnUiThread {
                         recyclerView.hideShimmerAdapter()
                         adapter.notifyDataSetChanged()
                     }
-                    mLog.i(TAG,"subunits ${subUnitsData.size}")
-                }else{
-                 onfailure()
+                    mLog.i(TAG, "subunits ${subUnitsData.size}")
+                } else {
+                    onfailure()
                 }
             }
 
             override fun onfailure() {
-                if(activity==null){
+                if (activity == null) {
                     return
                 }
                 activity!!.runOnUiThread {
@@ -139,24 +142,24 @@ class SubUnitFragment : Fragment(), RecyclerItemClick {
 
         val dialogueView = LayoutInflater.from(context)
             .inflate(R.layout.custom_default_alert, null, false)
-      val builder =   MaterialAlertDialogBuilder(context)
+        val builder = MaterialAlertDialogBuilder(context)
             .setCancelable(true)
-          .setView(dialogueView)
+            .setView(dialogueView)
         val dialogue = builder.create()
         val ok = dialogueView.button
         ok.text = "play video"
-        val dmessage  = dialogueView.message
+        val dmessage = dialogueView.message
         val title = dialogueView.titlee
         title.text = "Alert"
-       val message  = SpannableStringBuilder()
-           .append("Do you want to play ")
-            .bold {append("${subUnitsData[itempos].lesson_name} ?")}
+        val message = SpannableStringBuilder()
+            .append("Do you want to play ")
+            .bold { append("${subUnitsData[itempos].lesson_name} ?") }
         dmessage.text = message
         ok.setOnClickListener {
             dialogue.dismiss()
             val fragment = VideoFragment()
             val bundle = Bundle()
-            bundle.putString("chapter_id",chapterid)
+            bundle.putString("chapter_id", chapterid)
             bundle.putString("name", subUnitsData[itempos].lesson_name)
             bundle.putString("url", subUnitsData[itempos].media_disk_path_relative)
             fragment.arguments = bundle
@@ -173,7 +176,7 @@ class SubUnitFragment : Fragment(), RecyclerItemClick {
 
         }
         dialogue.show()
-        }
+    }
 
 
 }
