@@ -59,7 +59,7 @@ class ActivityMCQFragment : Fragment() {
         val qString = getQuestionString(qid)
         qstn.text = qString
         qNo.text = Qnumber
-        mLog.i(TAG,"q id $qid")
+        mLog.i(TAG,"qid $qid")
         val answers = getAnswers(qid)
         mLog.i(TAG, "answers count ${answers.size}")
         answers.forEach { ans ->

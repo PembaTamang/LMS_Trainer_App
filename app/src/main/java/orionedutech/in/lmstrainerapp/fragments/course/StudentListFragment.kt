@@ -291,6 +291,7 @@ class StudentListFragment : Fragment() {
             intent.putExtra("course_name",courseName)
             startActivity(intent)
             activity!!.supportFragmentManager.popBackStack()
+            mLog.i(TAG,"popping")
             activity!!.overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left)
         }
         dialogue.show()

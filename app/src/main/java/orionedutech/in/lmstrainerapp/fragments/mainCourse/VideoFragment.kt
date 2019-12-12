@@ -90,7 +90,9 @@ class VideoFragment : Fragment(), Player.EventListener {
             val intent = Intent(context,TrainerActivity::class.java)
             intent.putExtra("chapter_id",chapterid)
             startActivity(intent)
+            activity!!.supportFragmentManager.popBackStack()
             activity!!.overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left)
+
         }
 
         playbackStateListener = PlaybackStateListener()

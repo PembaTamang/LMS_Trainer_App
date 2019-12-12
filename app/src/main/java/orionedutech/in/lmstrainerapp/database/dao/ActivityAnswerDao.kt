@@ -26,8 +26,10 @@ interface ActivityAnswerDao {
     @Query("select answer_right_wrong from activity_answers where question_id = :qid and question_ans_id =:aid")
     suspend fun getAnswerValue(qid: String,aid : String) : String
 
-    @Query("select answer_value from activity_answers where question_id = :qid limit 1")
-    suspend fun getCorrectAnsString(qid: String) : String
+    @Query("select answer_value from activity_answers where question_id = :qid and answer_right_wrong =:ans limit 1")
+    suspend fun getCorrectAnsString(qid: String,ans:String) : String
 
+    @Query("select answer_value from activity_answers where question_ans_id = :aid limit 1")
+    suspend fun getAnsString(aid: String) : String
 
 }

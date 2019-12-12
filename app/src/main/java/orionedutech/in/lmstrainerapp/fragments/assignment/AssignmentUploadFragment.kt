@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment
 import com.developer.filepicker.model.DialogConfigs
 import com.developer.filepicker.model.DialogProperties
 import com.developer.filepicker.view.FilePickerDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_assignment_upload.view.*
 import kotlinx.coroutines.CoroutineScope
@@ -267,8 +268,15 @@ class AssignmentUploadFragment : BaseFragment() {
                         }
                         activity!!.runOnUiThread {
                             hideAnimations()
-                            showToast(context, "assignment successfully uploaded")
-                            activity!!.onBackPressed()
+                            MaterialAlertDialogBuilder(context).setTitle("Alert")
+                                .setMessage("Assessment Uploaded Successfully")
+                                .setCancelable(false)
+                                .setPositiveButton("ok"){
+                                    dialogInterface, i ->
+                                    dialogInterface.dismiss()
+                                    activity!!.onBackPressed()
+                                }.create().show()
+
                         }
                     }
                 }
