@@ -12,8 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="8dp">
-
-
         <TextView
             android:id="@+id/sl"
             android:layout_width="0dp"
@@ -25,7 +23,6 @@
             android:paddingStart="8dp"
             android:textAlignment="textStart"
             android:textSize="12sp"
-            android:textAppearance="@style/OpenSansRegular"
             app:layout_constraintEnd_toStartOf="@+id/name"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_weight="0.5"

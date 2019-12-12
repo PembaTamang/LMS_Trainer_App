@@ -48,10 +48,12 @@ class AnswersFragment : Fragment() {
         recyclerView.adapter  = adapter
         activitites.forEach { ans->
             activityCount++
-            answers.add(Answers(ans.activity_name,"","","","",ans.total_questions,ans.correct_answers,ans.incorrect_answers,ItemType.header))
+            answers.add(Answers(ans.activity_name,"","","","",ans.total_questions,ans.correct_answers,ans.incorrect_answers,true,"",ItemType.header))
             val list  = ans.activity_data
+            var index = 0
                list.forEach { answer->
-                   answers.add(Answers("",answer.question,answer.answer,answer.correctAnswer,answer.status,"","","",ItemType.item))
+                   index+=1
+                   answers.add(Answers("",answer.question,answer.answer,answer.correctAnswer,answer.status,"","","",false,index.toString(),ItemType.item))
                    if(answer.status=="1"){
                        corectans++
                    }

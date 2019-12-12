@@ -60,7 +60,7 @@
         android:text="Assessment Name"
         android:textAppearance="@style/Baloo"
         android:textStyle="bold"
-        android:visibility="gone"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
@@ -75,24 +75,54 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/name" />
 
-    <ir.samanjafari.easycountdowntimer.EasyCountDownTextview
+    <LinearLayout
         android:id="@+id/easyCountDownTextview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_marginTop="8dp"
-        android:background="@drawable/round_rect_grey"
-        android:padding="4dp"
-        android:visibility="gone"
-        app:colonColor="@color/white"
-        app:digitBackground="@color/greyText"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView13"
-        app:setAnimation="true"
-        app:showOnlySecond="false"
-        app:textColor="@color/white"
-        app:textSize="20sp" />
+        app:layout_constraintTop_toBottomOf="@+id/textView13" >
+        <TextSwitcher
+            android:id="@+id/hours"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TimerText"
+            android:paddingStart="8dp"
+            android:background="@drawable/round_rect_grey"
+            android:text="00"/>
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TimerText"
+            android:textColor="@color/default_text"
+            android:text=" : "/>
+        <TextSwitcher
+            android:id="@+id/minutes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TimerText"
+            android:background="@drawable/round_rect_grey"
+            android:paddingStart="8dp"
+            android:text="00"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TimerText"
+            android:textColor="@color/default_text"
+            android:text=" : "/>
+        <TextSwitcher
+            android:id="@+id/seconds"
+            android:background="@drawable/round_rect_grey"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TimerText"
+            android:paddingEnd="8dp"
+            android:text="00"/>
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/container"
@@ -110,16 +140,16 @@
         android:id="@+id/topstatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Please wait"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:text="Please wait"
         android:textAlignment="center"
         android:textAppearance="@style/OpenSansRegular"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/lottie"
-        app:layout_constraintEnd_toEndOf="@+id/easyCountDownTextview"
-        app:layout_constraintStart_toStartOf="@+id/easyCountDownTextview" />
+        app:layout_constraintEnd_toEndOf="@+id/container"
+        app:layout_constraintStart_toStartOf="@+id/container" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie"
@@ -157,8 +187,18 @@
         android:textColor="@color/white"
         android:textSize="16sp"
         app:cornerRadius="16dp"
-        android:visibility="gone"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/textView19"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="Question :"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/textView13"
+        app:layout_constraintTop_toTopOf="@+id/textView13" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

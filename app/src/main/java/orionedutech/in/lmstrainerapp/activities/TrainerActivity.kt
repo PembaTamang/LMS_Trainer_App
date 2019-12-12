@@ -417,6 +417,9 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
 
             lastAnswerID = ""
             lastQuestionID = ""
+            totalQuestions = 0
+            correctAnswers = 0
+            incorrectAnswers = 0
             lastQType = ""
             newActivity = true
             isLastQuestionInActivity = false

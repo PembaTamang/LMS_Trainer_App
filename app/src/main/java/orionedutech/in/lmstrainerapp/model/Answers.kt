@@ -9,5 +9,7 @@ data class Answers(
     val totalQuestions:String,
     val totalcorrect : String,
     val totalincorrect : String,
+    val isHeader : Boolean,
+    val sl : String,
     val type: Int
 )

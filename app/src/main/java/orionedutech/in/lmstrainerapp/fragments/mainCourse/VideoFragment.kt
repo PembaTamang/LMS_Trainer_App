@@ -232,7 +232,9 @@ class VideoFragment : Fragment(), Player.EventListener {
             playbackPosition = player.currentPosition
             currentWindow = player.currentWindowIndex
             player.release()
+            if(isTimerRunning){
             timer.cancel()
+            }
         }
     }
 

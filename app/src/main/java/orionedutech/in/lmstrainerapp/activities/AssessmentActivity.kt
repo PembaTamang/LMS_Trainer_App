@@ -2,20 +2,23 @@ package orionedutech.`in`.lmstrainerapp.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Handler
 import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
+import android.widget.TextSwitcher
 import android.widget.TextView
+import android.widget.ViewSwitcher
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentTransaction
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
-import ir.samanjafari.easycountdowntimer.CountDownInterface
-import ir.samanjafari.easycountdowntimer.EasyCountDownTextview
 import kotlinx.android.synthetic.main.activity_assessment.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
@@ -36,16 +39,12 @@ import orionedutech.`in`.lmstrainerapp.network.Urls
 import orionedutech.`in`.lmstrainerapp.network.dataModels.assessmentQuestions.DCAsseessmentQ
 import orionedutech.`in`.lmstrainerapp.network.response
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInterface {
-    override fun onFinish() {
-    }
+class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
 
-    override fun onTick(time: Long) {
-
-    }
 
     override fun answer(answer: String) {
         lastAnswerID = answer
@@ -53,8 +52,9 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
 
     override fun finish() {
         super.finish()
-    overridePendingTransition(R.anim.enter_from_left,R.anim.exit_to_right)
+        overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right)
     }
+
     private var ft: FragmentTransaction? = null
     private var lastAnswerID = ""
     lateinit var animation: LottieAnimationView
@@ -62,9 +62,18 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
     lateinit var mainStatus: TextView
     lateinit var button: MaterialButton
     lateinit var questionTV: TextView
-    lateinit var countdown: EasyCountDownTextview
     lateinit var assessmentName: TextView
+
+    lateinit var hourTV: TextSwitcher
+    lateinit var minuteTV: TextSwitcher
+    lateinit var secondsTV: TextSwitcher
+
+    var slideIn: Animation? = null
+    var slideOut: Animation? = null
+    var firstTime = true
+    var firstSecond = true
     lateinit var fragContainter: FrameLayout
+    lateinit var countDownTimer: CountDownTimer
     var totalQuestions = 0
     var currentQuestion = 0
     var firstQ = true
@@ -78,6 +87,8 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
     var answerID: HashMap<String, String> = HashMap()
     var dual = false
     var extraViews: ArrayList<View> = ArrayList()
+    var oldhour : Int = 0
+    var oldminute : Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assessment)
@@ -86,10 +97,32 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
         val batchID = intent.getStringExtra("batch_id")!!
         val centerID = intent.getStringExtra("center_id")!!
         val json = JSONObject()
-        countdown = easyCountDownTextview
+
         assessmentName = name
         fragContainter = container
         mainStatus = topstatus
+
+        slideIn = AnimationUtils.loadAnimation(this, R.anim.push_up_in)
+        slideOut = AnimationUtils.loadAnimation(this, R.anim.push_up_out)
+
+        hourTV = hours
+        hourTV.inAnimation = slideIn
+        hourTV.outAnimation = slideOut
+        hourTV.setFactory {
+            getTV()
+        }
+        minuteTV = minutes
+        minuteTV.inAnimation = slideIn
+        minuteTV.outAnimation = slideOut
+        minuteTV.setFactory {
+           getTV()
+        }
+        secondsTV = seconds
+        secondsTV.inAnimation = slideIn
+        secondsTV.outAnimation = slideOut
+        secondsTV.setFactory {
+            getTV()
+        }
         json.put("assesment_id", assessmentID)
         json.put("language_id", "1")
         json.put("user_id", uid)
@@ -99,7 +132,7 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
         status = data
         button.isEnabled = false
         questionTV = textView13
-        extraViews = arrayListOf(assessmentName,questionTV,button,countdown)
+        extraViews = arrayListOf(assessmentName, questionTV, button, textView19)
 
         button.setOnClickListener {
             if (currentQuestion < totalQuestions) {
@@ -111,7 +144,7 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
                     firstQ = false
                     changeFragment(
                         type,
-                        id, qString,currentQuestion
+                        id, qString, currentQuestion
                     )
                     button.text = "Next"
                     status.visibility = GONE
@@ -119,9 +152,25 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
                     currentQuestion += 1
                     questionTV.text = String.format("%s / %s ", currentQuestion, totalQuestions)
                     lastquestionID = id
-                    countdown.setTime(0,timeinMins.toInt(),0)
-                    countdown.setOnTick(this)
-                    countdown.startTimer()
+                    //todo remove later
+                    timeinMins = "2"
+                    val minutes = timeinMins.toLong()
+                    countDownTimer = object : CountDownTimer(minutes * 60 * 1000, 1000) {
+                        override fun onFinish() {
+
+                        }
+
+                        override fun onTick(p0: Long) {
+                            val hours = getHours(p0)
+                            val mins = getMinutes(p0)
+                            val seconds = getSeconds(p0)
+                            updateTimer(hours, mins, seconds)
+                        }
+
+
+                    }
+                    countDownTimer.start()
+
                     return@setOnClickListener
 
                 } else {
@@ -140,7 +189,8 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
                     mLog.i(TAG, "")
                     changeFragment(
                         type, id, qString
-                    ,currentQuestion)
+                        , currentQuestion
+                    )
                     lastquestionID = id
                     currentQuestion += 1
 
@@ -167,7 +217,8 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
                 mainJSON.put("batch_id", batchID)
                 mainJSON.put("center_id", centerID)
                 mainJSON.put("ans_data", questionJSON)
-                countdown.stopTimer()
+
+                // countdown.stopTimer()
                 mLog.i(TAG, "json : $mainJSON")
                 fragContainter.alpha = 0.0f
                 animation.visibility = VISIBLE
@@ -188,6 +239,71 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
 
     }
 
+    private fun getTV(): TextView {
+        val t = TextView(this@AssessmentActivity)
+        t.textSize = 18f
+        t.setTextColor(ContextCompat.getColor(this,R.color.white))
+        return t
+    }
+
+    private fun updateTimer(hours: String, mins: String, seconds: String) {
+        secondsTV.setText(seconds)
+        if (firstTime) {
+            firstTime = false
+            hourTV.setCurrentText(hours)
+            minuteTV.setCurrentText(mins)
+            secondsTV.setCurrentText(seconds)
+            oldhour = hours.toInt()
+            oldminute = mins.toInt()
+        } else {
+
+            mLog.i(TAG, "hour : $oldhour = $hours min $oldminute = $mins")
+            if(seconds.toInt() == 59){
+                if(firstSecond) {
+                    firstSecond = false
+                    return
+                }
+
+                if(oldminute>0){
+                minuteTV.setText((String.format("$02d%",oldminute -1)))
+            }
+                if(oldhour>0){
+                    hourTV.setText((String.format("$02d%",oldhour -1)))
+                }
+
+
+
+            }
+
+
+
+        }
+
+    }
+
+    private fun getMinutes(p0: Long): String {
+        return (TimeUnit.MILLISECONDS.toMinutes(p0) - TimeUnit.HOURS.toMinutes(
+            TimeUnit.MILLISECONDS.toHours(
+                p0
+            )
+        )).toString()
+
+    }
+
+    private fun getHours(p0: Long): String {
+        return TimeUnit.MILLISECONDS.toHours(p0).toString()
+
+    }
+
+    private fun getSeconds(p0: Long): String {
+        return (TimeUnit.MILLISECONDS.toSeconds(p0) - TimeUnit.MINUTES.toSeconds(
+            TimeUnit.MILLISECONDS.toMinutes(
+                p0
+            )
+        )).toString()
+
+    }
+
     private fun uploadJson(mainJSON: JSONObject) {
 
         NetworkOps.post(Urls.assessmentAnsSubmit, mainJSON.toString(), this, object : response {
@@ -197,18 +313,18 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
                 if (json.getString("success") == "1") {
                     runOnUiThread {
                         examOn = false
-                      //  mToast.showToast(this@AssessmentActivity, "answers successfully submitted")
+                        //  mToast.showToast(this@AssessmentActivity, "answers successfully submitted")
                         animation.visibility = INVISIBLE
                         animation.cancelAnimation()
                         status.visibility = INVISIBLE
                         mainStatus.visibility = INVISIBLE
-                       MaterialAlertDialogBuilder(this@AssessmentActivity).setTitle("Assessment Submitted Successfully")
-                           .setCancelable(false)
-                           .setMessage("press ok to exit")
-                           .setPositiveButton("ok"){dialogInterface, i ->
-                               dialogInterface.dismiss()
-                               onBackPressed()
-                           }.create().show()
+                        MaterialAlertDialogBuilder(this@AssessmentActivity).setTitle("Assessment Submitted Successfully")
+                            .setCancelable(false)
+                            .setMessage("press ok to exit")
+                            .setPositiveButton("ok") { dialogInterface, i ->
+                                dialogInterface.dismiss()
+                                onBackPressed()
+                            }.create().show()
                     }
                 } else {
                     runUploadfailurecode()
@@ -251,7 +367,7 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
 
         NetworkOps.post(Urls.assessmentQuestionsUrl, json, this, object : response {
             override fun onrespose(string: String?) {
-                mLog.i(TAG,"assessmesnt response : $string")
+                mLog.i(TAG, "assessmesnt response : $string")
                 val mainjson = Gson().fromJson(string, DCAsseessmentQ::class.java)
 
                 if (mainjson == null) {
@@ -261,73 +377,77 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
                 val database = MDatabase(this@AssessmentActivity)
                 CoroutineScope(IO).launch {
 
-                        val answerDao = database.getAssessmentAnswersDao()
-                        if (mainjson.success == "1") {
-                            timeinMins = mainjson.assesment_time
-                            withContext(Main) {
-                                assessmentName.text = mainjson.assesment_name
-                            }
-                            answerDao.deleteAssessmentAnswersTable()
-                            val questionsList = mainjson.assesment_questions
+                    val answerDao = database.getAssessmentAnswersDao()
+                    if (mainjson.success == "1") {
+                        timeinMins = mainjson.assesment_time
+                        withContext(Main) {
+                            assessmentName.text = mainjson.assesment_name
+                        }
+                        answerDao.deleteAssessmentAnswersTable()
+                        val questionsList = mainjson.assesment_questions
 
-                            questionsList.forEach { q ->
-                                val questions = AssesmentQuestion(
-                                    q.assesment_question,
-                                    q.assesment_question_id,
-                                    q.assesment_id,
-                                    q.question_type
+                        questionsList.forEach { q ->
+                            val questions = AssesmentQuestion(
+                                q.assesment_question,
+                                q.assesment_question_id,
+                                q.assesment_id,
+                                q.question_type
+                            )
+                            questionsarrayList.add(questions)
+                            val answer = q.assesment_ans
+                            answer.forEach { ans ->
+                                answerID[ans.question_ans_id] = ans.answer_right_wrong
+                                mLog.i(
+                                    TAG,
+                                    "map values ${ans.question_ans_id} : ${ans.answer_right_wrong} "
                                 )
-                                questionsarrayList.add(questions)
-                                val answer = q.assesment_ans
-                                answer.forEach { ans ->
-                                    answerID[ans.question_ans_id] = ans.answer_right_wrong
-                                    mLog.i(
-                                        TAG,
-                                        "map values ${ans.question_ans_id} : ${ans.answer_right_wrong} "
-                                    )
-                                }
-                                answerDao.insert(answer.toMutableList())
+                            }
+                            answerDao.insert(answer.toMutableList())
+                        }
+
+                        runOnUiThread {
+                            totalQuestions = questionsarrayList.size
+                            animation.visibility = GONE
+                            animation.cancelAnimation()
+                            status.text = "PRESS START TO BEGIN"
+                            button.isEnabled = true
+                            mainStatus.text =
+                                "You have $timeinMins minutes to attempt $totalQuestions questions"
+                            examOn = true
+
+                            fragContainter.background =
+                                ContextCompat.getDrawable(
+                                    this@AssessmentActivity,
+                                    R.drawable.round_rect_white_stroke
+                                )
+                            val layoutParams =
+                                fragContainter.layoutParams as ViewGroup.MarginLayoutParams
+                            layoutParams.setMargins(16, 16, 16, 16)
+                            fragContainter.layoutParams = layoutParams
+                            fragContainter.requestLayout()
+                            extraViews.forEach {
+                                it.visibility = VISIBLE
                             }
 
-                            runOnUiThread {
-                                totalQuestions = questionsarrayList.size
-                                animation.visibility = GONE
-                                animation.cancelAnimation()
-                                status.text = "PRESS START TO BEGIN"
-                                button.isEnabled = true
-                                mainStatus.text = "You have $timeinMins minutes to attempt $totalQuestions questions"
-                                examOn = true
-
-                                fragContainter.background =
-                                    ContextCompat.getDrawable(this@AssessmentActivity, R.drawable.round_rect_white_stroke)
-                                val layoutParams = fragContainter.layoutParams as ViewGroup.MarginLayoutParams
-                                layoutParams.setMargins(16, 16, 16, 16)
-                                fragContainter.layoutParams = layoutParams
-                                fragContainter.requestLayout()
-                                    extraViews.forEach {
-                                        it.visibility = VISIBLE
-                                    }
-
-
-                            }
-
-                        }else{
-                           runOnUiThread {
-                               animation.visibility = GONE
-                               animation.cancelAnimation()
-                               topstatus.visibility = GONE
-                               status.visibility = GONE
-                               MaterialAlertDialogBuilder(this@AssessmentActivity).setTitle("Alert")
-                                   .setCancelable(false)
-                                   .setMessage(mainjson.response)
-                                   .setPositiveButton("Go back"){
-                                           dialogInterface, i ->
-                                       dialogInterface.dismiss()
-                                       finish()
-                                   }.create().show()
-                           }
 
                         }
+
+                    } else {
+                        runOnUiThread {
+                            animation.visibility = GONE
+                            animation.cancelAnimation()
+                            topstatus.visibility = GONE
+                            status.visibility = GONE
+                            MaterialAlertDialogBuilder(this@AssessmentActivity).setTitle("Alert")
+                                .setCancelable(false)
+                                .setMessage(mainjson.response)
+                                .setPositiveButton("Go back") { dialogInterface, i ->
+                                    dialogInterface.dismiss()
+                                    finish()
+                                }.create().show()
+                        }
+
+                    }
 
 
                 }
@@ -361,7 +481,7 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
         }
     }
 
-    private fun changeFragment(type: String, qid: String, qString: String,sl : Int) {
+    private fun changeFragment(type: String, qid: String, qString: String, sl: Int) {
         ft = supportFragmentManager.beginTransaction()
         ft!!.setCustomAnimations(
             R.anim.enter_from_right,
@@ -375,7 +495,7 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
                 val bundle = Bundle()
                 bundle.putString("qid", qid)
                 bundle.putString("qString", qString)
-                bundle.putString("sl",(sl+1).toString())
+                bundle.putString("sl", (sl + 1).toString())
                 fragment.arguments = bundle
                 ft!!.replace(R.id.container, fragment, "tag")
                 ft!!.commit()
@@ -384,7 +504,7 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
             }
             "2" -> {
                 dual = true
-                mToast.showToast(this,"new undefined data")
+                mToast.showToast(this, "new undefined data")
 
             }
             else -> {
@@ -394,9 +514,9 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer, CountDownInter
     }
 
     override fun onBackPressed() {
-        if(examOn){
-         mToast.showToast(this,"Please complete the assessment before leaving")
-        }else {
+        if (examOn) {
+            mToast.showToast(this, "Please complete the assessment before leaving")
+        } else {
             super.onBackPressed()
         }
     }

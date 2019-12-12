@@ -1,7 +1,10 @@
 package orionedutech.`in`.lmstrainerapp.adapters.recyclerviews
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -18,21 +21,23 @@ import java.util.*
 
 
 class AnswersAdapter : ListAdapter<Answers, RecyclerView.ViewHolder>(ModelDiffUtilCallback()),
-    HeaderInterface {
 
+    HeaderInterface {
+    var context : Context? = null
     override fun getItemViewType(position: Int): Int {
         return getItem(position).type
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        context = parent.context
         var itemview: View? = null
         return if (viewType == ItemType.header) {
             itemview =
-                LayoutInflater.from(parent.context).inflate(R.layout.header_item, parent, false)
+                LayoutInflater.from(context).inflate(R.layout.header_item, parent, false)
             HeaderVH(itemview)
         } else {
             itemview =
-                LayoutInflater.from(parent.context).inflate(R.layout.score_item, parent, false)
+                LayoutInflater.from(context).inflate(R.layout.score_item, parent, false)
             AnswerVH(itemview)
 
         }
@@ -53,6 +58,11 @@ class AnswersAdapter : ListAdapter<Answers, RecyclerView.ViewHolder>(ModelDiffUt
         private val title = itemView.heading
         private val details = itemView.details
         fun bind(answers: Answers) {
+            if(answers.totalQuestions == "0"){
+                itemView.visibility = GONE
+            }else{
+                itemView.visibility = VISIBLE
+            }
             title.text = answers.header
             val totalQ = answers.totalQuestions
             val correct = answers.totalcorrect
@@ -69,12 +79,17 @@ class AnswersAdapter : ListAdapter<Answers, RecyclerView.ViewHolder>(ModelDiffUt
         private val ques = itemView.question
         private val ans = itemView.student_ans
         private val correctAns = itemView.correct_ans
-
+        private val status = itemView.status
         fun bind(answers: Answers) {
-            sl.text = (adapterPosition + 1).toString()
+            sl.text = answers.sl
             ques.text = answers.question
             ans.text = answers.correctAnswer
             correctAns.text = answers.answer
+            status.setImageDrawable(
+                if (answers.status == "0") context!!.getDrawable(R.drawable.ic_wrong) else context!!.getDrawable(
+                    R.drawable.ic_correct
+                )
+            )
         }
     }
 
