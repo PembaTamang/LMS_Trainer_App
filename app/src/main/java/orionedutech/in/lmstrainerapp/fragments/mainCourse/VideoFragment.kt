@@ -2,7 +2,9 @@ package orionedutech.`in`.lmstrainerapp.fragments.mainCourse
 
 
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
@@ -16,6 +18,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.animation.content.Content
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -26,7 +29,9 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.custom_player_layout.view.*
+import kotlinx.android.synthetic.main.fragment_trainer_assessment_upload.*
 import kotlinx.android.synthetic.main.fragment_video.view.*
+import org.json.JSONObject
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.activities.TrainerActivity
 import orionedutech.`in`.lmstrainerapp.mLog
@@ -39,7 +44,7 @@ import kotlin.concurrent.fixedRateTimer
 /**
  * A simple [Fragment] subclass.
  */
-class VideoFragment : Fragment(), Player.EventListener {
+class VideoFragment : Fragment() {
     private lateinit var playerV: PlayerView
     private lateinit var player: ExoPlayer
     private var playWhenReady = true
@@ -63,6 +68,17 @@ class VideoFragment : Fragment(), Player.EventListener {
     var isTimerRunning = false
     private lateinit var fullscreendialog: Dialog
     lateinit var fullScreenPlayerView : PlayerView
+    lateinit var videoPref : SharedPreferences
+    var trainingID = ""
+    var trainerID = ""
+    var centerID = ""
+    var batchID = ""
+    var courseID = ""
+    var storageID = " "
+    var moduleID = ""
+    var startTime : Long = 0L
+
+    var once = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -75,9 +91,24 @@ class VideoFragment : Fragment(), Player.EventListener {
         playerV.defaultArtwork = ContextCompat.getDrawable(context!!, R.drawable.exo_icon_play)
         buffering = view.lottie
         screenName = view.heading
+
         mediaUrl = bundle!!.getString("url")!!
         screenName.text = bundle.getString("name")!!
         chapterid = bundle.getString("chapter_id")!!
+        trainingID = bundle.getString("training_id")!!
+        trainerID = bundle.getString("user_id")!!
+        centerID = bundle.getString("center_id")!!
+        batchID = bundle.getString("batch_id")!!
+        courseID = bundle.getString("course_id")!!
+        storageID = bundle.getString("storage_id")!!
+        moduleID = bundle.getString("module_id")!!
+
+         mLog.i(TAG, " dasfasdf $mediaUrl")
+        mediaUrl = "https://orionedutech.co.in/cglms1/uploads/courses/units/lessons/6CMTdz7txu.mp4"
+
+
+        videoPref = activity!!.getSharedPreferences("videoPref", Context.MODE_PRIVATE)
+
         controls = view.controlview
         currentTime = controls.current_time
         totalTime = controls.total_time
@@ -171,10 +202,12 @@ class VideoFragment : Fragment(), Player.EventListener {
         currentAudioLevel = player.audioComponent!!.volume
         val mediaSource = buildMediaSource(uri)
         player.addListener(playbackStateListener)
+
         player.playWhenReady = playWhenReady
         //todo uncomment later
-      //  controls.setControlDispatcher(PositionLimitingControlDispatcher())
+        controls.setControlDispatcher(PositionLimitingControlDispatcher())
         player.prepare(mediaSource, false, false)
+
 
     }
 
@@ -212,9 +245,38 @@ class VideoFragment : Fragment(), Player.EventListener {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        mLog.i(TAG,"adding bookmark")
+        videoPref.edit().putLong(mediaUrl,player.contentPosition).apply()
+        sendUsageData()
+    }
+
+    private fun sendUsageData() {
+        val json = JSONObject()
+
+        json.put("training_id",trainingID)
+        json.put("user_id",trainerID)
+        json.put("user_type","3")
+        json.put("center_id",centerID)
+        json.put("batch_id",batchID)
+        json.put("current_cource_id",courseID)
+        json.put("current_chapter_id",chapterid)
+        json.put("current_storage_id",storageID)
+        json.put("module_id",moduleID)
+        json.put("media_seek",player.contentPosition*1000)
+        json.put("media_seek_remain",(player.duration - player.currentPosition)*1000)
+        json.put("media_duration",(System.currentTimeMillis() - startTime)*1000)
+        json.put("is_book_marked","1")
+        json.put("media_type","2")
+
+        mLog.i(TAG,"json val $json")
+    }
+
     override fun onPause() {
         super.onPause()
         if (Util.SDK_INT < 24) {
+
             releasePlayer()
         }
     }
@@ -226,6 +288,11 @@ class VideoFragment : Fragment(), Player.EventListener {
         }
     }
 
+    override fun onDetach() {
+        super.onDetach()
+
+
+    }
     private fun releasePlayer() {
         if (player != null) {
             playWhenReady = player.playWhenReady
@@ -239,6 +306,36 @@ class VideoFragment : Fragment(), Player.EventListener {
     }
 
     inner class PlaybackStateListener : Player.EventListener {
+        override fun onPlayerError(error: ExoPlaybackException?) {
+            super.onPlayerError(error)
+            mLog.i(TAG,"on error")
+            var errorString = ""
+            when (error!!.type) {
+                ExoPlaybackException.TYPE_REMOTE -> {
+                    mLog.i(TAG, "TYPE_REMOTE: " + error.sourceException.message)
+                    errorString = "remote error"
+                }
+                ExoPlaybackException.TYPE_OUT_OF_MEMORY -> {
+                    mLog.i(TAG, "TYPE_MEMORY: " + error.sourceException.message)
+                    errorString = "out of memory error"
+                }
+                ExoPlaybackException.TYPE_SOURCE -> {
+                    mLog.i(TAG, "TYPE_SOURCE: " + error.sourceException.message)
+                    errorString = "source error"
+                }
+                ExoPlaybackException.TYPE_RENDERER -> {
+                    mLog.i(TAG, "TYPE_RENDERER: " + error.rendererException.message)
+                    errorString = "render error"
+                }
+                ExoPlaybackException.TYPE_UNEXPECTED -> {
+                    mLog.i(TAG, "TYPE_UNEXPECTED: " + error.unexpectedException.message)
+                    errorString = "unexpected"
+                }
+            }
+            showToast(context, "$errorString has occurred")
+
+        }
+
         override fun onPlayerStateChanged(
             playWhenReady: Boolean,
             playbackState: Int
@@ -267,6 +364,11 @@ class VideoFragment : Fragment(), Player.EventListener {
                         runTimer()
                         isTimerRunning = true
                     }
+                    if(!once){
+                        startTime = System.currentTimeMillis()
+                    player.seekTo(videoPref.getLong(mediaUrl,0))
+                    once = true
+                    }
                 }
                 ExoPlayer.STATE_ENDED -> {
                     stateString = "ExoPlayer.STATE_ENDED     -"
@@ -294,34 +396,7 @@ class VideoFragment : Fragment(), Player.EventListener {
         }
     }
 
-    override fun onPlayerError(error: ExoPlaybackException?) {
-        super.onPlayerError(error)
-        var errorString = ""
-        when (error!!.type) {
-            ExoPlaybackException.TYPE_REMOTE -> {
-                mLog.i(TAG, "TYPE_REMOTE: " + error.sourceException.message)
-                errorString = "remote error"
-            }
-            ExoPlaybackException.TYPE_OUT_OF_MEMORY -> {
-                mLog.i(TAG, "TYPE_MEMORY: " + error.sourceException.message)
-                errorString = "out of memory error"
-            }
-            ExoPlaybackException.TYPE_SOURCE -> {
-                mLog.i(TAG, "TYPE_SOURCE: " + error.sourceException.message)
-                errorString = "source error"
-            }
-            ExoPlaybackException.TYPE_RENDERER -> {
-                mLog.i(TAG, "TYPE_RENDERER: " + error.rendererException.message)
-                errorString = "render error"
-            }
-            ExoPlaybackException.TYPE_UNEXPECTED -> {
-                mLog.i(TAG, "TYPE_UNEXPECTED: " + error.unexpectedException.message)
-                errorString = "unexpected"
-            }
-        }
-        mToast.showToast(context, "$errorString has occurred")
 
-    }
 
     private class PositionLimitingControlDispatcher :
         DefaultControlDispatcher() {

@@ -9,19 +9,19 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
-import android.os.*
+import android.os.Bundle
+import android.os.Environment
+import android.os.Handler
 import android.provider.MediaStore
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.TextView
 import androidx.core.content.FileProvider
 import androidx.exifinterface.media.ExifInterface
-import androidx.lifecycle.Lifecycle
+import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
@@ -32,7 +32,6 @@ import com.yalantis.ucrop.UCrop
 import com.yalantis.ucrop.UCropFragment
 import com.yalantis.ucrop.UCropFragmentCallback
 import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.android.synthetic.main.fragment_parent.*
 import kotlinx.android.synthetic.main.fragment_parent.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
@@ -42,9 +41,8 @@ import kotlinx.coroutines.withContext
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.database.MDatabase
 import orionedutech.`in`.lmstrainerapp.fragments.BaseFragment
-import orionedutech.`in`.lmstrainerapp.interfaces.MoveNavBar
+import orionedutech.`in`.lmstrainerapp.interfaces.SetProfileImage
 import orionedutech.`in`.lmstrainerapp.interfaces.flashtoggle
-import orionedutech.`in`.lmstrainerapp.interfaces.profilebooleantoggle
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
 import orionedutech.`in`.lmstrainerapp.mToast
@@ -299,6 +297,7 @@ class ParentFragment : BaseFragment(), UCropFragmentCallback, flashtoggle.captur
                 DiskCacheStrategy.NONE).into(profileImage)
             //send img one to server
             profilePref.edit().putString("image",img1.absolutePath).apply()
+            SetProfileImage.classInstance!!.set()
             mToast.showToast(context,"photo saved")
 
         } else {

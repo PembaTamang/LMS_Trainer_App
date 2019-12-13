@@ -25,6 +25,7 @@
         android:textAppearance="@style/OpenSansRegular"
         android:background="@color/black"
         android:textColor="@color/white" />
+    
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content">

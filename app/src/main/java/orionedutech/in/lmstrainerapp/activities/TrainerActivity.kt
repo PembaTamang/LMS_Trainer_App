@@ -2,27 +2,23 @@ package orionedutech.`in`.lmstrainerapp.activities
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
-import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
-import androidx.core.text.bold
 import androidx.fragment.app.FragmentTransaction
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
-import ir.samanjafari.easycountdowntimer.EasyCountDownTextview
 import kotlinx.android.synthetic.main.activity_trainer.*
 import kotlinx.android.synthetic.main.custom_default_alert.view.*
 import kotlinx.android.synthetic.main.right_answer_alert.view.*
@@ -60,7 +56,6 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
     lateinit var lowerStatus: TextView
     lateinit var animation: LottieAnimationView
     lateinit var nextQuestion: MaterialButton
-    lateinit var countDownTimer: EasyCountDownTextview
     var extraViews: ArrayList<View> = ArrayList()
     var retries = 1
     lateinit var acountTV: TextView
@@ -121,7 +116,6 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
         nextQuestion = next
         acountTV = textView17
         qcountTV = textView18
-        countDownTimer = easyCountDownTextview
         extraViews = arrayListOf(qcount, acount, qcountTV, acountTV, heading, nextQuestion)
         fragContainer = trainerAcitivityContainer
         snackAnchor = snackContainer

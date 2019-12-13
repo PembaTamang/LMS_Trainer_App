@@ -24,7 +24,7 @@ class MainCourseActivity : AppCompatActivity() {
     var uniqueID = ""
     var chapterType = ""
     var courseName = ""
-
+    var centerID = ""
     lateinit var courseNameTV: TextView
     lateinit var ft: FragmentTransaction
 
@@ -47,6 +47,7 @@ class MainCourseActivity : AppCompatActivity() {
         subUnitID = intent.getStringExtra("subunitID")!!
         chapterType = intent.getStringExtra("chapter_type")!!
         courseName = intent.getStringExtra("course_name")!!
+        centerID = intent.getStringExtra("center_id")!!
         courseNameTV.text = courseName
         mLog.i(TAG, "chapter type : $chapterType")
         when (chapterType) {
@@ -60,6 +61,7 @@ class MainCourseActivity : AppCompatActivity() {
                 bundle.putString("moduleID", moduleID)
                 bundle.putString("chapterID", chapterID)
                 bundle.putString("batchID", batchID)
+                bundle.putString("center_id",centerID)
                 bundle.putString("type", "1")
                 fragment.arguments = bundle
                 ft = supportFragmentManager.beginTransaction()
@@ -77,6 +79,7 @@ class MainCourseActivity : AppCompatActivity() {
                 bundle.putString("moduleID", moduleID)
                 bundle.putString("chapterID", chapterID)
                 bundle.putString("batchID", batchID)
+                bundle.putString("center_id",centerID)
                 bundle.putString("type", "2")
                 fragment.arguments = bundle
                 ft = supportFragmentManager.beginTransaction()

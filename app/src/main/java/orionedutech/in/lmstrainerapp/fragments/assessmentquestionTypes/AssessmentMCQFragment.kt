@@ -3,6 +3,7 @@ package orionedutech.`in`.lmstrainerapp.fragments.assessmentquestionTypes
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +23,7 @@ import orionedutech.`in`.lmstrainerapp.interfaces.AssessmentAnswer
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
 import java.util.*
+import java.util.concurrent.CountDownLatch
 
 /**
  * A simple [Fragment] subclass.
@@ -31,6 +33,7 @@ class AssessmentMCQFragment : Fragment() {
 
     private lateinit var view1: View
     private var activityAns: AssessmentAnswer? = null
+    var aid = ""
     lateinit var qNo : TextView
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -49,9 +52,16 @@ class AssessmentMCQFragment : Fragment() {
         val context = context!!
         val qid = arguments!!.getString("qid")
         val qString = arguments!!.getString("qString")
+        val review =     arguments!!.getBoolean("review")
+        aid = ""
+        if(review){
+            aid = arguments!!.getString("aid")!!
+            mLog.i(TAG,"review answer ID $aid")
+        }
         qNo = view1.sl
         qNo.text = arguments!!.getString("sl")
         view1.question.text = qString
+
        CoroutineScope(IO).launch {
            context.let {
                val ansDao = MDatabase(it).getAssessmentAnswersDao()
@@ -59,13 +69,16 @@ class AssessmentMCQFragment : Fragment() {
                answers.forEach {ans->
                    val radioButton = RadioButton(context)
                    radioButton.text = ans.answer_value
-                   mLog.i(TAG,"loaded ans id ${ans.question_ans_id}")
                    radioButton.tag = ans.question_ans_id
                    radioButton.setButtonDrawable(R.drawable.custom_button)
                    withContext(Main){
                        boxContainer.addView(radioButton)
                    }
+                   if(ans.question_ans_id == aid){
+                       radioButton.isChecked = true
+                   }
                }
+
            }
          }
 

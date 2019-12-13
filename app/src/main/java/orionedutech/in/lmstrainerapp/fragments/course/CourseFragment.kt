@@ -77,7 +77,7 @@ class CourseFragment : BaseFragment() {
     var selectedChapterID = ""
     var selectedCourseName = ""
     var userID = ""
-
+    var centerID = ""
     lateinit var getStudentList: MaterialButton
 
 
@@ -201,6 +201,7 @@ class CourseFragment : BaseFragment() {
                 val db = MDatabase(it)
                 val dao = db.getBatchDao()
                 val userDao = db.getUserDao()
+                centerID = userDao.getCenterID()
                 userID = userDao.getUserID()
                 if (dao.batchDataExists()) {
                     batchList.addAll(dao.getAllBatches())
@@ -224,6 +225,7 @@ class CourseFragment : BaseFragment() {
             bundle.putString("unit_id", "0")
             bundle.putString("subunit_id", "0")
             bundle.putString("user_id", userID)
+            bundle.putString("center_id",centerID)
             bundle.putString("course_name",selectedCourseName)
             fragment.arguments = bundle
 

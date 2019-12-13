@@ -60,6 +60,7 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
     var trainingID = ""
     var uniqueID = ""
     var chapterType = ""
+    var centerID = ""
     lateinit var adapter: ChapterAdapter
     lateinit var refreshLayout: SwipeRefreshLayout
     var arrayList = ArrayList<String>()
@@ -82,14 +83,16 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
         recyclerView.adapter = adapter
         val bundle = arguments!!
 
-        trainerID = bundle.getString("trainerID", trainerID)
-        trainingID = bundle.getString("trainingID", trainingID)
-        uniqueID = bundle.getString("uniqueID", uniqueID)
-        courseID = bundle.getString("courseID", courseID)
-        moduleID = bundle.getString("moduleID", moduleID)
-        chapterID = bundle.getString("chapterID", chapterID)
-        batchID = bundle.getString("batchID", batchID)
+        trainerID = bundle.getString("trainerID","")
+        trainingID = bundle.getString("trainingID","")
+        uniqueID = bundle.getString("uniqueID", "")
+        courseID = bundle.getString("courseID", "")
+        moduleID = bundle.getString("moduleID", "")
+        chapterID = bundle.getString("chapterID", "")
+        batchID = bundle.getString("batchID", "")
+        centerID = bundle.getString("center_id", "")
         chapterType = bundle.getString("type", "1")
+
         when (chapterType) {
             "1" -> {
                 isUnitData = true
@@ -264,6 +267,11 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
             bundle.putString("chapter_id",chapterID)
             bundle.putString("unit_name", unitData[itempos].course_unit_name)
             bundle.putString("unit_id", unitData[itempos].course_unit_id)
+            bundle.putString("center_id",centerID)
+            bundle.putString("batch_id",batchID)
+            bundle.putString("course_id",courseID)
+            bundle.putString("storage_id",subUnitsData[itempos].storage_id)
+            bundle.putString("module_id",moduleID)
             fragment.arguments = bundle
             ft = activity!!.supportFragmentManager.beginTransaction()
             ft.setCustomAnimations(
@@ -300,6 +308,14 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
                 bundle.putString("chapter_id",chapterID)
                 bundle.putString("name", subUnitsData[itempos].lesson_name)
                 bundle.putString("url", subUnitsData[itempos].media_disk_path_relative)
+                bundle.putString("training_id",trainingID)
+                bundle.putString("user_id",trainerID)
+                bundle.putString("center_id",centerID)
+                bundle.putString("batch_id",batchID)
+                bundle.putString("course_id",courseID)
+                bundle.putString("storage_id",subUnitsData[itempos].storage_id)
+                bundle.putString("module_id",moduleID)
+
                 fragment.arguments = bundle
                 ft = activity!!.supportFragmentManager.beginTransaction()
                 ft.setCustomAnimations(

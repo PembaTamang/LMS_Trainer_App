@@ -54,6 +54,13 @@ class SubUnitFragment : Fragment(), RecyclerItemClick {
     var arrayList = ArrayList<String>()
     var subUnitsData = ArrayList<TrainingIndividualSubUnitsData>()
     lateinit var ft: FragmentTransaction
+    var trainingID = ""
+    var trainerID = ""
+    var centerID = ""
+    var batchID = ""
+    var courseID = ""
+    var storageID = " "
+    var moduleID = ""
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -65,6 +72,15 @@ class SubUnitFragment : Fragment(), RecyclerItemClick {
         unitid = bundle.getString("unit_id", "")
         chapterid = bundle.getString("chapter_id", "")
         name.text = bundle.getString("unit_name", "")
+
+        trainingID = bundle.getString("training_id")!!
+        trainerID = bundle.getString("user_id")!!
+        centerID = bundle.getString("center_id")!!
+        batchID = bundle.getString("batch_id")!!
+        courseID = bundle.getString("course_id")!!
+        storageID = bundle.getString("storage_id")!!
+        moduleID = bundle.getString("module_id")!!
+
         refreshLayout = view.swipe
         recyclerView = view.recycler
         cType = view.title
@@ -162,6 +178,13 @@ class SubUnitFragment : Fragment(), RecyclerItemClick {
             bundle.putString("chapter_id", chapterid)
             bundle.putString("name", subUnitsData[itempos].lesson_name)
             bundle.putString("url", subUnitsData[itempos].media_disk_path_relative)
+            bundle.putString("training_id",trainingID)
+            bundle.putString("user_id",trainerID)
+            bundle.putString("center_id",centerID)
+            bundle.putString("batch_id",batchID)
+            bundle.putString("course_id",courseID)
+            bundle.putString("storage_id",subUnitsData[itempos].storage_id)
+            bundle.putString("module_id",moduleID)
             fragment.arguments = bundle
             ft = activity!!.supportFragmentManager.beginTransaction()
             ft.setCustomAnimations(

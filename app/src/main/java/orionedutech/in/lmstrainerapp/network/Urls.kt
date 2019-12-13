@@ -27,4 +27,5 @@ object Urls {
     const val trainingContent = "https://orionedutech.co.in/cglms_app_demo/apptrainigdata"
     const val subunitUrl = "https://orionedutech.co.in/cglms_app_demo/apptcoursesubunits"
     const val trainingActivity = "https://orionedutech.co.in/cglms_app_demo/apptcoursechapteractivities"
+    const val usageData = "https://orionedutech.co.in/cglms_app_demo/appuserstats"
 }

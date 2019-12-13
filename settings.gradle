@@ -1,2 +1,2 @@
-include ':app', ':easycountdowntimer'
+include ':app'
 rootProject.name='LMS (Trainer App)'

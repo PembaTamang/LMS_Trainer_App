@@ -10,9 +10,7 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
-import android.widget.TextSwitcher
 import android.widget.TextView
-import android.widget.ViewSwitcher
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentTransaction
 import com.airbnb.lottie.LottieAnimationView
@@ -38,6 +36,7 @@ import orionedutech.`in`.lmstrainerapp.network.NetworkOps
 import orionedutech.`in`.lmstrainerapp.network.Urls
 import orionedutech.`in`.lmstrainerapp.network.dataModels.assessmentQuestions.DCAsseessmentQ
 import orionedutech.`in`.lmstrainerapp.network.response
+import orionedutech.`in`.lmstrainerapp.showToast
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -64,14 +63,9 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
     lateinit var questionTV: TextView
     lateinit var assessmentName: TextView
 
-    lateinit var hourTV: TextSwitcher
-    lateinit var minuteTV: TextSwitcher
-    lateinit var secondsTV: TextSwitcher
-
-    var slideIn: Animation? = null
-    var slideOut: Animation? = null
-    var firstTime = true
-    var firstSecond = true
+    lateinit var hourTV: TextView
+    lateinit var minuteTV: TextView
+    lateinit var secondsTV: TextView
     lateinit var fragContainter: FrameLayout
     lateinit var countDownTimer: CountDownTimer
     var totalQuestions = 0
@@ -83,56 +77,46 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
     var answerjson = JSONObject()
     var questionJSON = JSONObject()
     var mainJSON = JSONObject()
+    var oldjson = JSONObject()
     var timeinMins = ""
     var answerID: HashMap<String, String> = HashMap()
     var dual = false
     var extraViews: ArrayList<View> = ArrayList()
-    var oldhour : Int = 0
-    var oldminute : Int = 0
+    var review = false
+    var onfinish = false
+    var assessmentID = ""
+    var uid = ""
+    var batchID = ""
+    var centerID = ""
+    var busy = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assessment)
-        val assessmentID = intent.getStringExtra("assessmentID")!!
-        val uid = intent.getStringExtra("uid")!!
-        val batchID = intent.getStringExtra("batch_id")!!
-        val centerID = intent.getStringExtra("center_id")!!
+        assessmentID = intent.getStringExtra("assessmentID")!!
+        uid = intent.getStringExtra("uid")!!
+        batchID = intent.getStringExtra("batch_id")!!
+        centerID = intent.getStringExtra("center_id")!!
         val json = JSONObject()
 
         assessmentName = name
         fragContainter = container
         mainStatus = topstatus
-
-        slideIn = AnimationUtils.loadAnimation(this, R.anim.push_up_in)
-        slideOut = AnimationUtils.loadAnimation(this, R.anim.push_up_out)
-
         hourTV = hours
-        hourTV.inAnimation = slideIn
-        hourTV.outAnimation = slideOut
-        hourTV.setFactory {
-            getTV()
-        }
         minuteTV = minutes
-        minuteTV.inAnimation = slideIn
-        minuteTV.outAnimation = slideOut
-        minuteTV.setFactory {
-           getTV()
-        }
         secondsTV = seconds
-        secondsTV.inAnimation = slideIn
-        secondsTV.outAnimation = slideOut
-        secondsTV.setFactory {
-            getTV()
-        }
+
         json.put("assesment_id", assessmentID)
         json.put("language_id", "1")
         json.put("user_id", uid)
         json.put("user_type", "3")
+
         button = next
         animation = lottie
         status = data
         button.isEnabled = false
         questionTV = textView13
-        extraViews = arrayListOf(assessmentName, questionTV, button, textView19)
+        extraViews =
+            arrayListOf(assessmentName, questionTV, button, hourTV, minuteTV, secondsTV, dot, dot1)
 
         button.setOnClickListener {
             if (currentQuestion < totalQuestions) {
@@ -142,34 +126,30 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
                 val qString = questionsarrayList[currentQuestion].assesment_question
                 if (firstQ) {
                     firstQ = false
-                    changeFragment(
-                        type,
-                        id, qString, currentQuestion
-                    )
-                    button.text = "Next"
+                    textView19.visibility = VISIBLE
+                    if (!review) {
+                        changeFragment(
+                            type, id, qString
+                            , currentQuestion, ""
+                        )
+
+                    } else {
+                        changeFragment(
+                            type, id, qString
+                            , currentQuestion,
+                            getAnswerIDfromOldJson(id)
+                        )
+                    }
+                    button.text = "Next Question"
                     status.visibility = GONE
                     mainStatus.visibility = GONE
+
                     currentQuestion += 1
                     questionTV.text = String.format("%s / %s ", currentQuestion, totalQuestions)
                     lastquestionID = id
-                    //todo remove later
-                    timeinMins = "2"
-                    val minutes = timeinMins.toLong()
-                    countDownTimer = object : CountDownTimer(minutes * 60 * 1000, 1000) {
-                        override fun onFinish() {
-
-                        }
-
-                        override fun onTick(p0: Long) {
-                            val hours = getHours(p0)
-                            val mins = getMinutes(p0)
-                            val seconds = getSeconds(p0)
-                            updateTimer(hours, mins, seconds)
-                        }
-
-
+                    if (!review) {
+                        startTimer()
                     }
-                    countDownTimer.start()
 
                     return@setOnClickListener
 
@@ -178,7 +158,8 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
                         mToast.showToast(this, "please choose an answer")
                         return@setOnClickListener
                     }
-                    mLog.i(TAG, "past null check")
+
+                    mLog.i(TAG, "lastAnswerID $lastAnswerID")
                     answerjson = JSONObject()
 
                     answerjson.put(lastAnswerID, getAnswerValue(lastAnswerID))
@@ -187,14 +168,24 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
                     lastAnswerID = ""
 
                     mLog.i(TAG, "")
-                    changeFragment(
-                        type, id, qString
-                        , currentQuestion
-                    )
+                    if (!review) {
+                        changeFragment(
+                            type, id, qString
+                            , currentQuestion, ""
+                        )
+
+                    } else {
+                        changeFragment(
+                            type, id, qString
+                            , currentQuestion,
+                            getAnswerIDfromOldJson(id)
+                        )
+
+
+                    }
                     lastquestionID = id
                     currentQuestion += 1
-
-                    questionTV.text = String.format("%s / %s ", currentQuestion, totalQuestions)
+                    questionTV.text = String.format(" %s / %s ", currentQuestion, totalQuestions)
 
                 }
 
@@ -209,26 +200,44 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
                 answerjson.put(lastAnswerID, getAnswerValue(lastAnswerID))
                 questionJSON.put(lastquestionID, answerjson)
 
-                mainJSON.put("assesment_id", assessmentID)
-                mainJSON.put("language_id", "1")
-                mainJSON.put("user_id", uid)
-                mainJSON.put("assesment_unique_id", UUID.randomUUID())
-                mainJSON.put("user_type", "3")
-                mainJSON.put("batch_id", batchID)
-                mainJSON.put("center_id", centerID)
-                mainJSON.put("ans_data", questionJSON)
+                if (!review) {
+                    MaterialAlertDialogBuilder(this).setTitle("Assessment Over")
+                        .setCancelable(false)
+                        .setMessage("Do you want to review your answers?")
+                        .setPositiveButton("submit") { dialogInterface, i ->
+                            dialogInterface.dismiss()
+                            mLog.i(TAG, "dialogue")
+                            runSubmitCode()
 
-                // countdown.stopTimer()
-                mLog.i(TAG, "json : $mainJSON")
-                fragContainter.alpha = 0.0f
-                animation.visibility = VISIBLE
-                animation.playAnimation()
-                status.visibility = VISIBLE
-                mainStatus.text = "Assessment Over"
-                mainStatus.visibility = VISIBLE
-                status.text = "Pushing data to server...please wait"
-                button.isEnabled = false
-                uploadJson(mainJSON)
+                        }.setNegativeButton("review") { dialogInterface, i ->
+                            dialogInterface.dismiss()
+                            oldjson = JSONObject()
+                            oldjson = questionJSON
+                            mLog.i(TAG, "copying")
+                            questionJSON = JSONObject()
+                            currentQuestion = 0
+                            firstQ = true
+                            lastAnswerID = ""
+                            review = true
+                            button.callOnClick()
+
+                        }.create().show()
+                } else {
+                    busy = true
+                    MaterialAlertDialogBuilder(this).setTitle("Assessment Over")
+                        .setCancelable(false)
+                        .setMessage("Do you want to review your answers?")
+                        .setPositiveButton("submit") { dialogInterface, i ->
+                            dialogInterface.dismiss()
+                            mLog.i(TAG, "dialogue")
+                            runSubmitCode()
+
+                        }.create().show()
+                    mLog.i(TAG, "assessment over")
+
+                }
+
+
             }
 
         }
@@ -239,45 +248,104 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
 
     }
 
+    private fun runSubmitCode() {
+
+        if (!review) {
+            mainJSON.put("ans_data", questionJSON)
+            mLog.i(TAG, "json - $questionJSON")
+        } else {
+            mLog.i(TAG, "old json - $oldjson")
+            mLog.i(TAG, "new json - $questionJSON")
+
+            val overwrittenJson = overwriteJson(questionJSON, oldjson)
+            mainJSON.put("ans_data", overwrittenJson)
+            mLog.i(TAG, "over written - $overwrittenJson")
+
+        }
+
+        mainJSON.put("assesment_id", assessmentID)
+        mainJSON.put("language_id", "1")
+        mainJSON.put("user_id", uid)
+        mainJSON.put("assesment_unique_id", UUID.randomUUID())
+        mainJSON.put("user_type", "3")
+        mainJSON.put("batch_id", batchID)
+        mainJSON.put("center_id", centerID)
+
+        fragContainter.alpha = 0.0f
+        animation.visibility = VISIBLE
+        animation.playAnimation()
+        status.visibility = VISIBLE
+        mainStatus.text = "Assessment Over"
+        mainStatus.visibility = VISIBLE
+        status.text = "Pushing data to server...please wait"
+        button.isEnabled = false
+        uploadJson(mainJSON)
+
+    }
+
+    private fun startTimer() {
+        timeinMins = "2"
+        val minutes = timeinMins.toLong()
+        countDownTimer = object : CountDownTimer(minutes * 60 * 1000, 1000) {
+            override fun onFinish() {
+                if (!onfinish) {
+                  if(!busy){
+                    onfinish = true
+                    updateTimer("0", "0", "0")
+                    showToast("time over")
+                    mLog.i(TAG, "counter")
+                    runSubmitCode()
+                }
+                }
+            }
+
+            override fun onTick(p0: Long) {
+                val hours = getHours(p0)
+                val mins = getMinutes(p0)
+                val seconds = getSeconds(p0)
+                updateTimer(hours, mins, seconds)
+            }
+        }
+        countDownTimer.start()
+    }
+
+    private fun getAnswerIDfromOldJson(id: String): String {
+        var answerID = ""
+        val iterator = oldjson.keys()
+        while (iterator.hasNext()) {
+            val key2 = iterator.next()
+            if (key2 == id) {
+                val value2 = oldjson.getJSONObject(key2)
+                answerID = value2.keys().next()
+                mLog.i(TAG, "matching aid $answerID")
+            }
+        }
+        return answerID
+    }
+
+    private fun overwriteJson(newJson: JSONObject, oldjson: JSONObject): JSONObject {
+        val iterator = newJson.keys()
+        while (iterator.hasNext()) {
+            //json 2
+            val key2 = iterator.next()
+            val value2 = newJson.getJSONObject(key2)
+            oldjson.remove(key2)
+            oldjson.put(key2, value2)
+        }
+        return oldjson
+    }
+
     private fun getTV(): TextView {
         val t = TextView(this@AssessmentActivity)
         t.textSize = 18f
-        t.setTextColor(ContextCompat.getColor(this,R.color.white))
+        t.setTextColor(ContextCompat.getColor(this, R.color.white))
         return t
     }
 
     private fun updateTimer(hours: String, mins: String, seconds: String) {
-        secondsTV.setText(seconds)
-        if (firstTime) {
-            firstTime = false
-            hourTV.setCurrentText(hours)
-            minuteTV.setCurrentText(mins)
-            secondsTV.setCurrentText(seconds)
-            oldhour = hours.toInt()
-            oldminute = mins.toInt()
-        } else {
-
-            mLog.i(TAG, "hour : $oldhour = $hours min $oldminute = $mins")
-            if(seconds.toInt() == 59){
-                if(firstSecond) {
-                    firstSecond = false
-                    return
-                }
-
-                if(oldminute>0){
-                minuteTV.setText((String.format("$02d%",oldminute -1)))
-            }
-                if(oldhour>0){
-                    hourTV.setText((String.format("$02d%",oldhour -1)))
-                }
-
-
-
-            }
-
-
-
-        }
+        hourTV.text = String.format("%02d", hours.toInt())
+        minuteTV.text = String.format("%02d", mins.toInt())
+        secondsTV.text = String.format("%02d", seconds.toInt())
 
     }
 
@@ -305,11 +373,18 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
     }
 
     private fun uploadJson(mainJSON: JSONObject) {
-
+        countDownTimer.onFinish()
+        countDownTimer.cancel()
         NetworkOps.post(Urls.assessmentAnsSubmit, mainJSON.toString(), this, object : response {
             override fun onrespose(string: String?) {
                 mLog.i(TAG, "response : $string")
-                val json = JSONObject(string!!)
+                if(string!!.isEmpty()){
+                    runOnUiThread {
+                        showToast("null response by server")
+                    }
+                    return
+                }
+                val json = JSONObject(string)
                 if (json.getString("success") == "1") {
                     runOnUiThread {
                         examOn = false
@@ -481,7 +556,13 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
         }
     }
 
-    private fun changeFragment(type: String, qid: String, qString: String, sl: Int) {
+    private fun changeFragment(
+        type: String,
+        qid: String,
+        qString: String,
+        sl: Int,
+        lastaid: String
+    ) {
         ft = supportFragmentManager.beginTransaction()
         ft!!.setCustomAnimations(
             R.anim.enter_from_right,
@@ -496,6 +577,12 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
                 bundle.putString("qid", qid)
                 bundle.putString("qString", qString)
                 bundle.putString("sl", (sl + 1).toString())
+                if (!lastaid.isNullOrEmpty()) {
+                    bundle.putBoolean("review", true)
+                    bundle.putString("aid", lastaid)
+                } else {
+                    bundle.putBoolean("review", false)
+                }
                 fragment.arguments = bundle
                 ft!!.replace(R.id.container, fragment, "tag")
                 ft!!.commit()

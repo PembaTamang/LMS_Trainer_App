@@ -55,7 +55,7 @@ import orionedutech.`in`.lmstrainerapp.mLog.TAG
 import orionedutech.`in`.lmstrainerapp.showToast
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
-    MoveNavBar.move, profilebooleantoggle.capture {
+    MoveNavBar.move, profilebooleantoggle.capture, SetProfileImage.Image {
     override fun capturepic(boolean: Boolean) {
         mLog.i(TAG, "val $boolean")
         profile = boolean
@@ -66,6 +66,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private var exit = false
     private var lastpop = false
     private var lastFrag: String = ""
+    var headerView : View? = null
     private lateinit var bottomNav: BottomNavigationView
     lateinit var profilePref: SharedPreferences
     private val permissionCode = 100
@@ -145,17 +146,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         mLog.i(TAG, "first dash frag count ${supportFragmentManager.backStackEntryCount} ")
         checkDashBoard()
 
-        val headerView = nav_view.getHeaderView(0)
-        headerView.profile_image
-        val imageURL = profilePref.getString("image", "")
-        if (imageURL != "") {
-            Glide.with(this).load(imageURL).skipMemoryCache(true).diskCacheStrategy(
-                DiskCacheStrategy.NONE).into(headerView.profile_image)
-        }
+        headerView = nav_view.getHeaderView(0)
+
+        setProfileImage()
+
         launch {
             applicationContext?.let {
                 val dao = MDatabase(it).getUserDao()
-                headerView.name.text = dao.getadminName()
+                headerView!!.name.text = dao.getadminName()
             }
         }
 
@@ -228,6 +226,15 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             .duration = 0
         MoveNavBar.theRealInstance.setListener(this)
         profilebooleantoggle.theRealInstance.setListener(this)
+        SetProfileImage.classInstance!!.setListener(this)
+    }
+
+    private fun setProfileImage() {
+        val imageURL = profilePref.getString("image", "")
+        if (imageURL != "") {
+            Glide.with(this).load(imageURL).skipMemoryCache(true).diskCacheStrategy(
+                DiskCacheStrategy.NONE).into(headerView!!.profile_image)
+        }
     }
 
     fun pulldownBar() {
@@ -478,6 +485,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             moveNavBar()
         }
     }
+
+    override fun setImage() {
+    setProfileImage()
+     }
 
 
 }

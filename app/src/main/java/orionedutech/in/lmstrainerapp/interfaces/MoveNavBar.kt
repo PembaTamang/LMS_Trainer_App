@@ -8,8 +8,9 @@ class MoveNavBar private constructor() {
     fun setListener(listener: move) {
         movelistener=listener
     }
+
     companion object{
-     private  var mInstance : MoveNavBar? = null
+  var mInstance : MoveNavBar? = null
         val theRealInstance : MoveNavBar
         get(){
             if (mInstance == null) {

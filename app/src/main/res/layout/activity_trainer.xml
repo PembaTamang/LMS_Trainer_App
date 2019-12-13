@@ -65,27 +65,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
-
-
-    <ir.samanjafari.easycountdowntimer.EasyCountDownTextview
-        android:id="@+id/easyCountDownTextview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/round_rect_grey"
-        android:padding="8dp"
-        android:visibility="gone"
-        app:colonColor="@color/white"
-        app:digitBackground="@color/greyText"
-        app:layout_constraintEnd_toEndOf="@+id/name"
-        app:layout_constraintStart_toStartOf="@+id/name"
-        app:layout_constraintTop_toBottomOf="@+id/textView13"
-        app:setAnimation="true"
-        app:showOnlySecond="false"
-        app:textColor="@color/white"
-        app:textSize="25sp" />
-
     <FrameLayout
         android:id="@+id/trainerAcitivityContainer"
         android:layout_width="match_parent"

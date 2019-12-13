@@ -26,6 +26,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.attendance_alert.view.*
+import kotlinx.android.synthetic.main.fragment_profile_information.*
 import kotlinx.android.synthetic.main.fragment_student_list.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
@@ -59,7 +60,7 @@ class StudentListFragment : Fragment() {
 
     lateinit var allPresent: TextView
     var allPrsnt = true
-
+    var centerID = ""
     var selectedBatchID = ""
     var selectedCourseID = ""
     var selectedModuleID = ""
@@ -102,6 +103,7 @@ class StudentListFragment : Fragment() {
         selectedSubUnitID = bundle.getString("subunit_id", "")
         trainerID = bundle.getString("user_id", "")
         courseName = bundle.getString("course_name","")
+        centerID = bundle.getString("center_id","")
         uniqueID = UUID.randomUUID().toString()
 
         val uniquePrefs = activity!!.getSharedPreferences("uid", Context.MODE_PRIVATE)
@@ -289,6 +291,7 @@ class StudentListFragment : Fragment() {
             intent.putExtra("uniqueID", uniqueID)
             intent.putExtra("chapter_type",chapterType)
             intent.putExtra("course_name",courseName)
+            intent.putExtra("center_id",centerID)
             startActivity(intent)
             activity!!.supportFragmentManager.popBackStack()
             mLog.i(TAG,"popping")

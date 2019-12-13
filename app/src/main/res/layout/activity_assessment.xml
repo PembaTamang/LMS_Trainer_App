@@ -60,6 +60,7 @@
         android:text="Assessment Name"
         android:textAppearance="@style/Baloo"
         android:textStyle="bold"
+        android:visibility="gone"
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -72,6 +73,7 @@
         android:layout_marginEnd="16dp"
         android:textAppearance="@style/OpenSansRegular"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/name" />
 
@@ -84,44 +86,54 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView13" >
-        <TextSwitcher
-            android:id="@+id/hours"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/TimerText"
-            android:paddingStart="8dp"
-            android:background="@drawable/round_rect_grey"
-            android:text="00"/>
-        <TextView
+        app:layout_constraintTop_toBottomOf="@+id/textView13">
 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/TimerText"
-            android:textColor="@color/default_text"
-            android:text=" : "/>
-        <TextSwitcher
-            android:id="@+id/minutes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/TimerText"
-            android:background="@drawable/round_rect_grey"
-            android:paddingStart="8dp"
-            android:text="00"/>
         <TextView
+            android:id="@+id/hours"
+            style="@style/TimerText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/TimerText"
-            android:textColor="@color/default_text"
-            android:text=" : "/>
-        <TextSwitcher
-            android:id="@+id/seconds"
             android:background="@drawable/round_rect_grey"
+            android:text="00"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/dot"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text=" : "
+            android:textAppearance="@style/OpenSansRegular"
+            android:textColor="@color/default_text"
+            android:textSize="25sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/minutes"
             style="@style/TimerText"
-            android:paddingEnd="8dp"
-            android:text="00"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_rect_grey"
+            android:text="00"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/dot1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" : "
+            android:textAppearance="@style/OpenSansRegular"
+            android:textColor="@color/default_text"
+            android:textSize="25sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/seconds"
+            style="@style/TimerText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_rect_grey"
+            android:text="00"
+            android:visibility="gone" />
     </LinearLayout>
 
     <FrameLayout
@@ -138,10 +150,8 @@
 
     <TextView
         android:id="@+id/topstatus"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:text="Please wait"
         android:textAlignment="center"
         android:textAppearance="@style/OpenSansRegular"
@@ -169,23 +179,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Checking for questions..."
-        android:textSize="16sp"
         android:textAppearance="@style/OpenSansRegular"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="@+id/lottie"
         app:layout_constraintStart_toStartOf="@+id/lottie"
         app:layout_constraintTop_toBottomOf="@+id/lottie" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/next"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:backgroundTint="@color/blue"
-        android:text="Start"
         android:padding="8dp"
+        android:text="Start"
         android:textAppearance="@style/Baloo"
         android:textColor="@color/white"
         android:textSize="16sp"
+        android:visibility="gone"
         app:cornerRadius="16dp"
 
         app:layout_constraintBottom_toBottomOf="parent"
