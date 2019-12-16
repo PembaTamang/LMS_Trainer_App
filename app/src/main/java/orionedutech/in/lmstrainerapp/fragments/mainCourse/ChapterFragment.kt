@@ -92,6 +92,8 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
         batchID = bundle.getString("batchID", "")
         centerID = bundle.getString("center_id", "")
         chapterType = bundle.getString("type", "1")
+        unitID  = bundle.getString("unit_id", "1")
+        subUnitID  = bundle.getString("subunit_id", "1")
 
         when (chapterType) {
             "1" -> {
@@ -272,6 +274,8 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
             bundle.putString("course_id",courseID)
             bundle.putString("storage_id",subUnitsData[itempos].storage_id)
             bundle.putString("module_id",moduleID)
+            bundle.putString("unit_id",unitID)
+            bundle.putString("subunit_id",subUnitID)
             fragment.arguments = bundle
             ft = activity!!.supportFragmentManager.beginTransaction()
             ft.setCustomAnimations(
@@ -291,7 +295,7 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
                 .setCancelable(true)
             builder.setView(dialogueView)
             val dialogue = builder.create()
-            val ok = dialogueView.button
+            val ok = dialogueView.button2
             ok.text = "play video"
             val dmessage  = dialogueView.message
             val title = dialogueView.titlee
@@ -315,7 +319,8 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
                 bundle.putString("course_id",courseID)
                 bundle.putString("storage_id",subUnitsData[itempos].storage_id)
                 bundle.putString("module_id",moduleID)
-
+                bundle.putString("unit_id",unitID)
+                bundle.putString("subunit_id",subUnitsData[itempos].lesson_id)
                 fragment.arguments = bundle
                 ft = activity!!.supportFragmentManager.beginTransaction()
                 ft.setCustomAnimations(

@@ -6,6 +6,8 @@ import android.content.Intent
 import android.database.Cursor
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.OpenableColumns
 import android.text.Editable
 import android.text.TextUtils
@@ -25,6 +27,9 @@ import com.developer.filepicker.model.DialogProperties
 import com.developer.filepicker.view.FilePickerDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
+import com.jaiselrahman.filepicker.activity.FilePickerActivity
+import com.jaiselrahman.filepicker.config.Configurations
+import com.jaiselrahman.filepicker.model.MediaFile
 import kotlinx.android.synthetic.main.fragment_assignment_upload.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -109,7 +114,10 @@ class AssignmentUploadFragment : BaseFragment() {
         progressText = view.progressText
         batchSpinner = view.batch
         browseButton = view.browse
+        browseButton.isEnabled = false
+
         uploadButon = view.upload
+        uploadButon.isEnabled = false
         views = arrayListOf(nameET, descET, batchSpinner, courseSpinner, browseButton, uploadButon)
 
         courseAdapter = CourseSpinAdapter(
@@ -206,7 +214,7 @@ class AssignmentUploadFragment : BaseFragment() {
         browseButton.setOnClickListener {
             //browse code
 
-            val properties = DialogProperties()
+           /* val properties = DialogProperties()
             properties.selection_mode = DialogConfigs.SINGLE_MODE
             properties.selection_type = DialogConfigs.FILE_SELECT
             properties.root =    File(DialogConfigs.DEFAULT_DIR)
@@ -221,7 +229,23 @@ class AssignmentUploadFragment : BaseFragment() {
                 filepath = it[0]
                 fileNameTV.text = filepath.substring(filepath.lastIndexOf("/")+1)
             }
-        dialogue.show()
+        dialogue.show()*/
+
+            val intent = Intent(context, FilePickerActivity::class.java)
+            intent.putExtra(
+                FilePickerActivity.CONFIGS, Configurations.Builder()
+                    .setCheckPermission(true)
+                    .setShowImages(false)
+                    .setShowFiles(true)
+                    .setShowVideos(false)
+                    .setShowAudios(false)
+                    .setSuffixes("pdf")
+                    .enableImageCapture(false)
+                    .setMaxSelection(1)
+                    .setSkipZeroSizeFiles(true)
+                    .build()
+            )
+            startActivityForResult(intent, FILE_REQUEST_CODE)
         }
 
 
@@ -257,7 +281,7 @@ class AssignmentUploadFragment : BaseFragment() {
                 progressText.visibility = VISIBLE
                 disableViews()
             }
-            showAnimation()
+           showUPloadAnimation()
             NetworkOps.postMultipart(Urls.assignmentUploadUrl, hashmap, context, object : response {
                 override fun onrespose(string: String?) {
 
@@ -371,6 +395,18 @@ class AssignmentUploadFragment : BaseFragment() {
                 showToast(context, "error in choosing file")
             }
 
+        }else if(requestCode == FILE_REQUEST_CODE){
+            if(resultCode == Activity.RESULT_OK){
+                val files :  ArrayList<MediaFile> = data!!.getParcelableArrayListExtra(FilePickerActivity.MEDIA_FILES)!!
+                if(files.size>0){
+                    filepath = files[0].path
+                    fileNameTV.text = filepath.substring(filepath.lastIndexOf("/")+1)
+                    uploadButon.isEnabled = true
+
+                }else{
+                    showToast(context,"nothing selected")
+                }
+            }
         }
     }
 
@@ -400,6 +436,7 @@ class AssignmentUploadFragment : BaseFragment() {
                                     CoroutineScope(Dispatchers.Main).launch {
                                         courseAdapter.notifyDataSetChanged()
                                         hideAnimations()
+                                        browseButton.isEnabled = true
                                     }
                                 } else {
                                     val dao1 = MDatabase(it)
@@ -435,7 +472,15 @@ class AssignmentUploadFragment : BaseFragment() {
             return
         }
         activity!!.runOnUiThread {
-            showToast(context, "failed")
+            showToast(context, "failed to get course list")
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                showToast(context,"retrying...")
+                CoroutineScope(IO).launch {
+                    getCourseData(selectedBatchID)
+                }
+            },2000)
+
         }
     }
 
@@ -459,7 +504,18 @@ class AssignmentUploadFragment : BaseFragment() {
             progress.isIndeterminate = true
             progress.visibility = VISIBLE
             progressText.visibility = VISIBLE
-            progressText.text = "Please wait"
+            progressText.text = "Refreshing course list"
+        }
+    }
+    private fun showUPloadAnimation() {
+        if (activity == null) {
+            return
+        }
+        activity!!.runOnUiThread {
+            progress.isIndeterminate = true
+            progress.visibility = VISIBLE
+            progressText.visibility = VISIBLE
+            progressText.text = "Uploading data"
         }
     }
 

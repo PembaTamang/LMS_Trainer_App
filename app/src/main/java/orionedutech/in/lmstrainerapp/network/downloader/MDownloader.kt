@@ -207,6 +207,9 @@ object MDownloader {
         notification.flags = Notification.FLAG_AUTO_CANCEL
         notificationManager.notify(id, notification)
 
+        Handler(Looper.getMainLooper()).postDelayed({
+         notificationManager.cancel(id)
+        },5000)
     }
 
 }

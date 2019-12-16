@@ -7,8 +7,7 @@ import android.os.Handler
 import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
+import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -89,7 +88,13 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
     var batchID = ""
     var centerID = ""
     var busy = false
+    var remainingMillis: Long = 0
+    var timeinmillis: Long = 0
     override fun onCreate(savedInstanceState: Bundle?) {
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assessment)
         assessmentID = intent.getStringExtra("assessmentID")!!
@@ -104,6 +109,8 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
         hourTV = hours
         minuteTV = minutes
         secondsTV = seconds
+
+
 
         json.put("assesment_id", assessmentID)
         json.put("language_id", "1")
@@ -148,7 +155,7 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
                     questionTV.text = String.format("%s / %s ", currentQuestion, totalQuestions)
                     lastquestionID = id
                     if (!review) {
-                        startTimer()
+                        startTimer(timeinmillis)
                     }
 
                     return@setOnClickListener
@@ -201,6 +208,7 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
                 questionJSON.put(lastquestionID, answerjson)
 
                 if (!review) {
+                    pauseTimer()
                     MaterialAlertDialogBuilder(this).setTitle("Assessment Over")
                         .setCancelable(false)
                         .setMessage("Do you want to review your answers?")
@@ -211,6 +219,7 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
 
                         }.setNegativeButton("review") { dialogInterface, i ->
                             dialogInterface.dismiss()
+                            resumeTimer()
                             oldjson = JSONObject()
                             oldjson = questionJSON
                             mLog.i(TAG, "copying")
@@ -220,13 +229,14 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
                             lastAnswerID = ""
                             review = true
                             button.callOnClick()
-
                         }.create().show()
                 } else {
                     busy = true
+                    pauseTimer()
+                    updateTimer("0","0","0")
                     MaterialAlertDialogBuilder(this).setTitle("Assessment Over")
                         .setCancelable(false)
-                        .setMessage("Do you want to review your answers?")
+                        .setMessage("Assessment Over?")
                         .setPositiveButton("submit") { dialogInterface, i ->
                             dialogInterface.dismiss()
                             mLog.i(TAG, "dialogue")
@@ -246,6 +256,13 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
         getAssessmentQuestions(json.toString())
 
 
+    }
+
+    fun pauseTimer() {
+     countDownTimer.cancel()
+    }
+    fun resumeTimer(){
+        startTimer(remainingMillis)
     }
 
     private fun runSubmitCode() {
@@ -283,23 +300,22 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
 
     }
 
-    private fun startTimer() {
-        timeinMins = "2"
-        val minutes = timeinMins.toLong()
-        countDownTimer = object : CountDownTimer(minutes * 60 * 1000, 1000) {
+    private fun startTimer(timeinmillis: Long) {
+        countDownTimer = object : CountDownTimer(timeinmillis, 1000) {
             override fun onFinish() {
                 if (!onfinish) {
-                  if(!busy){
-                    onfinish = true
-                    updateTimer("0", "0", "0")
-                    showToast("time over")
-                    mLog.i(TAG, "counter")
-                    runSubmitCode()
-                }
+                    if (!busy) {
+                        onfinish = true
+                        updateTimer("0", "0", "0")
+                        showToast("time over")
+                        mLog.i(TAG, "counter")
+                        runSubmitCode()
+                    }
                 }
             }
 
             override fun onTick(p0: Long) {
+                remainingMillis = p0
                 val hours = getHours(p0)
                 val mins = getMinutes(p0)
                 val seconds = getSeconds(p0)
@@ -378,7 +394,7 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
         NetworkOps.post(Urls.assessmentAnsSubmit, mainJSON.toString(), this, object : response {
             override fun onrespose(string: String?) {
                 mLog.i(TAG, "response : $string")
-                if(string!!.isEmpty()){
+                if (string!!.isEmpty()) {
                     runOnUiThread {
                         showToast("null response by server")
                     }
@@ -455,6 +471,7 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
                     val answerDao = database.getAssessmentAnswersDao()
                     if (mainjson.success == "1") {
                         timeinMins = mainjson.assesment_time
+                        timeinmillis = timeinMins.toLong() * 60 * 1000
                         withContext(Main) {
                             assessmentName.text = mainjson.assesment_name
                         }

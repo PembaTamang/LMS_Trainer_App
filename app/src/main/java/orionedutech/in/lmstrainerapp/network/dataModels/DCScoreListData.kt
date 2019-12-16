@@ -4,7 +4,7 @@ package orionedutech.`in`.lmstrainerapp.network.dataModels
 data class DCScoreListData(
     val assesment_end_date: String,
     val assesment_name: String,
-    val assesment_percentage: Int,
+    val assesment_percentage: String,
     val assesment_start_date: String,
     val assesment_time: String,
     val assesment_total_questions: Int,

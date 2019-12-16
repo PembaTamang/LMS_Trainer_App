@@ -8,89 +8,49 @@
     tools:context=".fragments.assessment.AssessmentFragment"
     app:cardElevation="0dp"
     tools:ignore="MissingPrefix">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:paddingBottom="8dp">
+
         <TextView
             android:id="@+id/sl"
-            android:layout_width="0dp"
+            android:layout_width="35dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="1dp"
-            android:text="SL"
             android:paddingStart="8dp"
+            android:text="SL"
             android:textAlignment="textStart"
             android:textSize="12sp"
-            app:layout_constraintEnd_toStartOf="@+id/name"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_weight="0.5"
+            app:layout_constraintBottom_toBottomOf="@+id/name"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/upload" />
+            app:layout_constraintTop_toTopOf="@+id/name" />
 
         <TextView
             android:id="@+id/name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Name"
-            android:paddingStart="8dp"
-            android:textSize="12sp"
-            android:textAppearance="@style/OpenSansRegular"
-            android:textAlignment="textStart"
-            android:layout_marginEnd="1dp"
-            app:layout_constraintEnd_toStartOf="@+id/type"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_weight="2"
-            app:layout_constraintStart_toEndOf="@+id/sl"
-            app:layout_constraintTop_toTopOf="@+id/sl" />
-
-        <TextView
-            android:id="@+id/type"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="QType"
-            android:paddingStart="8dp"
-            android:textSize="12sp"
-            android:textAppearance="@style/OpenSansRegular"
-            android:textAlignment="textStart"
-            android:layout_marginEnd="1dp"
-            app:layout_constraintEnd_toStartOf="@+id/centers"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@+id/name"
-            app:layout_constraintTop_toTopOf="@+id/name" />
-
-        <TextView
-            android:id="@+id/centers"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Centers"
-            android:paddingStart="8dp"
-            android:textSize="12sp"
-            android:textAppearance="@style/OpenSansRegular"
-            android:layout_marginEnd="1dp"
-            android:textAlignment="textStart"
-            app:layout_constraintEnd_toStartOf="@+id/batches"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@+id/type"
-            app:layout_constraintTop_toTopOf="@+id/type" />
-
-        <TextView
-            android:id="@+id/batches"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:text="Batches"
-            android:textSize="12sp"
             android:paddingStart="8dp"
-            android:textAppearance="@style/OpenSansRegular"
+            android:text="Name"
             android:textAlignment="textStart"
+            android:textAppearance="@style/OpenSansRegular"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/icon"
+            app:layout_constraintStart_toEndOf="@+id/sl"
+            app:layout_constraintTop_toTopOf="@+id/icon" />
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:src="@drawable/ic_studying"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@+id/centers"
-            app:layout_constraintTop_toTopOf="@+id/centers" />
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

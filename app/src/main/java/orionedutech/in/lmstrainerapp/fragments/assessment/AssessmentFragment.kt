@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.text.SpannableStringBuilder
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,12 +14,16 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Spinner
 import androidx.core.content.ContextCompat
+import androidx.core.text.bold
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
+import kotlinx.android.synthetic.main.custom_default_alert.view.*
 import kotlinx.android.synthetic.main.fragment_trainer_assessment.view.*
 import kotlinx.android.synthetic.main.fragment_trainer_assessment.view.batch_spinner
+import kotlinx.android.synthetic.main.fragment_trainer_assessment.view.button
 import kotlinx.android.synthetic.main.fragment_trainer_assessment_upload.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -66,20 +71,7 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
     ): View? {
 
         val view = inflater.inflate(R.layout.fragment_trainer_assessment, container, false)
-        val assessmentPref = activity!!.getSharedPreferences("assessment", Context.MODE_PRIVATE)
-        if(assessmentPref.getBoolean("show",true)){
-            Handler().postDelayed({
-                MaterialAlertDialogBuilder(context).setTitle("Alert")
-                    .setMessage("You can give your assessments by selecting them from the list.")
-                    .setPositiveButton("don't show again"){dialogInterface, i ->
-                        dialogInterface.dismiss()
-                        assessmentPref.edit().putBoolean("show",false).apply()
-                    }
-                    .setNegativeButton("keep reminder"){dialogInterface, i ->
-                        dialogInterface.dismiss()
-                    }.create().show()
-            },500)
-        }
+
         view.upload.setOnClickListener {
             //upload code here
             val ft = activity?.supportFragmentManager!!.beginTransaction()
@@ -95,6 +87,7 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
             ft.addToBackStack(null)
             ft.commit()
         }
+
         recyclerView = view.recycler
         recyclerView.layoutManager = LinearLayoutManager(context)
         adapter =
@@ -103,7 +96,6 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
                 this
             )
         recyclerView.adapter = adapter
-
 
         batchSpinner = view.batch_spinner
         batchAdapter = BatchSpinAdapter(
@@ -189,81 +181,6 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
             }
         }
 
-        val ascendingType =
-            context?.let { ContextCompat.getDrawable(it, R.drawable.animated_ascending) }
-        val descendingType =
-            context?.let { ContextCompat.getDrawable(it, R.drawable.animated_descending) }
-        val ascendingTypes = AtomicBoolean(true)
-        view.type.setOnClickListener {
-            if (ascendingTypes.get()) {
-                val animator =
-                    ObjectAnimator.ofInt(ascendingType, "level", 0, 10000).setDuration(500)
-                animator.start()
-                view.type.setCompoundDrawablesWithIntrinsicBounds(null, null, ascendingType, null)
-                ascendingTypes.set(false)
-                //sort by descending types
-                val templist = arrayList.sortedWith(compareByDescending(DCAssessmentList::assesment_q_type))
-                arrayList.clear()
-                arrayList.addAll(templist)
-                adapter.notifyDataSetChanged()
-
-            } else {
-                val animator =
-                    ObjectAnimator.ofInt(descendingType, "level", 0, 10000).setDuration(500)
-                animator.start()
-                view.type.setCompoundDrawablesWithIntrinsicBounds(null, null, descendingType, null)
-                ascendingTypes.set(true)
-                //sort by ascending types
-                val templist = arrayList.sortedWith(compareBy(DCAssessmentList::assesment_q_type))
-                arrayList.clear()
-                arrayList.addAll(templist)
-                adapter.notifyDataSetChanged()
-
-            }
-        }
-
-        val ascendingCenter =
-            context?.let { ContextCompat.getDrawable(it, R.drawable.animated_ascending) }
-        val descendingCenter =
-            context?.let { ContextCompat.getDrawable(it, R.drawable.animated_descending) }
-        val ascendingCenters = AtomicBoolean(true)
-        view.centers.setOnClickListener {
-            if (ascendingCenters.get()) {
-                val animator =
-                    ObjectAnimator.ofInt(ascendingCenter, "level", 0, 10000).setDuration(500)
-                animator.start()
-                view.centers.setCompoundDrawablesWithIntrinsicBounds(
-                    null,
-                    null,
-                    ascendingCenter,
-                    null
-                )
-                ascendingCenters.set(false)
-                //sort by descending centers
-                val templist = arrayList.sortedWith(compareByDescending(DCAssessmentList::assesment_centers))
-                arrayList.clear()
-                arrayList.addAll(templist)
-                adapter.notifyDataSetChanged()
-            } else {
-                val animator =
-                    ObjectAnimator.ofInt(descendingCenter, "level", 0, 10000).setDuration(500)
-                animator.start()
-                view.centers.setCompoundDrawablesWithIntrinsicBounds(
-                    null,
-                    null,
-                    descendingCenter,
-                    null
-                )
-                ascendingCenters.set(true)
-                //sort by ascending centers
-                val templist = arrayList.sortedWith(compareBy(DCAssessmentList::assesment_centers))
-                arrayList.clear()
-                arrayList.addAll(templist)
-                adapter.notifyDataSetChanged()
-            }
-        }
-
-
         return view
     }
 
@@ -331,22 +248,33 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
         // get assessment here
 
         mLog.i(TAG, " id ${arrayList[itempos].assesment_id}")
+        val dialogueView = LayoutInflater.from(context)
+            .inflate(R.layout.custom_default_alert, null, false)
+        val builder = MaterialAlertDialogBuilder(context)
+            .setCancelable(true)
+            .setView(dialogueView)
+        val dialogue = builder.create()
+        val ok  = dialogueView.button2
+        ok.text = "Give Assessment"
+        val dmessage = dialogueView.message
+        val title = dialogueView.titlee
+        title.text = "Alert"
+        val message = SpannableStringBuilder()
+            .append("Do you want to give the assessment - ")
+            .bold { append("${arrayList[itempos].assesment_name} ?") }
+        dmessage.text = message
+        ok.setOnClickListener {
+            dialogue.dismiss()
+            val intent = Intent(context,AssessmentActivity::class.java)
+            intent.putExtra("assessmentID",arrayList[itempos].assesment_id)
+            intent.putExtra("uid",userID)
+            intent.putExtra("batch_id",selectedBatchID)
+            intent.putExtra("center_id",centerID)
+            startActivity(intent)
+            activity!!.overridePendingTransition(R.anim.enter_from_right,R.anim.exit_to_left)
+        }
+        dialogue.show()
 
-        MaterialAlertDialogBuilder(context).setTitle("Alert")
-            .setMessage("Do you want to give the assessment for ${arrayList[itempos].assesment_name} ? ")
-            .setPositiveButton("proceed"){dialogInterface, i ->
-                dialogInterface.dismiss()
-                val intent = Intent(context,AssessmentActivity::class.java)
-                intent.putExtra("assessmentID",arrayList[itempos].assesment_id)
-                intent.putExtra("uid",userID)
-                intent.putExtra("batch_id",selectedBatchID)
-                intent.putExtra("center_id",centerID)
-                startActivity(intent)
-                activity!!.overridePendingTransition(R.anim.enter_from_right,R.anim.exit_to_left)
-            }
-            .setNegativeButton("cancel"){dialogInterface, i ->
-                dialogInterface.dismiss()
-            }.create().show()
     }
 
 }

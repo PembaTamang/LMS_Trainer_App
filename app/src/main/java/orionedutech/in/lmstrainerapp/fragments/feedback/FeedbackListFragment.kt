@@ -14,6 +14,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.airbnb.lottie.LottieAnimationView
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_feedback_list.view.*
 import kotlinx.coroutines.CoroutineScope
@@ -101,11 +102,14 @@ class FeedbackListFragment : Fragment(), FeedBackInterface {
                         activity?.runOnUiThread {
                             animation.cancelAnimation()
                             animation.visibility = GONE
-                            button.text = "submit success"
-                            Handler().postDelayed({
-                                mToast.showToast(context, "feedback submitted successfully")
-                                activity!!.onBackPressed()
-                            }, 1500)
+                            MaterialAlertDialogBuilder(context).setTitle("Feedback submitted successfully")
+                                .setCancelable(false)
+                                .setMessage("Press ok to exit")
+                                .setPositiveButton("ok"){
+                                    dialogInterface, i ->
+                                    dialogInterface.dismiss()
+                                    activity!!.onBackPressed()
+                                }.create().show()
                         }
                     } else {
                         onCallFailed()

@@ -36,9 +36,6 @@ class AssessmentAdapter(
         holder.cardView.setCardBackgroundColor(if (position % 2 == 0) context?.let { ContextCompat.getColor(it,R.color.white) }!! else context?.let { ContextCompat.getColor(it,R.color.light_grey) }!!)
         holder.sl.text = (position + 1).toString()
         holder.name.text = m.assesment_name
-        holder.type.text = m.assesment_q_type
-        holder.centers.text = m.assesment_centers
-        holder.batces.text = m.assesment_batches
     }
 
     override fun getItemCount(): Int {
@@ -48,11 +45,7 @@ class AssessmentAdapter(
     inner class TVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var sl: TextView = itemView.sl
         var name: TextView = itemView.name
-        var type: TextView = itemView.type
-        var centers: TextView = itemView.centers
-        var batces: TextView = itemView.batches
         var cardView: MaterialCardView = itemView.root
-
         init {
             itemView.setOnClickListener { click.click(adapterPosition) }
         }

@@ -2,14 +2,16 @@ package orionedutech.`in`.lmstrainerapp.fragments
 
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import com.github.barteksc.pdfviewer.PDFView
 import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -18,11 +20,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.mLog
+import orionedutech.`in`.lmstrainerapp.mLog.TAG
 import orionedutech.`in`.lmstrainerapp.mToast
 import orionedutech.`in`.lmstrainerapp.network.downloader.MDownloader
 import java.io.*
+import orionedutech.`in`.lmstrainerapp.R
 
 
 /**
@@ -116,6 +119,17 @@ class PDFFragment : BaseFragment() {
                     .setMessage("The file has been copied to ${destinationFile.absolutePath}")
                     .setPositiveButton("Ok"){dialogInterface, i ->
                         dialogInterface.dismiss()
+                        val selectedUri: Uri =
+                            Uri.parse(destinationFile.absolutePath)
+                        val intent = Intent(Intent.ACTION_VIEW)
+                        intent.setDataAndType(selectedUri, "resource/folder")
+
+                        if (intent.resolveActivityInfo(activity!!.packageManager, 0) != null) {
+                            startActivity(intent)
+                        } else {mLog.i(TAG,"file browser error")
+                        }
+
+
                     }.create().show()
             }
 

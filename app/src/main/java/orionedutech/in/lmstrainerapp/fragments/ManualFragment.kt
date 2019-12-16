@@ -4,6 +4,9 @@ package orionedutech.`in`.lmstrainerapp.fragments
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.view.LayoutInflater
@@ -12,6 +15,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.airbnb.lottie.LottieAnimationView
@@ -31,6 +35,7 @@ import orionedutech.`in`.lmstrainerapp.interfaces.PDFDownloadComplete
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
 import orionedutech.`in`.lmstrainerapp.mToast
+import orionedutech.`in`.lmstrainerapp.mToast.showToast
 import orionedutech.`in`.lmstrainerapp.network.NetworkOps
 import orionedutech.`in`.lmstrainerapp.network.Urls
 import orionedutech.`in`.lmstrainerapp.network.downloader.MActions
@@ -274,7 +279,7 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
             val inp = FileInputStream(sourceFile)
             val out = FileOutputStream(destinationFile)
             withContext(Main){
-                mToast.showToast(context,"please wait")
+               showToast(context,"the pdf is being copied")
             }
             inp.copyTo(out){ current, _ ->
                 /*  percentage = ((current.toFloat()/totalBytes.toFloat())*100).toLong()
@@ -288,11 +293,40 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
                 true
             )
             activity?.runOnUiThread {
+                showToast(context,"copy complete")
                 MaterialAlertDialogBuilder(context).setTitle("Alert")
                     .setMessage("The file has been copied to ${destinationFile.absolutePath}")
-                    .setPositiveButton("Ok"){dialogInterface, i ->
+                    .setPositiveButton("dismiss"){dialogInterface, i ->
                         dialogInterface.dismiss()
-                    }.create().show()
+
+                    }/*.setNegativeButton("view"){dialogInterface, i ->
+                        dialogInterface.dismiss()
+                        val packageManager = activity!!.packageManager
+                        val testintent = Intent(Intent.ACTION_VIEW)
+                        testintent.type = "application/pdf"
+                        val list  = packageManager.queryIntentActivities(testintent,PackageManager.MATCH_DEFAULT_ONLY)
+                        if(list.size>0){
+                            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.N){
+                                val file  = File(destinationFile.path)
+                                val selectedUri: Uri = FileProvider.getUriForFile(context!!,"orionedutech.in.lmstrainerapp.fileprovider",file)
+                                val intent = Intent(Intent.ACTION_VIEW)
+                                intent.setDataAndType(selectedUri, "application/pdf")
+                                intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                startActivity(intent)
+                            }else{
+                                val selectedUri: Uri =
+                                    Uri.parse(destinationFile.absolutePath)
+                                val intent = Intent(Intent.ACTION_VIEW)
+                                intent.setDataAndType(selectedUri, "application/pdf")
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                startActivity(intent)
+                            }
+                        }else{
+                            showToast(context,"There is no pdf reader available")
+                        }
+
+
+                    }*/.create().show()
             }
 
 

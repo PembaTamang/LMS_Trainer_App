@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -97,6 +98,7 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
     var incorrectAnswers = 0
 
     lateinit var activityAnswerPref : SharedPreferences
+
     override fun answer(questionID: String, answerID: String) {
         lastAnswerID = answerID
         lastQuestionID = questionID
@@ -105,6 +107,10 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_trainer)
         heading = name
@@ -384,7 +390,7 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
             .setCancelable(false)
             .setView(dialogueView)
         val dialogue = builder.create()
-        val ok = dialogueView.button
+        val ok = dialogueView.button2
         ok.text = "ok"
         val dmessage = dialogueView.message
         val title = dialogueView.titlee
@@ -704,7 +710,7 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
                         .setCancelable(false)
                     val dialog = builder.create()
                     val message: TextView = dialogueView.message
-                    dialogueView.button.setOnClickListener {
+                    dialogueView.button2.setOnClickListener {
                         dialog.dismiss()
                         retries = 1
                         timer.cancel()

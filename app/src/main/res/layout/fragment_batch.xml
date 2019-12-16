@@ -84,7 +84,7 @@
 
     <TextView
         android:id="@+id/batch"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginEnd="1dp"
         android:background="@color/black"
@@ -110,6 +110,7 @@
         android:layout_marginEnd="8dp"
         android:background="@color/black"
         android:padding="4dp"
+        android:drawableEnd="@drawable/ascending"
         android:text="Course"
         android:textAlignment="textStart"
         android:textAppearance="@style/OpenSansSemiBold"

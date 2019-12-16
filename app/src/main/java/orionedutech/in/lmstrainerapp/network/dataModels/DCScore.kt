@@ -5,6 +5,6 @@ data class DCScore(
     val assesment_date: String,
     val assesment_id: String,
     val assesment_name: String,
-    val percentage: Int
+    val percentage: String
 )
 

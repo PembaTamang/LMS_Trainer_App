@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.graphics.PathEffect
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
@@ -14,6 +13,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.View.VISIBLE
+import android.view.WindowManager
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
@@ -25,7 +25,6 @@ import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.Lifecycle
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -34,7 +33,6 @@ import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import kotlinx.android.synthetic.main.fragment_parent.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
 import kotlinx.coroutines.launch
 import orionedutech.`in`.lmstrainerapp.R
@@ -49,7 +47,10 @@ import orionedutech.`in`.lmstrainerapp.fragments.course.CourseFragment
 import orionedutech.`in`.lmstrainerapp.fragments.feedback.FeedbackFragment
 import orionedutech.`in`.lmstrainerapp.fragments.profile.ParentFragment
 import orionedutech.`in`.lmstrainerapp.fragments.scoreCard.ScoreFragment
-import orionedutech.`in`.lmstrainerapp.interfaces.*
+import orionedutech.`in`.lmstrainerapp.interfaces.CaptureInterface
+import orionedutech.`in`.lmstrainerapp.interfaces.MoveNavBar
+import orionedutech.`in`.lmstrainerapp.interfaces.SetProfileImage
+import orionedutech.`in`.lmstrainerapp.interfaces.profilebooleantoggle
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
 import orionedutech.`in`.lmstrainerapp.showToast
@@ -83,6 +84,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         bottomNav = bottom_navigation
@@ -489,6 +494,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun setImage() {
     setProfileImage()
      }
+
+
 
 
 }

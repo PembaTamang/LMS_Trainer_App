@@ -8,8 +8,12 @@ import android.os.Environment
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView
@@ -54,6 +58,7 @@ class AssignmentFragment : BaseFragment(), RecyclerItemClick {
     private lateinit var adapter: AssignmentAdapter
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private var busy = false
+    lateinit var noDataText : TextView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,6 +70,7 @@ class AssignmentFragment : BaseFragment(), RecyclerItemClick {
         giveMarks = view.give_marks
         recyclerView = view.recycler
         swipeRefreshLayout = view.swipe
+        noDataText = view.noData
         view.upload.setOnClickListener {
             //upload code here
             moveToFragment(AssignmentUploadFragment())
@@ -250,6 +256,9 @@ class AssignmentFragment : BaseFragment(), RecyclerItemClick {
     }
 
     private fun getData() {
+        activity?.runOnUiThread {
+                noDataText.visibility = GONE
+        }
         launch {
             context?.let {
                 busy = true
@@ -283,7 +292,7 @@ class AssignmentFragment : BaseFragment(), RecyclerItemClick {
                             arrayList.clear()
                             arrayList.addAll(list)
                         } else {
-                            mToast.showToast(context, "no assignment found")
+                            mToast.showToast(context, "assignment data error")
                         }
                         if (activity == null){
                             return
@@ -293,7 +302,10 @@ class AssignmentFragment : BaseFragment(), RecyclerItemClick {
                             recyclerView.hideShimmerAdapter()
                             busy = false
                             if(noData){
-                                mToast.showToast(context, "no assignment found")
+                              noDataText.visibility = VISIBLE
+                            }else{
+                                noDataText.visibility = GONE
+
                             }
                         }
                     }

@@ -26,6 +26,7 @@
         android:layout_height="wrap_content"
         android:background="@null"
         android:paddingEnd="8dp"
+        android:visibility="gone"
         android:src="@drawable/ic_share"
         app:layout_constraintBottom_toBottomOf="@+id/pdfName"
         app:layout_constraintEnd_toEndOf="@+id/pdfName"

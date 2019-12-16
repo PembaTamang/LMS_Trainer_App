@@ -156,5 +156,16 @@
             app:shimmer_demo_child_count="20"
             app:shimmer_demo_layout="@layout/shimmer_assignment" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
+    <TextView
+        android:id="@+id/noData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No data to show"
+        android:drawablePadding="4dp"
+        android:drawableEnd="@drawable/ic_folder"
+        app:layout_constraintBottom_toBottomOf="@+id/swipe"
+        app:layout_constraintEnd_toEndOf="@+id/swipe"
+        app:layout_constraintStart_toStartOf="@+id/swipe"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@+id/swipe" />
 </androidx.constraintlayout.widget.ConstraintLayout>

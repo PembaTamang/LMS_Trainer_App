@@ -114,7 +114,7 @@ class ScoreListFragment : Fragment() {
                         rightans.text = String.format("Right Ans : %d ",correct)
                         dates.text = String.format("Start and End Date :  %s - %s",startDate,endDate)
                         progressBar.progress = percentage.toFloat()
-                        percentageTV.text = String.format(" %d %% ",percentage)
+                        percentageTV.text = percentage
                         adapter.notifyDataSetChanged()
                         recyclerView.hideShimmerAdapter()
                     }

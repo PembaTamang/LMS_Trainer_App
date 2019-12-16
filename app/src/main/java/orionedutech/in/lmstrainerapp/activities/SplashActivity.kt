@@ -3,6 +3,7 @@ package orionedutech.`in`.lmstrainerapp.activities
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import kotlinx.android.synthetic.main.activity_splash.*
 import kotlinx.coroutines.launch
 import orionedutech.`in`.lmstrainerapp.R
@@ -15,6 +16,10 @@ import java.io.IOException
 class SplashActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
         super.onCreate(savedInstanceState)
         window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
                 // Set the content to appear under the system bars so that the

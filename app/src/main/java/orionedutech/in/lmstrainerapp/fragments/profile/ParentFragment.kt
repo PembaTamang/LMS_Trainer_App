@@ -265,6 +265,7 @@ class ParentFragment : BaseFragment(), UCropFragmentCallback, flashtoggle.captur
 
                 val bmRotated = rotateBitmap(bitmap, orientation)!!
                 val file = File(path)
+
                 bmRotated.compress(Bitmap.CompressFormat.JPEG, 50, FileOutputStream(file))
                 //send file to crop activity
                 val path1 = context!!.filesDir.path + "/profile1.jpg"
@@ -351,7 +352,7 @@ class ParentFragment : BaseFragment(), UCropFragmentCallback, flashtoggle.captur
         try {
             val bmRotated =
                 Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-            bitmap.recycle()
+
             return bmRotated
         } catch (e: OutOfMemoryError) {
             e.printStackTrace()

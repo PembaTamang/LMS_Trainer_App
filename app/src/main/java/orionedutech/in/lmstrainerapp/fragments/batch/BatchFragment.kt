@@ -46,6 +46,7 @@ class BatchFragment : Fragment() {
     lateinit var createBatch: MaterialButton
     lateinit var batchName: TextView
     lateinit var batchCenter: TextView
+    lateinit var batchCourse : TextView
     lateinit var course: TextView
     lateinit var recyclerView: ShimmerRecyclerView
     lateinit var adapter: BatchAdapterAlt
@@ -62,6 +63,7 @@ class BatchFragment : Fragment() {
         createBatch = view.create_batch
         batchName = view.name
         batchCenter = view.batch
+        batchCourse = view.course
         course = view.course
         recyclerView = view.recycler
         refresh = view.swipe
@@ -70,18 +72,18 @@ class BatchFragment : Fragment() {
         recyclerView.adapter = adapter
 
 
-        val ascendingName =
+        val ascending =
             context?.let { ContextCompat.getDrawable(it, R.drawable.animated_ascending) }
-        val descendingName =
+        val descending =
             context?.let { ContextCompat.getDrawable(it, R.drawable.animated_descending) }
         val ascendingNames = AtomicBoolean(true)
 
         batchName.setOnClickListener {
             if (ascendingNames.get()) {
                 val animator =
-                    ObjectAnimator.ofInt(ascendingName, "level", 0, 10000).setDuration(500)
+                    ObjectAnimator.ofInt(ascending, "level", 0, 10000).setDuration(500)
                 animator.start()
-                batchName.setCompoundDrawablesWithIntrinsicBounds(null, null, ascendingName, null)
+                batchName.setCompoundDrawablesWithIntrinsicBounds(null, null, ascending, null)
                 ascendingNames.set(false)
                 //sort by descending names
                 CoroutineScope(IO).launch {
@@ -96,9 +98,9 @@ class BatchFragment : Fragment() {
                 }
             } else {
                 val animator =
-                    ObjectAnimator.ofInt(descendingName, "level", 0, 10000).setDuration(500)
+                    ObjectAnimator.ofInt(descending, "level", 0, 10000).setDuration(500)
                 animator.start()
-                batchName.setCompoundDrawablesWithIntrinsicBounds(null, null, descendingName, null)
+                batchName.setCompoundDrawablesWithIntrinsicBounds(null, null, descending, null)
                 ascendingNames.set(true)
                 //sort by ascending names
                 CoroutineScope(IO).launch {
@@ -114,20 +116,17 @@ class BatchFragment : Fragment() {
             }
         }
 
-        val ascendingCenter =
-            context?.let { ContextCompat.getDrawable(it, R.drawable.animated_ascending) }
-        val descendingCenter =
-            context?.let { ContextCompat.getDrawable(it, R.drawable.animated_descending) }
+
         val ascendingCenters = AtomicBoolean(true)
         batchCenter.setOnClickListener {
             if (ascendingCenters.get()) {
                 val animator =
-                    ObjectAnimator.ofInt(ascendingCenter, "level", 0, 10000).setDuration(500)
+                    ObjectAnimator.ofInt(ascending, "level", 0, 10000).setDuration(500)
                 animator.start()
                 batchCenter.setCompoundDrawablesWithIntrinsicBounds(
                     null,
                     null,
-                    ascendingCenter,
+                    ascending,
                     null
                 )
                 ascendingCenters.set(false)
@@ -144,12 +143,12 @@ class BatchFragment : Fragment() {
                 }
             } else {
                 val animator =
-                    ObjectAnimator.ofInt(descendingCenter, "level", 0, 10000).setDuration(500)
+                    ObjectAnimator.ofInt(descending, "level", 0, 10000).setDuration(500)
                 animator.start()
                 batchCenter.setCompoundDrawablesWithIntrinsicBounds(
                     null,
                     null,
-                    descendingCenter,
+                    descending,
                     null
                 )
                 ascendingCenters.set(true)
@@ -167,6 +166,57 @@ class BatchFragment : Fragment() {
             }
         }
 
+
+
+
+        val ascendingCourses = AtomicBoolean(true)
+        batchCourse.setOnClickListener {
+            if (ascendingCourses.get()) {
+                val animator =
+                    ObjectAnimator.ofInt(ascending, "level", 0, 10000).setDuration(500)
+                animator.start()
+                batchCourse.setCompoundDrawablesWithIntrinsicBounds(
+                    null,
+                    null,
+                    ascending,
+                    null
+                )
+                ascendingCourses.set(false)
+                //sort by descending centers
+                CoroutineScope(IO).launch {
+                    val templist =
+                        arrayList.sortedWith(compareByDescending(DCBatchesLong::courses_wbt))
+                    arrayList.clear()
+                    arrayList.addAll(templist)
+                    withContext(Main) {
+                        // notifydatasetchanged()
+                        adapter.notifyDataSetChanged()
+                    }
+                }
+            } else {
+                val animator =
+                    ObjectAnimator.ofInt(descending, "level", 0, 10000).setDuration(500)
+                animator.start()
+                batchCourse.setCompoundDrawablesWithIntrinsicBounds(
+                    null,
+                    null,
+                    descending,
+                    null
+                )
+                ascendingCourses.set(true)
+                //sort by ascending centers
+                CoroutineScope(IO).launch {
+                    val templist = arrayList.sortedWith(compareBy(DCBatchesLong::courses_wbt))
+                    arrayList.clear()
+                    arrayList.addAll(templist)
+                    withContext(Main) {
+                        // notifydatasetchanged()
+                        adapter.notifyDataSetChanged()
+                    }
+                }
+
+            }
+        }
 
         createBatch.setOnClickListener {
             moveToFragment(BatchCreationFragment())
@@ -188,10 +238,12 @@ class BatchFragment : Fragment() {
         CoroutineScope(IO).launch {
             context?.let {
                 val userDao = MDatabase(it).getUserDao()
-                uid = userDao.getAdminID()
+                uid = userDao.getUserID()
+                val batches = userDao.getBatchID()
                 centerID = userDao.getCenterID()
                 val json = JSONObject()
-                json.put("admin_id", uid)
+                json.put("trainer_id", uid)
+                json.put("batch_id",batches)
                 getBatches(json.toString())
             }
         }

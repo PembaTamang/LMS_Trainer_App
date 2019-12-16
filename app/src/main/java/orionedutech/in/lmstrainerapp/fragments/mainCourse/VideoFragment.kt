@@ -8,7 +8,6 @@ import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,8 +16,10 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.airbnb.lottie.LottieAnimationView
-import com.airbnb.lottie.animation.content.Content
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -28,16 +29,16 @@ import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.android.synthetic.main.custom_player_layout.view.*
-import kotlinx.android.synthetic.main.fragment_trainer_assessment_upload.*
 import kotlinx.android.synthetic.main.fragment_video.view.*
 import org.json.JSONObject
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.activities.TrainerActivity
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
-import orionedutech.`in`.lmstrainerapp.mToast
 import orionedutech.`in`.lmstrainerapp.mToast.showToast
+import orionedutech.`in`.lmstrainerapp.network.*
 import java.util.*
 import kotlin.concurrent.fixedRateTimer
 
@@ -66,6 +67,7 @@ class VideoFragment : Fragment() {
     lateinit var startActivity: MaterialButton
     var full = false
     var isTimerRunning = false
+    var ended = false
     private lateinit var fullscreendialog: Dialog
     lateinit var fullScreenPlayerView : PlayerView
     lateinit var videoPref : SharedPreferences
@@ -76,9 +78,11 @@ class VideoFragment : Fragment() {
     var courseID = ""
     var storageID = " "
     var moduleID = ""
+    var unitID = ""
+    var subUnitID = ""
     var startTime : Long = 0L
-
     var once = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -102,11 +106,10 @@ class VideoFragment : Fragment() {
         courseID = bundle.getString("course_id")!!
         storageID = bundle.getString("storage_id")!!
         moduleID = bundle.getString("module_id")!!
-
-         mLog.i(TAG, " dasfasdf $mediaUrl")
-        mediaUrl = "https://orionedutech.co.in/cglms1/uploads/courses/units/lessons/6CMTdz7txu.mp4"
-
-
+        unitID = bundle.getString("unit_id")!!
+        subUnitID = bundle.getString("subunit_id")!!
+         mLog.i(TAG, " $mediaUrl")
+        mediaUrl = "https://orionedutech.co.in/cglms_real/uploads/courses/units/lessons/6CMTdz7txu.mp4"
         videoPref = activity!!.getSharedPreferences("videoPref", Context.MODE_PRIVATE)
 
         controls = view.controlview
@@ -167,8 +170,7 @@ class VideoFragment : Fragment() {
                             super.onBackPressed()
                         }
                     }
-                //todo uncomment later
-                //fullScreenPlayerView.setControlDispatcher(PositionLimitingControlDispatcher())
+                fullScreenPlayerView.setControlDispatcher(PositionLimitingControlDispatcher())
                 fullvideoContainer.addView(fullScreenPlayerView)
                 fullscreendialog.addContentView(
                     fullvideoContainer,
@@ -205,7 +207,7 @@ class VideoFragment : Fragment() {
 
         player.playWhenReady = playWhenReady
         //todo uncomment later
-        controls.setControlDispatcher(PositionLimitingControlDispatcher())
+       // controls.setControlDispatcher(PositionLimitingControlDispatcher())
         player.prepare(mediaSource, false, false)
 
 
@@ -254,23 +256,31 @@ class VideoFragment : Fragment() {
 
     private fun sendUsageData() {
         val json = JSONObject()
-
         json.put("training_id",trainingID)
         json.put("user_id",trainerID)
         json.put("user_type","3")
         json.put("center_id",centerID)
         json.put("batch_id",batchID)
-        json.put("current_cource_id",courseID)
+        json.put("current_course_id",courseID)
         json.put("current_chapter_id",chapterid)
         json.put("current_storage_id",storageID)
         json.put("module_id",moduleID)
-        json.put("media_seek",player.contentPosition*1000)
-        json.put("media_seek_remain",(player.duration - player.currentPosition)*1000)
-        json.put("media_duration",(System.currentTimeMillis() - startTime)*1000)
-        json.put("is_book_marked","1")
+        json.put("media_seek",player.contentPosition/1000)
+        json.put("media_seek_remain",(player.duration - player.currentPosition)/1000)
+        json.put("media_duration",player.duration/1000)
+        json.put("is_book_marked", !ended)
+        json.put("current_unit_id",unitID)
+        json.put("current_sub_unit_id",subUnitID)
         json.put("media_type","2")
 
-        mLog.i(TAG,"json val $json")
+        val builder = Data.Builder()
+        builder.putString("json", json.toString())
+        val dataRequest = OneTimeWorkRequestBuilder<UsageData>()
+            .setInputData(builder.build())
+            .build()
+        val workManager = WorkManager.getInstance(context!!)
+        workManager.enqueue(dataRequest)
+
     }
 
     override fun onPause() {
@@ -332,8 +342,14 @@ class VideoFragment : Fragment() {
                     errorString = "unexpected"
                 }
             }
-            showToast(context, "$errorString has occurred")
-
+           MaterialAlertDialogBuilder(context).setTitle("An error has occured")
+               .setMessage("Error details : $errorString")
+               .setCancelable(false)
+               .setPositiveButton("Go back"){
+                   dialogInterface, i ->
+                   dialogInterface.dismiss()
+                   activity!!.onBackPressed()
+               }.create().show()
         }
 
         override fun onPlayerStateChanged(
@@ -375,6 +391,8 @@ class VideoFragment : Fragment() {
                     buffering.visibility = View.INVISIBLE
                     buffering.cancelAnimation()
                     startActivity.isEnabled = true
+                    ended  = true
+
                 }
                 else -> stateString = "UNKNOWN_STATE             -"
             }

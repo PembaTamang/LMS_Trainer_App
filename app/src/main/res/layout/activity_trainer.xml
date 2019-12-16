@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     tools:context=".activities.AssessmentActivity">
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -39,9 +40,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginStart="8dp"
-                android:text="Trainer Activity"
-                android:maxLines="1"
                 android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Trainer Activity"
                 android:textAppearance="@style/Baloo"
                 android:textColor="@color/white"
                 android:textSize="18sp"
@@ -58,9 +59,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Activity Name"
+        android:textAppearance="@style/Baloo"
         android:textSize="18sp"
         android:visibility="gone"
-        android:textAppearance="@style/Baloo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
@@ -91,19 +92,23 @@
         android:id="@+id/topstatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:text="Please wait"
         android:textAlignment="center"
         android:textAppearance="@style/OpenSansRegular"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/lottie"
-        app:layout_constraintEnd_toEndOf="@+id/easyCountDownTextview"
-        app:layout_constraintStart_toStartOf="@+id/easyCountDownTextview" />
+        app:layout_constraintEnd_toEndOf="@+id/trainerAcitivityContainer"
+        app:layout_constraintStart_toStartOf="@+id/trainerAcitivityContainer" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toBottomOf="@+id/trainerAcitivityContainer"
         app:layout_constraintEnd_toEndOf="@+id/trainerAcitivityContainer"
         app:layout_constraintStart_toStartOf="@+id/trainerAcitivityContainer"
@@ -118,11 +123,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Checking for questions..."
-        android:textSize="16sp"
         android:textAppearance="@style/OpenSansRegular"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="@+id/lottie"
         app:layout_constraintStart_toStartOf="@+id/lottie"
         app:layout_constraintTop_toBottomOf="@+id/lottie" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/next"
         android:layout_width="wrap_content"
@@ -130,15 +136,15 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:backgroundTint="@color/blue"
-        android:text="Start"
-        android:visibility="gone"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
         android:paddingStart="16dp"
+        android:paddingTop="8dp"
         android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
+        android:text="Start"
         android:textAppearance="@style/Baloo"
         android:textColor="@color/white"
         android:textSize="16sp"
+        android:visibility="gone"
         app:cornerRadius="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -150,10 +156,10 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
         android:text="Activity      :"
-        android:textSize="16sp"
-        android:visibility="gone"
         android:textAppearance="@style/OpenSansRegular"
+        android:textSize="16sp"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/textView14"
         app:layout_constraintTop_toBottomOf="@+id/name" />
 
@@ -163,10 +169,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="Questions :"
-        android:visibility="gone"
-        android:textSize="16sp"
         android:textAppearance="@style/OpenSansRegular"
+        android:textSize="16sp"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/textView17"
         app:layout_constraintStart_toStartOf="@+id/textView17"
         app:layout_constraintTop_toBottomOf="@+id/textView17" />
@@ -177,10 +183,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="1/10"
-        android:visibility="gone"
-        android:textSize="16sp"
         android:textAppearance="@style/OpenSansRegular"
+        android:textSize="16sp"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/textView14"
         app:layout_constraintStart_toStartOf="@+id/textView14"
         app:layout_constraintTop_toBottomOf="@+id/textView14" />
@@ -191,10 +197,10 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:text="2/10"
-        android:visibility="gone"
-        android:textSize="16sp"
         android:textAppearance="@style/OpenSansRegular"
+        android:textSize="16sp"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView17" />
 </androidx.constraintlayout.widget.ConstraintLayout>

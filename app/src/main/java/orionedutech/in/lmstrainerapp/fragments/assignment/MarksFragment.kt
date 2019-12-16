@@ -2,14 +2,12 @@ package orionedutech.`in`.lmstrainerapp.fragments.assignment
 
 
 import android.os.Bundle
-import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.INVISIBLE
-import android.view.View.VISIBLE
+import android.view.View.*
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.AdapterView
@@ -17,6 +15,8 @@ import android.widget.EditText
 import android.widget.Spinner
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_marks.view.*
 import kotlinx.coroutines.CoroutineScope
@@ -37,7 +37,6 @@ import orionedutech.`in`.lmstrainerapp.mToast
 import orionedutech.`in`.lmstrainerapp.network.NetworkOps
 import orionedutech.`in`.lmstrainerapp.network.Urls
 import orionedutech.`in`.lmstrainerapp.network.dataModels.*
-import orionedutech.`in`.lmstrainerapp.network.progress
 import orionedutech.`in`.lmstrainerapp.network.response
 
 
@@ -54,7 +53,7 @@ class MarksFragment : Fragment() {
     lateinit var totalMarksET: EditText
     lateinit var studentMarksET: EditText
     lateinit var submit: MaterialButton
-    lateinit var progress: LottieAnimationView
+    lateinit var animation: LottieAnimationView
 
     var batchListSpinner = ArrayList<Batch>()
     lateinit var batchAdapter: BatchSpinAdapter
@@ -71,6 +70,12 @@ class MarksFragment : Fragment() {
     var studentMarks = ""
     var totalMarks = ""
     var trainerID = ""
+
+    lateinit var studentListContainer : MaterialCardView
+    lateinit var assignmentContainer : MaterialCardView
+    lateinit var studentContainer : MaterialCardView
+    lateinit var totalContainer : MaterialCardView
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -85,7 +90,11 @@ class MarksFragment : Fragment() {
         totalMarksET = view.total_marks
         studentMarksET = view.student_marks
         submit = view.submit
-        progress = view.anim
+        animation = view.anim
+        studentListContainer  = view.materialCardView2
+        assignmentContainer = view.materialCardView8
+        totalContainer = view.materialCardView10
+        studentContainer = view.materialCardView9
 
         batchAdapter = BatchSpinAdapter(
             context!!,
@@ -192,11 +201,15 @@ class MarksFragment : Fragment() {
             }
 
             showAnimation()
+
             if(activity==null){
                 return@setOnClickListener
             }
             activity!!.runOnUiThread {
-
+                batchSpinner.isEnabled =false
+                studentSpinner.isEnabled=false
+                assignmentSpinner.isEnabled=false
+                submit.isEnabled  = false
                 totalMarksET.isEnabled = false
                 studentMarksET.isEnabled = false
 
@@ -234,13 +247,25 @@ class MarksFragment : Fragment() {
                                     context,
                                     "marks added successfully"
                                 )
-                                    activity!!.supportFragmentManager.popBackStack()
+                                   MaterialAlertDialogBuilder(context).setTitle("Marks uploaded successfully")
+                                       .setMessage("Press ok to go back")
+                                       .setPositiveButton("ok"){
+                                           dialogInterface, i ->
+                                           dialogInterface.dismiss()
+                                           activity!!.supportFragmentManager.popBackStack()
+                                       }.create().show()
                                 }
 
                                 "1" -> {
                                     mToast.showToast(context, "marks already added.")
-                                    totalMarksET.isEnabled = true
-                                    studentMarksET.isEnabled = true
+                                    activity!!.runOnUiThread {
+                                        submit.isEnabled = true
+                                        totalMarksET.isEnabled = true
+                                        studentMarksET.isEnabled = true
+                                        batchSpinner.isEnabled =true
+                                        studentSpinner.isEnabled=true
+                                        assignmentSpinner.isEnabled=true
+                                    }
                                     hideAnimation()
                                 }
 
@@ -294,6 +319,15 @@ class MarksFragment : Fragment() {
     }
 
     private fun getAssignmentData(batchID: String, studentID: String) {
+        activity!!.runOnUiThread {
+            assignmentContainer.visibility = GONE
+            totalContainer.visibility =GONE
+            studentContainer.visibility=GONE
+            totalMarksET.setText("")
+            studentMarksET.setText("")
+            submit.isEnabled = false
+        }
+
         showAnimation()
         val json = JSONObject()
         json.put("batch", batchID)
@@ -331,12 +365,17 @@ class MarksFragment : Fragment() {
                         val assignmentList = assignmentData.assignments
 
                         if (assignmentList.isNotEmpty()) {
+
                             assignmentSpinnerList.clear()
                             assignmentSpinnerList.addAll(assignmentList)
                             if(activity==null){
                                 return
                             }
                             activity!!.runOnUiThread {
+                                assignmentContainer.visibility = VISIBLE
+                                studentContainer.visibility = VISIBLE
+                                totalContainer.visibility = VISIBLE
+                                submit.isEnabled = true
                                 assignmentAdapter.notifyDataSetChanged()
                                 hideAnimation()
                             }
@@ -368,6 +407,16 @@ class MarksFragment : Fragment() {
     }
 
     private fun getStudentData(batchID: String) {
+        // hide all views
+      activity!!.runOnUiThread {
+          studentListContainer.visibility = GONE
+          assignmentContainer.visibility = GONE
+          totalContainer.visibility =GONE
+          studentContainer.visibility=GONE
+          submit.isEnabled = false
+          totalMarksET.setText("")
+          studentMarksET.setText("")
+      }
         showAnimation()
         selectedStudentID = ""
         val json = JSONObject()
@@ -394,6 +443,9 @@ class MarksFragment : Fragment() {
                         return
                     }
                     activity!!.runOnUiThread {
+                       studentListContainer.visibility = VISIBLE
+                        hideAnimation()
+                        studentSpinner.isEnabled = true
                         studentAdapter.notifyDataSetChanged()
                     }
                 } else {
@@ -431,9 +483,8 @@ class MarksFragment : Fragment() {
             return
         }
         activity!!.runOnUiThread {
-            submit.text = " "
-            progress.visibility = VISIBLE
-            progress.playAnimation()
+            animation.visibility = VISIBLE
+            animation.playAnimation()
         }
     }
 
@@ -442,9 +493,8 @@ class MarksFragment : Fragment() {
             return
         }
         activity!!.runOnUiThread {
-            submit.text = "Give Marks"
-            progress.visibility = INVISIBLE
-            progress.cancelAnimation()
+            animation.visibility = INVISIBLE
+            animation.cancelAnimation()
         }
     }
 }

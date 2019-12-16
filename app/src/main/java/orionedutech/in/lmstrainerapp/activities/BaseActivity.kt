@@ -1,6 +1,7 @@
 package orionedutech.`in`.lmstrainerapp.activities
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,6 +15,7 @@ abstract class BaseActivity : AppCompatActivity(),CoroutineScope{
      get() = Dispatchers.Main + job
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         job = Job()
     }

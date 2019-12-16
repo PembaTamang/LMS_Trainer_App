@@ -161,7 +161,7 @@ class DashFragment : BaseFragment() {
                             }
                             activity!!.runOnUiThread {
                                 courseCount.text = String.format(" %d COURSE(S)", dash.total_courses)
-                                batchCount.text = String.format("%d BATCHE(S",dash.total_batches)
+                                batchCount.text = String.format("%d BATCHE(S)",dash.total_batches)
                                 studentCount.text = String.format("%d STUDENT(S)",dash.total_students)
                                 dashPref.edit().putInt("student",dash.total_students)
                                     .putInt("course",dash.total_courses)

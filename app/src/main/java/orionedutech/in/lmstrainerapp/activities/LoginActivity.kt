@@ -8,6 +8,7 @@ import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.Toast
 
@@ -37,6 +38,10 @@ class LoginActivity : BaseActivity() {
     private var passwordText: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         email = findViewById(R.id.editText)
@@ -54,13 +59,13 @@ class LoginActivity : BaseActivity() {
         )!!
         notOk.setBounds(0, 0, ok.intrinsicWidth, ok.intrinsicHeight)
 
-        if (BuildConfig.DEBUG) {
+      /*  if (BuildConfig.DEBUG) {
             email.setText(getString(R.string.demo_user))
             password.setText(getString(R.string.demo_user_pass))
             emailText = (getString(R.string.demo_user))
             passwordText = (getString(R.string.demo_user_pass))
 
-        }
+        }*/
 
         email.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
@@ -98,9 +103,13 @@ class LoginActivity : BaseActivity() {
         login.setOnClickListener {
             if (!TextUtils.isEmpty(emailText) && !TextUtils.isEmpty(passwordText)) {
                 //login
+                if(passwordText.length>=0){
                loginUser(emailText, passwordText)
+                }else{
+                    showToast("password should be min 6 characters")
+                }
             } else {
-                Toast.makeText(this, "please fill both fields", Toast.LENGTH_SHORT).show()
+                showToast("Please fill both fields")
             }
         }
     }

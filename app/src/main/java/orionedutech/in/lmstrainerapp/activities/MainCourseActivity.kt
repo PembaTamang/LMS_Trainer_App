@@ -1,6 +1,7 @@
 package orionedutech.`in`.lmstrainerapp.activities
 
 import android.os.Bundle
+import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
@@ -12,7 +13,7 @@ import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
 
 
-class MainCourseActivity : AppCompatActivity() {
+class MainCourseActivity : AppCompatActivity(){
     var trainerID = ""
     var batchID = ""
     var courseID = ""
@@ -30,6 +31,10 @@ class MainCourseActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_course)
 
@@ -49,7 +54,7 @@ class MainCourseActivity : AppCompatActivity() {
         courseName = intent.getStringExtra("course_name")!!
         centerID = intent.getStringExtra("center_id")!!
         courseNameTV.text = courseName
-        mLog.i(TAG, "chapter type : $chapterType")
+        mLog.i(TAG, "chapter type : $unitID $subUnitID")
         when (chapterType) {
             "1" -> {
                 val fragment = ChapterFragment()
@@ -62,6 +67,8 @@ class MainCourseActivity : AppCompatActivity() {
                 bundle.putString("chapterID", chapterID)
                 bundle.putString("batchID", batchID)
                 bundle.putString("center_id",centerID)
+                bundle.putString("unit_id",unitID)
+                bundle.putString("subunit_id",subUnitID)
                 bundle.putString("type", "1")
                 fragment.arguments = bundle
                 ft = supportFragmentManager.beginTransaction()
@@ -80,6 +87,8 @@ class MainCourseActivity : AppCompatActivity() {
                 bundle.putString("chapterID", chapterID)
                 bundle.putString("batchID", batchID)
                 bundle.putString("center_id",centerID)
+                bundle.putString("unit_id",unitID)
+                bundle.putString("subunit_id",subUnitID)
                 bundle.putString("type", "2")
                 fragment.arguments = bundle
                 ft = supportFragmentManager.beginTransaction()
@@ -121,5 +130,6 @@ class MainCourseActivity : AppCompatActivity() {
         super.finish()
         overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right)
     }
+
 
 }
