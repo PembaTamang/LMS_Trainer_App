@@ -90,7 +90,6 @@ class ParentFragment : BaseFragment(), UCropFragmentCallback, flashtoggle.captur
     lateinit var img: File
     lateinit var img1: File
     lateinit var name: TextView
-    lateinit var userID: TextView
     lateinit var profilePref: SharedPreferences
     lateinit var barPreferences: SharedPreferences
     private val REQUEST_CAPTURE_IMAGE = 100
@@ -136,16 +135,14 @@ class ParentFragment : BaseFragment(), UCropFragmentCallback, flashtoggle.captur
             return@setOnLongClickListener true
         }
         name = view.name
-        userID = view.user_id
+
         flashtoggle.theRealInstance.setListener(this)
         launch {
             context?.let {
                 val dao = MDatabase(it).getUserDao()
                 val naam = dao.getadminName()
-                val id = dao.getAdminID()
                 withContext(Main) {
                     name.text = naam
-                    userID.text = String.format("ID : $id")
                 }
             }
         }

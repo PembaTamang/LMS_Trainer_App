@@ -27,7 +27,8 @@ class UsageData(ctx: Context, params: WorkerParameters) : Worker(ctx,params) {
             override fun onrespose(string: String?) {
                 mLog.i(TAG,"response : $string")
                if(string.isNullOrEmpty()){
-                   mLog.i(TAG,"error in sending data")
+                   mLog.i(TAG,"error in usage url")
+                   cl.countDown()
                    return
                }
                 val json = JSONObject(string)

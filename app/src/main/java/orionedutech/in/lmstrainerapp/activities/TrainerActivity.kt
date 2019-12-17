@@ -162,7 +162,7 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
                         questionIndex += 1
 
                     } else {
-                        if (lastAnswerID == "") {
+
                             if (newActivity) {
                                 newActivity = false
                                 //first question for another activity
@@ -172,12 +172,14 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
                                     questionIndex
                                 )
                                 questionIndex += 1
-
                                 return@setOnClickListener
                             }
+
+                        if (lastAnswerID == "") {
                             mToast.showToast(this, "please choose an answer")
                             return@setOnClickListener
                         }
+
 
                         processAnswer(false)
 
@@ -273,32 +275,6 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
       //  var snackbar: Snackbar? = null
         when (ans) {
             "Thikai cha" -> {
-             /*   snackbar = Snackbar.make(snackAnchor,"Correct Answer", Snackbar.LENGTH_SHORT)
-                snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.green))
-                snackbar.addCallback(object : Snackbar.Callback() {
-                    @Override
-                    override fun onDismissed(snackbar: Snackbar, event: Int) {
-                        if (event == DISMISS_EVENT_TIMEOUT) {
-
-                            if (activityIndex < activityIDS.size) {
-                                if (!isLast) {
-                                    changeFragment(
-                                        activityIDS[activityIndex],
-                                        activityQuestionsID[questionIndex],
-                                        questionIndex
-                                    )
-                                    questionIndex += 1
-
-                                } else {
-                                    showQuestionsOverAlert()
-                                }
-
-                            }
-                        }
-                    }
-                })
-                snackbar.show()*/
-
 
                 val dialogueView = LayoutInflater.from(this)
                     .inflate(R.layout.right_answer_alert, null, false)
@@ -413,7 +389,6 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
 
             mainJson.put(activitylistContainer)
             questionList = JSONArray()
-            activityOver = false
 
             lastAnswerID = ""
             lastQuestionID = ""

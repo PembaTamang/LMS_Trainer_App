@@ -109,7 +109,7 @@ class VideoFragment : Fragment() {
         unitID = bundle.getString("unit_id")!!
         subUnitID = bundle.getString("subunit_id")!!
          mLog.i(TAG, " $mediaUrl")
-        mediaUrl = "https://orionedutech.co.in/cglms_real/uploads/courses/units/lessons/6CMTdz7txu.mp4"
+       // mediaUrl = "https://orionedutech.co.in/cglms_real/uploads/courses/units/lessons/6CMTdz7txu.mp4"
         videoPref = activity!!.getSharedPreferences("videoPref", Context.MODE_PRIVATE)
 
         controls = view.controlview

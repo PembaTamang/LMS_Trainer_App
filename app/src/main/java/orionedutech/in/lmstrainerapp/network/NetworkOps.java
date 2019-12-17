@@ -32,7 +32,7 @@ import static orionedutech.in.lmstrainerapp.MUtilsKt.showToast;
 import static orionedutech.in.lmstrainerapp.MUtilsKt.isConnected;
 
 public class NetworkOps {
-    public static void get(String url, final response resp, final Context context, final View view) {
+    public static void get(String url, final Context context, final response resp) {
         if(isConnected(context)){
         OkHttpClient client = new OkHttpClient();
           Request request = new Request.Builder()
@@ -56,7 +56,6 @@ public class NetworkOps {
             }
         });
     }else{
-
          resp.onInternetfailure();
         }
     }

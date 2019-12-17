@@ -57,15 +57,7 @@
             app:layout_constraintStart_toStartOf="@+id/circularImageView"
             app:layout_constraintTop_toBottomOf="@+id/circularImageView" />
 
-        <TextView
-            android:id="@+id/user_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="user id"
-            android:textColor="@color/white"
-            app:layout_constraintEnd_toEndOf="@+id/name"
-            app:layout_constraintStart_toStartOf="@+id/name"
-            app:layout_constraintTop_toBottomOf="@+id/name" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -73,6 +65,7 @@
         android:id="@+id/imageView9"
         android:layout_width="0dp"
         android:layout_height="200dp"
+        android:layout_marginTop="8dp"
         android:scaleType="fitXY"
         android:scaleX="1.2"
         android:src="@drawable/ic_semicircle"

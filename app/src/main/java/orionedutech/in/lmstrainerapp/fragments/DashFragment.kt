@@ -109,9 +109,9 @@ class DashFragment : BaseFragment() {
             mLog.i(TAG,"getting data")
             getDashboardData()
         }else{
-           courseCount.text = String.format(" %d COURSE(S)", dashPref.getInt("course",0))
-           batchCount.text = String.format("%d BATCHE(S)", dashPref.getInt("batch",0))
-           studentCount.text = String.format("%d STUDENT(S)", dashPref.getInt("student",0))
+           courseCount.text = if( dashPref.getInt("course",0)>1) String.format(" %d COURSES", dashPref.getInt("course",0)) else String.format(" %d COURSE", dashPref.getInt("course",0))
+           batchCount.text =  if(dashPref.getInt("batch",0)>1) String.format("%d BATCHES",dashPref.getInt("batch",0)) else String.format("%d BATCH",dashPref.getInt("batch",0))
+           studentCount.text = if(dashPref.getInt("student",0)>1) String.format("%d STUDENTS", dashPref.getInt("student",0)) else String.format("%d STUDENT", dashPref.getInt("student",0))
             name.text = dashPref.getString("name","error")
             String.format("%02d", 10)
             CoroutineScope(IO).launch {
@@ -160,9 +160,9 @@ class DashFragment : BaseFragment() {
                                 return
                             }
                             activity!!.runOnUiThread {
-                                courseCount.text = String.format(" %d COURSE(S)", dash.total_courses)
-                                batchCount.text = String.format("%d BATCHE(S)",dash.total_batches)
-                                studentCount.text = String.format("%d STUDENT(S)",dash.total_students)
+                                courseCount.text = if(dash.total_courses>1) String.format(" %d COURSES", dash.total_courses) else String.format(" %d COURSE", dash.total_courses)
+                                batchCount.text = if(dash.total_batches>1) String.format("%d BATCHES",dash.total_batches) else String.format("%d BATCH",dash.total_batches)
+                                studentCount.text = if(dash.total_students>1) String.format("%d STUDENTS",dash.total_students) else String.format("%d STUDENT",dash.total_students)
                                 dashPref.edit().putInt("student",dash.total_students)
                                     .putInt("course",dash.total_courses)
                                     .putInt("batch",dash.total_batches)

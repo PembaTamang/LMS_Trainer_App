@@ -103,7 +103,7 @@ class LoginActivity : BaseActivity() {
         login.setOnClickListener {
             if (!TextUtils.isEmpty(emailText) && !TextUtils.isEmpty(passwordText)) {
                 //login
-                if(passwordText.length>=0){
+                if(passwordText.length>=6){
                loginUser(emailText, passwordText)
                 }else{
                     showToast("password should be min 6 characters")

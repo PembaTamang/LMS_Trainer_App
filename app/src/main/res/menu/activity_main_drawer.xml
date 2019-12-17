@@ -41,7 +41,7 @@
         <item
             android:id="@+id/logout"
             android:icon="@drawable/ic_logout_sidemenu"
-            android:title="Log Out (Version 1.0)"/>
+            android:title="Log Out"/>
     </group>
 
 
