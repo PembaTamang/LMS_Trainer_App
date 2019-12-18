@@ -20,8 +20,8 @@ interface ActivityAnswerDao {
         ins(activity)
     }
 
-    @Query(" select * from activity_answers where question_id = :qid ")
-    suspend fun getAllAnswers(qid: String) :List<ActivityAnswers>
+    @Query(" select * from activity_answers where question_id = :qid and activity_id =:aid  ")
+    suspend fun getAllAnswers(qid: String,aid:String) :List<ActivityAnswers>
 
     @Query("select answer_right_wrong from activity_answers where question_id = :qid and question_ans_id =:aid")
     suspend fun getAnswerValue(qid: String,aid : String) : String

@@ -10,6 +10,7 @@ import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.github.barteksc.pdfviewer.PDFView
@@ -20,12 +21,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
 import orionedutech.`in`.lmstrainerapp.mToast
 import orionedutech.`in`.lmstrainerapp.network.downloader.MDownloader
 import java.io.*
-import orionedutech.`in`.lmstrainerapp.R
 
 
 /**
@@ -45,6 +46,11 @@ class PDFFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        // Inflate the layout for this fragment
+        activity!!.window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
         val view = inflater.inflate(R.layout.fragment_pdf, container, false)
         name = view.pdfName
         pdfView = view.pdfView
@@ -89,9 +95,10 @@ class PDFFragment : BaseFragment() {
         return view
     }
 
-    override fun onStop() {
+    override fun onDestroy() {
+        super.onDestroy()
         pdfPref.edit().putInt(path, currentPage).apply()
-        super.onStop()
+        activity!!.window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
     }
 
     private suspend fun copyToExternalStorage(path:String) {

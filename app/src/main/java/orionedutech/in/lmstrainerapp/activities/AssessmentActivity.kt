@@ -10,7 +10,9 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.setMargins
 import androidx.fragment.app.FragmentTransaction
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.button.MaterialButton
@@ -27,6 +29,7 @@ import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.database.MDatabase
 import orionedutech.`in`.lmstrainerapp.database.entities.AssesmentQuestion
 import orionedutech.`in`.lmstrainerapp.fragments.assessmentquestionTypes.AssessmentMCQFragment
+import orionedutech.`in`.lmstrainerapp.fragments.scoreCard.ScoreListFragment
 import orionedutech.`in`.lmstrainerapp.interfaces.AssessmentAnswer
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
@@ -61,7 +64,7 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
     lateinit var button: MaterialButton
     lateinit var questionTV: TextView
     lateinit var assessmentName: TextView
-
+    lateinit var titleTextView: TextView
     lateinit var hourTV: TextView
     lateinit var minuteTV: TextView
     lateinit var secondsTV: TextView
@@ -73,6 +76,7 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
     var examOn = false
     var questionsarrayList: MutableList<AssesmentQuestion> = ArrayList()
     var lastquestionID = ""
+    var email = ""
     var answerjson = JSONObject()
     var questionJSON = JSONObject()
     var mainJSON = JSONObject()
@@ -90,17 +94,15 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
     var busy = false
     var remainingMillis: Long = 0
     var timeinmillis: Long = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_SECURE,
-            WindowManager.LayoutParams.FLAG_SECURE
-        )
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assessment)
         assessmentID = intent.getStringExtra("assessmentID")!!
         uid = intent.getStringExtra("uid")!!
         batchID = intent.getStringExtra("batch_id")!!
         centerID = intent.getStringExtra("center_id")!!
+        email = intent.getStringExtra("email")!!
         val json = JSONObject()
 
         assessmentName = name
@@ -109,9 +111,7 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
         hourTV = hours
         minuteTV = minutes
         secondsTV = seconds
-
-
-
+        titleTextView = textView
         json.put("assesment_id", assessmentID)
         json.put("language_id", "1")
         json.put("user_id", uid)
@@ -122,134 +122,141 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
         status = data
         button.isEnabled = false
         questionTV = textView13
-        extraViews =
-            arrayListOf(assessmentName, questionTV, button, hourTV, minuteTV, secondsTV, dot, dot1)
+        extraViews = arrayListOf(assessmentName, questionTV, hourTV, minuteTV, secondsTV, dot, dot1,easyCountDownTextview)
 
         button.setOnClickListener {
-            if (currentQuestion < totalQuestions) {
+            mLog.i(TAG,"button text ${button.text.toString()}")
+           when(button.text.toString()){
+               "Exit" ->{
+                   super.onBackPressed()
+               }
+               else ->{
+                   if (currentQuestion < totalQuestions) {
 
-                val type = questionsarrayList[currentQuestion].question_type
-                val id = questionsarrayList[currentQuestion].assesment_question_id
-                val qString = questionsarrayList[currentQuestion].assesment_question
-                if (firstQ) {
-                    firstQ = false
-                    textView19.visibility = VISIBLE
-                    if (!review) {
-                        changeFragment(
-                            type, id, qString
-                            , currentQuestion, ""
-                        )
+                       val type = questionsarrayList[currentQuestion].question_type
+                       val id = questionsarrayList[currentQuestion].assesment_question_id
+                       val qString = questionsarrayList[currentQuestion].assesment_question
+                       if (firstQ) {
+                           firstQ = false
+                           textView19.visibility = VISIBLE
+                           if (!review) {
+                               changeFragment(
+                                   type, id, qString
+                                   , currentQuestion, ""
+                               )
 
-                    } else {
-                        changeFragment(
-                            type, id, qString
-                            , currentQuestion,
-                            getAnswerIDfromOldJson(id)
-                        )
-                    }
-                    button.text = "Next Question"
-                    status.visibility = GONE
-                    mainStatus.visibility = GONE
+                           } else {
+                               changeFragment(
+                                   type, id, qString
+                                   , currentQuestion,
+                                   getAnswerIDfromOldJson(id)
+                               )
+                           }
+                           button.text = "Next Question"
+                           status.visibility = GONE
+                           mainStatus.visibility = GONE
 
-                    currentQuestion += 1
-                    questionTV.text = String.format("%s / %s ", currentQuestion, totalQuestions)
-                    lastquestionID = id
-                    if (!review) {
-                        startTimer(timeinmillis)
-                    }
+                           currentQuestion += 1
+                           questionTV.text = String.format("%s / %s ", currentQuestion, totalQuestions)
+                           lastquestionID = id
+                           if (!review) {
+                               startTimer(timeinmillis)
+                           }
 
-                    return@setOnClickListener
+                           return@setOnClickListener
 
-                } else {
-                    if (lastAnswerID == "") {
-                        mToast.showToast(this, "please choose an answer")
-                        return@setOnClickListener
-                    }
+                       } else {
+                           if (lastAnswerID == "") {
+                               mToast.showToast(this, "please choose an answer")
+                               return@setOnClickListener
+                           }
 
-                    mLog.i(TAG, "lastAnswerID $lastAnswerID")
-                    answerjson = JSONObject()
+                           mLog.i(TAG, "lastAnswerID $lastAnswerID")
+                           answerjson = JSONObject()
 
-                    answerjson.put(lastAnswerID, getAnswerValue(lastAnswerID))
-                    questionJSON.put(lastquestionID, answerjson)
+                           answerjson.put(lastAnswerID, getAnswerValue(lastAnswerID))
+                           questionJSON.put(lastquestionID, answerjson)
 
-                    lastAnswerID = ""
+                           lastAnswerID = ""
 
-                    mLog.i(TAG, "")
-                    if (!review) {
-                        changeFragment(
-                            type, id, qString
-                            , currentQuestion, ""
-                        )
+                           mLog.i(TAG, "")
+                           if (!review) {
+                               changeFragment(
+                                   type, id, qString
+                                   , currentQuestion, ""
+                               )
 
-                    } else {
-                        changeFragment(
-                            type, id, qString
-                            , currentQuestion,
-                            getAnswerIDfromOldJson(id)
-                        )
-
-
-                    }
-                    lastquestionID = id
-                    currentQuestion += 1
-                    questionTV.text = String.format(" %s / %s ", currentQuestion, totalQuestions)
-
-                }
-
-            } else {
-                if (lastAnswerID == "") {
-                    mToast.showToast(this, "please choose an answer")
-                    return@setOnClickListener
-                }
-                mLog.i(TAG, "past null check")
-                answerjson = JSONObject()
-
-                answerjson.put(lastAnswerID, getAnswerValue(lastAnswerID))
-                questionJSON.put(lastquestionID, answerjson)
-
-                if (!review) {
-                    pauseTimer()
-                    MaterialAlertDialogBuilder(this).setTitle("Assessment Over")
-                        .setCancelable(false)
-                        .setMessage("Do you want to review your answers?")
-                        .setPositiveButton("submit") { dialogInterface, i ->
-                            dialogInterface.dismiss()
-                            mLog.i(TAG, "dialogue")
-                            runSubmitCode()
-
-                        }.setNegativeButton("review") { dialogInterface, i ->
-                            dialogInterface.dismiss()
-                            resumeTimer()
-                            oldjson = JSONObject()
-                            oldjson = questionJSON
-                            mLog.i(TAG, "copying")
-                            questionJSON = JSONObject()
-                            currentQuestion = 0
-                            firstQ = true
-                            lastAnswerID = ""
-                            review = true
-                            button.callOnClick()
-                        }.create().show()
-                } else {
-                    busy = true
-                    pauseTimer()
-                    updateTimer("0","0","0")
-                    MaterialAlertDialogBuilder(this).setTitle("Assessment Over")
-                        .setCancelable(false)
-                        .setMessage("Assessment Over?")
-                        .setPositiveButton("submit") { dialogInterface, i ->
-                            dialogInterface.dismiss()
-                            mLog.i(TAG, "dialogue")
-                            runSubmitCode()
-
-                        }.create().show()
-                    mLog.i(TAG, "assessment over")
-
-                }
+                           } else {
+                               changeFragment(
+                                   type, id, qString
+                                   , currentQuestion,
+                                   getAnswerIDfromOldJson(id)
+                               )
 
 
-            }
+                           }
+                           lastquestionID = id
+                           currentQuestion += 1
+                           questionTV.text = String.format(" %s / %s ", currentQuestion, totalQuestions)
 
+                       }
+
+                   } else {
+                       if (lastAnswerID == "") {
+                           mToast.showToast(this, "please choose an answer")
+                           return@setOnClickListener
+                       }
+                       mLog.i(TAG, "past null check")
+                       answerjson = JSONObject()
+
+                       answerjson.put(lastAnswerID, getAnswerValue(lastAnswerID))
+                       questionJSON.put(lastquestionID, answerjson)
+
+                       if (!review) {
+                           pauseTimer()
+                           MaterialAlertDialogBuilder(this).setTitle("Assessment Over")
+                               .setCancelable(false)
+                               .setMessage("Do you want to review your answers?")
+                               .setPositiveButton("submit") { dialogInterface, i ->
+                                   dialogInterface.dismiss()
+                                   mLog.i(TAG, "dialogue")
+                                   busy = true
+                                   runSubmitCode()
+
+                               }.setNegativeButton("review") { dialogInterface, i ->
+                                   dialogInterface.dismiss()
+                                   resumeTimer()
+                                   oldjson = JSONObject()
+                                   oldjson = questionJSON
+                                   mLog.i(TAG, "copying")
+                                   questionJSON = JSONObject()
+                                   currentQuestion = 0
+                                   firstQ = true
+                                   lastAnswerID = ""
+                                   review = true
+                                   button.callOnClick()
+                               }.create().show()
+                       } else {
+                           busy = true
+                           pauseTimer()
+                           updateTimer("0","0","0")
+                           MaterialAlertDialogBuilder(this).setTitle("Assessment Over")
+                               .setCancelable(false)
+                               .setMessage("Your assessment is over.")
+                               .setPositiveButton("submit") { dialogInterface, i ->
+                                   dialogInterface.dismiss()
+                                   mLog.i(TAG, "dialogue")
+                                   runSubmitCode()
+                               }.create().show()
+                           mLog.i(TAG, "assessment over")
+
+                       }
+
+
+                   }
+
+               }
+           }
         }
 
 
@@ -351,12 +358,6 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
         return oldjson
     }
 
-    private fun getTV(): TextView {
-        val t = TextView(this@AssessmentActivity)
-        t.textSize = 18f
-        t.setTextColor(ContextCompat.getColor(this, R.color.white))
-        return t
-    }
 
     private fun updateTimer(hours: String, mins: String, seconds: String) {
         hourTV.text = String.format("%02d", hours.toInt())
@@ -403,7 +404,7 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
                 val json = JSONObject(string)
                 if (json.getString("success") == "1") {
                     runOnUiThread {
-                        examOn = false
+
                         //  mToast.showToast(this@AssessmentActivity, "answers successfully submitted")
                         animation.visibility = INVISIBLE
                         animation.cancelAnimation()
@@ -411,10 +412,45 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
                         mainStatus.visibility = INVISIBLE
                         MaterialAlertDialogBuilder(this@AssessmentActivity).setTitle("Assessment Submitted Successfully")
                             .setCancelable(false)
-                            .setMessage("press ok to exit")
-                            .setPositiveButton("ok") { dialogInterface, i ->
+                            .setMessage("press ok view your score")
+                            .setPositiveButton("ok"){dialogInterface, i ->
                                 dialogInterface.dismiss()
-                                onBackPressed()
+                                /*showToast("you may check your score now")
+                                onBackPressed()*/
+                                val layoutParams = fragContainter.layoutParams as ConstraintLayout.LayoutParams
+                                layoutParams.marginStart = 0
+                                layoutParams.marginEnd = 0
+                                layoutParams.topMargin = 0
+                                layoutParams.bottomMargin = 0
+                                fragContainter.layoutParams = layoutParams
+                                extraViews.forEach {
+                                    it.visibility = GONE
+                                }
+                                titleTextView.text = "Your Score"
+                                button.isEnabled = true
+                                button.text = "Exit"
+                                textView19.visibility = GONE
+                                fragContainter.alpha = 1f
+                                mainStatus.visibility = GONE
+                                status.visibility = GONE
+                                examOn = false
+                                ft = supportFragmentManager.beginTransaction()
+                                ft!!.setCustomAnimations(
+                                    R.anim.enter_from_right,
+                                    R.anim.exit_to_left,
+                                    R.anim.enter_from_left,
+                                    R.anim.exit_to_right
+                                )
+                                val fragment = ScoreListFragment()
+                                val bundle = Bundle()
+                                bundle.putString("aid",assessmentID)
+                                bundle.putString("uid",uid)
+                                bundle.putString("batch_id",batchID)
+                                bundle.putString("name",assessmentName.text.toString())
+                                bundle.putString("email",email)
+                                fragment.arguments = bundle
+                                ft!!.replace(R.id.container, fragment, "tag")
+                                ft!!.commit()
                             }.create().show()
                     }
                 } else {
@@ -512,15 +548,11 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
                                     this@AssessmentActivity,
                                     R.drawable.round_rect_white_stroke
                                 )
-                            val layoutParams =
-                                fragContainter.layoutParams as ViewGroup.MarginLayoutParams
-                            layoutParams.setMargins(16, 16, 16, 16)
-                            fragContainter.layoutParams = layoutParams
-                            fragContainter.requestLayout()
+
                             extraViews.forEach {
                                 it.visibility = VISIBLE
                             }
-
+                            button.visibility = VISIBLE
 
                         }
 
@@ -621,7 +653,14 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
         if (examOn) {
             mToast.showToast(this, "Please complete the assessment before leaving")
         } else {
-            super.onBackPressed()
+           MaterialAlertDialogBuilder(this).setTitle("Alert")
+               .setCancelable(true)
+               .setMessage("Do you want to go to the previous screen?")
+               .setPositiveButton("Ok"){
+                   dialogInterface, i ->
+                   dialogInterface.dismiss()
+                   super.onBackPressed()
+               }.create().show()
         }
     }
 }

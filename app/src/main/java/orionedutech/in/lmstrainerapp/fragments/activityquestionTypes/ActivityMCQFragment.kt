@@ -51,6 +51,7 @@ class ActivityMCQFragment : Fragment() {
         qstn = view.question
         qNo = view.sl
         val qid = arguments!!.getString("qid")!!
+        val aid = arguments!!.getString("aid")!!
         val Qnumber = arguments!!.getString("sl")!!
         val context = context!!
         db = MDatabase(context)
@@ -60,7 +61,7 @@ class ActivityMCQFragment : Fragment() {
         qstn.text = qString
         qNo.text = Qnumber
         mLog.i(TAG,"qid $qid")
-        val answers = getAnswers(qid)
+        val answers = getAnswers(qid,aid)
         mLog.i(TAG, "answers count ${answers.size}")
         answers.forEach { ans ->
             val radioButton = RadioButton(context)
@@ -78,11 +79,11 @@ class ActivityMCQFragment : Fragment() {
         return view
     }
 
-    private fun getAnswers(qid: String): List<ActivityAnswers> {
+    private fun getAnswers(qid: String,aid:String): List<ActivityAnswers> {
         val countDownLatch = CountDownLatch(1)
         var answers: List<ActivityAnswers> = ArrayList()
         CoroutineScope(IO).launch {
-            answers = answersDao!!.getAllAnswers(qid)
+            answers = answersDao!!.getAllAnswers(qid,aid)
             countDownLatch.countDown()
         }
         countDownLatch.await()

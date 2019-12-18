@@ -13,7 +13,7 @@
     <TextView
         android:id="@+id/textView21"
         android:layout_width="0dp"
-        android:layout_height="70dp"
+        android:layout_height="50dp"
         android:background="@color/blue"
         android:gravity="center|start"
         android:paddingStart="16dp"
@@ -196,7 +196,7 @@
         android:background="@drawable/round_rect_white_stroke1"
         android:elevation="0dp"
         android:gravity="center"
-        android:text="choose a pdf/doc/dox file"
+        android:text="choose a pdf file"
         app:layout_constraintBottom_toBottomOf="@+id/browse"
         app:layout_constraintEnd_toStartOf="@+id/upload"
         app:layout_constraintStart_toEndOf="@+id/browse"
@@ -213,6 +213,17 @@
         app:layout_constraintEnd_toEndOf="@+id/materialCardView9"
         app:layout_constraintTop_toTopOf="@+id/fileName" />
 
+    <TextView
+        android:id="@+id/textView23"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/pickernotworking"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:textAppearance="@style/OpenSansRegular"
+        app:layout_constraintEnd_toEndOf="@+id/upload"
+        app:layout_constraintTop_toBottomOf="@+id/upload" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

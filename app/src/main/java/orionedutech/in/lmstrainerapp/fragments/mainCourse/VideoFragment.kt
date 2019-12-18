@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.TextView
@@ -88,6 +89,10 @@ class VideoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        activity!!.window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
         val view = inflater.inflate(R.layout.fragment_video, container, false)
 
         val bundle = arguments
@@ -251,6 +256,7 @@ class VideoFragment : Fragment() {
         super.onDestroy()
         mLog.i(TAG,"adding bookmark")
         videoPref.edit().putLong(mediaUrl,player.contentPosition).apply()
+        activity!!.window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
         sendUsageData()
     }
 

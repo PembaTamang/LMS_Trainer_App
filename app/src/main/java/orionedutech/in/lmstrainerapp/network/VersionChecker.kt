@@ -1,7 +1,6 @@
 package orionedutech.`in`.lmstrainerapp.network
 
 import android.content.Context
-import android.os.Build
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import org.json.JSONObject
@@ -13,6 +12,7 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 class VersionChecker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
+
     val cl: CountDownLatch = CountDownLatch(1)
     var result: Result = Result.retry()
     override fun doWork(): Result {

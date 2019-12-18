@@ -89,6 +89,7 @@ class ScoreFragment : Fragment(), RecyclerItemClick {
     }
 
     private fun getScoreData(json: String) {
+        arrayList.clear()
         NetworkOps.post(Urls.scoreList, json, context, object : response {
             override fun onrespose(string: String?) {
                 mLog.i(TAG,"response $string ")
@@ -100,7 +101,6 @@ class ScoreFragment : Fragment(), RecyclerItemClick {
                 if (scoreData.success == "1") {
                     val scoreList = scoreData.response
                     mLog.i(TAG,"list size ${scoreList.size}")
-                    arrayList.clear()
                     arrayList.addAll(scoreList)
                     mLog.i(TAG,"arrlist size : ${arrayList.size}")
                     if(arrayList.size==0){
@@ -152,6 +152,7 @@ class ScoreFragment : Fragment(), RecyclerItemClick {
         bundle.putString("batch_id",arrayList[itempos].assesment_batch_id)
         bundle.putString("name",name)
         bundle.putString("email",email)
+
         val fragment = ScoreListFragment()
         fragment.arguments = bundle
         mLog.i(TAG,"${arrayList[itempos].assesment_id}    ${arrayList[itempos].assesment_batch_id} ")

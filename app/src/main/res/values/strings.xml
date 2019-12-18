@@ -19,5 +19,7 @@
     <string name="demo_user">demotrainer2@gmail.com</string>
     <string name="demo_user_pass">123456</string>
     <string name="loading">loading…</string>
+    <string name="pickernotworking"><u>file picker not working?</u></string>
+
     <string name="time_speed">loading time/speed…</string>
 </resources>

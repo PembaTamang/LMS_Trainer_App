@@ -107,10 +107,6 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_SECURE,
-            WindowManager.LayoutParams.FLAG_SECURE
-        )
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_trainer)
         heading = name
@@ -132,7 +128,7 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
 
         val int = intent!!
         chapterID = int.getStringExtra("chapter_id")!!
-
+        mLog.i(TAG,"chapterID $chapterID")
         activityAnswerPref = getSharedPreferences("activityanswers", Context.MODE_PRIVATE)
 
         Handler().postDelayed({
@@ -230,19 +226,6 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
         countdown.await()
         return question
     }
-    private fun getCorrectAnswerString(qid: String): String {
-        val countdown = CountDownLatch(1)
-        var question = ""
-        CoroutineScope(IO).launch {
-           // question = questionsDao!!.getQuestionString(qid)
-            countdown.countDown()
-        }
-        countdown.await()
-        return question
-    }
-
-
-
     private fun processAnswer(isLast: Boolean) {
 
         //add last answer and question value here
@@ -274,7 +257,8 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
         }
       //  var snackbar: Snackbar? = null
         when (ans) {
-            "Thikai cha" -> {
+            "Thikai cha" ->
+            {
 
                 val dialogueView = LayoutInflater.from(this)
                     .inflate(R.layout.right_answer_alert, null, false)
@@ -486,6 +470,7 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
                 val fragment = ActivityMCQFragment()
                 val bundle = Bundle()
                 bundle.putString("qid", qid)
+                bundle.putString("aid",aid)
                 bundle.putString("sl", (sl + 1).toString())
                 fragment.arguments = bundle
                 ft!!.replace(R.id.trainerAcitivityContainer, fragment, "tag")
@@ -563,8 +548,8 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
         }
         val json = JSONObject()
 
-        //  json.put("chapter_id", chapterID) //todo change later
-        json.put("chapter_id", "75")
+        json.put("chapter_id", chapterID)
+       // json.put("chapter_id","75")
         NetworkOps.post(Urls.trainingActivity, json.toString(), this, object : response {
             override fun onInternetfailure() {
                 if (isFinishing) {
@@ -576,6 +561,17 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
             }
 
             override fun onrespose(string: String?) {
+                if(string.isNullOrEmpty()){
+                    MaterialAlertDialogBuilder(this@TrainerActivity).setTitle("Error")
+                        .setCancelable(false)
+                        .setMessage("No questions found")
+                        .setPositiveButton("Exit"){
+                            dialogInterface, i ->
+                            dialogInterface.dismiss()
+                            onBackPressed()
+                        }.create().show()
+                    return
+                }
                 val activityData = Gson().fromJson(string, DCTrainingActivity::class.java)
                 if (activityData == null) {
                     noDataAlert()

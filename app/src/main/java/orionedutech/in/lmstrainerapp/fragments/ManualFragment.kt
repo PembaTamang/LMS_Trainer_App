@@ -14,6 +14,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.TextView
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
@@ -62,6 +63,10 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
+        activity!!.window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
         val view = inflater.inflate(R.layout.fragment_manual, container, false)
 
         pdfView = view.pdfView
@@ -354,6 +359,7 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
         if(path!= ""){
            pdfPref.edit().putInt(path,currentPage).apply()
         }
+        activity!!.window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
         super.onStop()
     }
 }

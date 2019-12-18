@@ -72,12 +72,6 @@
                 <action android:name="orionedutech.in.lmstrainerapp.stop" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".network.VersionChecker"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
         <provider
             android:name="androidx.core.content.FileProvider"
             tools:replace="android:authorities"

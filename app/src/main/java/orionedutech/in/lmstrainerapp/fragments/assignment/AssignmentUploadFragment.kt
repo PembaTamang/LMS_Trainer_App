@@ -2,7 +2,9 @@ package orionedutech.`in`.lmstrainerapp.fragments.assignment
 
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.database.Cursor
 import android.os.Build
 import android.os.Bundle
@@ -30,6 +32,7 @@ import com.google.gson.Gson
 import com.jaiselrahman.filepicker.activity.FilePickerActivity
 import com.jaiselrahman.filepicker.config.Configurations
 import com.jaiselrahman.filepicker.model.MediaFile
+import kotlinx.android.synthetic.main.fragment_assignment_upload.*
 import kotlinx.android.synthetic.main.fragment_assignment_upload.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -99,6 +102,7 @@ class AssignmentUploadFragment : BaseFragment() {
     lateinit var uploadButon: AppCompatImageButton
     val FILE_REQUEST_CODE = 121
     var views: ArrayList<View> = ArrayList()
+    lateinit var pickerPreferences: SharedPreferences
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -114,10 +118,11 @@ class AssignmentUploadFragment : BaseFragment() {
         progressText = view.progressText
         batchSpinner = view.batch
         browseButton = view.browse
-        browseButton.isEnabled = false
-
         uploadButon = view.upload
+        pickerPreferences = activity!!.getSharedPreferences("filepicker", Context.MODE_PRIVATE)
+        browseButton.isEnabled = false
         uploadButon.isEnabled = false
+
         views = arrayListOf(nameET, descET, batchSpinner, courseSpinner, browseButton, uploadButon)
 
         courseAdapter = CourseSpinAdapter(
@@ -125,10 +130,7 @@ class AssignmentUploadFragment : BaseFragment() {
             android.R.layout.simple_list_item_1,
             courseListSpinner
         )
-
         courseSpinner.adapter = courseAdapter
-
-
 
         batchAdapter = BatchSpinAdapter(
             context!!,
@@ -213,42 +215,62 @@ class AssignmentUploadFragment : BaseFragment() {
 
         browseButton.setOnClickListener {
             //browse code
-
-           /* val properties = DialogProperties()
-            properties.selection_mode = DialogConfigs.SINGLE_MODE
-            properties.selection_type = DialogConfigs.FILE_SELECT
-            properties.root =    File(DialogConfigs.DEFAULT_DIR)
-            properties.error_dir =  File(DialogConfigs.DEFAULT_DIR)
-            properties.offset =  File(DialogConfigs.DEFAULT_DIR)
-            properties.extensions = arrayOf("pdf")
-            properties.show_hidden_files = false
-                val dialogue = FilePickerDialog(activity!!,properties,R.style.mAlertDialogTheme)
-            dialogue.setTitle("Choose a pdf")
-            dialogue.setDialogSelectionListener {
-                mLog.i(TAG,"path ${it[0]}")
-                filepath = it[0]
-                fileNameTV.text = filepath.substring(filepath.lastIndexOf("/")+1)
+            if (!pickerPreferences.getBoolean("dialogue", false)) {
+                val intent = Intent(context, FilePickerActivity::class.java)
+                intent.putExtra(
+                    FilePickerActivity.CONFIGS, Configurations.Builder()
+                        .setCheckPermission(true)
+                        .setShowImages(false)
+                        .setShowFiles(true)
+                        .setShowVideos(false)
+                        .setShowAudios(false)
+                        .setSuffixes("pdf")
+                        .enableImageCapture(false)
+                        .setMaxSelection(1)
+                        .setSkipZeroSizeFiles(true)
+                        .build()
+                )
+                startActivityForResult(intent, FILE_REQUEST_CODE)
+            } else {
+                val properties = DialogProperties()
+                properties.selection_mode = DialogConfigs.SINGLE_MODE
+                properties.selection_type = DialogConfigs.FILE_SELECT
+                properties.root = File(DialogConfigs.DEFAULT_DIR)
+                properties.error_dir = File(DialogConfigs.DEFAULT_DIR)
+                properties.offset = File(DialogConfigs.DEFAULT_DIR)
+                properties.extensions = arrayOf("pdf")
+                properties.show_hidden_files = false
+                val dialogue = FilePickerDialog(activity!!, properties, R.style.mAlertDialogTheme)
+                dialogue.setTitle("Choose a pdf")
+                dialogue.setDialogSelectionListener {
+                    mLog.i(TAG, "path ${it[0]}")
+                    filepath = it[0]
+                    fileNameTV.text = filepath.substring(filepath.lastIndexOf("/") + 1)
+                }
+                dialogue.show()
             }
-        dialogue.show()*/
 
-            val intent = Intent(context, FilePickerActivity::class.java)
-            intent.putExtra(
-                FilePickerActivity.CONFIGS, Configurations.Builder()
-                    .setCheckPermission(true)
-                    .setShowImages(false)
-                    .setShowFiles(true)
-                    .setShowVideos(false)
-                    .setShowAudios(false)
-                    .setSuffixes("pdf")
-                    .enableImageCapture(false)
-                    .setMaxSelection(1)
-                    .setSkipZeroSizeFiles(true)
-                    .build()
-            )
-            startActivityForResult(intent, FILE_REQUEST_CODE)
+
         }
 
-
+        view.textView23.setOnClickListener {
+            val mboolean = pickerPreferences.getBoolean("dialogue",false)
+            val name = if(mboolean) "Alternate File Chooser" else "Normal File Chooser"
+            MaterialAlertDialogBuilder(context).setTitle("Choose File Picker")
+                .setCancelable(true)
+                .setMessage("You can choose between the two file picker modes if the one in use is not working. \n Currently in use : $name ")
+                .setPositiveButton("Alternate File Chooser"){
+                    dialogInterface, i ->
+                    dialogInterface.dismiss()
+                    showToast(context,"Alternate File Chooser selected")
+                    pickerPreferences.edit().putBoolean("dialogue",true).apply()
+                }.setNegativeButton("Normal File Chooser"){
+                    dialogInterface, i ->
+                    dialogInterface.dismiss()
+                    pickerPreferences.edit().putBoolean("dialogue",false).apply()
+                    showToast(context,"Normal File Chooser selected")
+                }.create().show()
+        }
         uploadButon.setOnClickListener {
             //upload code
             if (assignmentName == "" || assignmentDesc == "") {
@@ -281,7 +303,7 @@ class AssignmentUploadFragment : BaseFragment() {
                 progressText.visibility = VISIBLE
                 disableViews()
             }
-           showUPloadAnimation()
+            showUPloadAnimation()
             NetworkOps.postMultipart(Urls.assignmentUploadUrl, hashmap, context, object : response {
                 override fun onrespose(string: String?) {
 
@@ -295,8 +317,7 @@ class AssignmentUploadFragment : BaseFragment() {
                             MaterialAlertDialogBuilder(context).setTitle("Alert")
                                 .setMessage("Assessment Uploaded Successfully")
                                 .setCancelable(false)
-                                .setPositiveButton("ok"){
-                                    dialogInterface, i ->
+                                .setPositiveButton("ok") { dialogInterface, i ->
                                     dialogInterface.dismiss()
                                     activity!!.onBackPressed()
                                 }.create().show()
@@ -395,16 +416,18 @@ class AssignmentUploadFragment : BaseFragment() {
                 showToast(context, "error in choosing file")
             }
 
-        }else if(requestCode == FILE_REQUEST_CODE){
-            if(resultCode == Activity.RESULT_OK){
-                val files :  ArrayList<MediaFile> = data!!.getParcelableArrayListExtra(FilePickerActivity.MEDIA_FILES)!!
-                if(files.size>0){
+        } else if (requestCode == FILE_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                val files: ArrayList<MediaFile> =
+                    data!!.getParcelableArrayListExtra(FilePickerActivity.MEDIA_FILES)!!
+                if (files.size > 0) {
                     filepath = files[0].path
-                    fileNameTV.text = filepath.substring(filepath.lastIndexOf("/")+1)
+                    fileNameTV.text = filepath.substring(filepath.lastIndexOf("/") + 1)
                     uploadButon.isEnabled = true
-
-                }else{
-                    showToast(context,"nothing selected")
+                    mLog.i(TAG, "path ${files[0].path}")
+                    mLog.i(TAG, "name ${files[0].name}")
+                } else {
+                    showToast(context, "nothing selected")
                 }
             }
         }
@@ -475,11 +498,11 @@ class AssignmentUploadFragment : BaseFragment() {
             showToast(context, "failed to get course list")
 
             Handler(Looper.getMainLooper()).postDelayed({
-                showToast(context,"retrying...")
+                showToast(context, "retrying...")
                 CoroutineScope(IO).launch {
                     getCourseData(selectedBatchID)
                 }
-            },2000)
+            }, 2000)
 
         }
     }
@@ -507,6 +530,7 @@ class AssignmentUploadFragment : BaseFragment() {
             progressText.text = "Refreshing course list"
         }
     }
+
     private fun showUPloadAnimation() {
         if (activity == null) {
             return

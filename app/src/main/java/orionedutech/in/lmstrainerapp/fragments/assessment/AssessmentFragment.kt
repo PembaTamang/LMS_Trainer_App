@@ -64,6 +64,7 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
     lateinit var recyclerView: ShimmerRecyclerView
     lateinit var adapter: AssessmentAdapter
     var userID = ""
+    var email = ""
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -134,6 +135,7 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
                 context?.let {
                     val dao = MDatabase(it).getUserDao()
                     userID = dao.getUserID()
+                    email = dao.getEmail()
                     val batchID = selectedBatchID
                     centerID = dao.getCenterID()
                     mLog.i(TAG, " userID $userID batchID $batchID centerID $centerID")
@@ -270,6 +272,7 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
             intent.putExtra("uid",userID)
             intent.putExtra("batch_id",selectedBatchID)
             intent.putExtra("center_id",centerID)
+            intent.putExtra("email",email)
             startActivity(intent)
             activity!!.overridePendingTransition(R.anim.enter_from_right,R.anim.exit_to_left)
         }
