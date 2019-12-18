@@ -547,9 +547,9 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
             topStatus.visibility = View.VISIBLE
         }
         val json = JSONObject()
-
-        json.put("chapter_id", chapterID)
-       // json.put("chapter_id","75")
+        //todo remove this later
+      //  json.put("chapter_id", chapterID)
+        json.put("chapter_id","75")
         NetworkOps.post(Urls.trainingActivity, json.toString(), this, object : response {
             override fun onInternetfailure() {
                 if (isFinishing) {
@@ -562,9 +562,9 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
 
             override fun onrespose(string: String?) {
                 if(string.isNullOrEmpty()){
-                    MaterialAlertDialogBuilder(this@TrainerActivity).setTitle("Error")
+                    MaterialAlertDialogBuilder(this@TrainerActivity).setTitle("Alert")
                         .setCancelable(false)
-                        .setMessage("No questions found")
+                        .setMessage("No questions found.")
                         .setPositiveButton("Exit"){
                             dialogInterface, i ->
                             dialogInterface.dismiss()
