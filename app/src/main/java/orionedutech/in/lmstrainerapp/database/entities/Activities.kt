@@ -8,7 +8,8 @@ data class Activities (
     val activity_chapter_id: String,
     val activity_description: String?,
     val activity_id: String,
-    val activity_name: String
+    val activity_name: String,
+    val chapter_id : String
 ){
     @PrimaryKey(autoGenerate = true)
     var id1: Int = 0

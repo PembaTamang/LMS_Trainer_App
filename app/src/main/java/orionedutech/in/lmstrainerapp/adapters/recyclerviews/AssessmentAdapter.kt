@@ -14,9 +14,7 @@ import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.interfaces.RecyclerItemClick
 import orionedutech.`in`.lmstrainerapp.network.dataModels.DCAssessmentList
 
-class AssessmentAdapter(
-    private val arrayList: ArrayList<DCAssessmentList>,
-    private val click: RecyclerItemClick
+class AssessmentAdapter(private val arrayList: ArrayList<DCAssessmentList>, private val click: RecyclerItemClick
 ) : RecyclerView.Adapter<AssessmentAdapter.TVH>() {
     private var context: Context? = null
 

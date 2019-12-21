@@ -15,7 +15,7 @@ import orionedutech.`in`.lmstrainerapp.database.entities.*
         Batch::class,
         AppFiles::class,
         AssesmentAnswers::class,
-        Activities::class, ActivityQuestions::class, ActivityAnswers::class],
+        Activities::class, ActivityQuestions::class, ActivityAnswers::class,CompletedActivity::class],
     version = 1,
     exportSchema = false
 )
@@ -35,6 +35,7 @@ abstract class MDatabase : RoomDatabase() {
 
     abstract fun getAnswersDao(): ActivityAnswerDao
 
+    abstract fun getCompletedActivityDao() : CompletedActivitiesDao
     companion object {
         @Volatile
         private var instance: MDatabase? = null

@@ -15,7 +15,7 @@
         android:top="30dp">
         <bitmap
             android:gravity="center"
-            android:src="@drawable/logo_large"/>
+            android:src="@drawable/large_logo"/>
 
     </item>
 

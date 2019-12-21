@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LMS (Trainer App)</string>
+    <string name="app_name">Orion Trainer App</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -14,7 +14,6 @@
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
 
-
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="demo_user">demotrainer2@gmail.com</string>
     <string name="demo_user_pass">123456</string>
@@ -22,4 +21,5 @@
     <string name="pickernotworking"><u>file picker not working?</u></string>
 
     <string name="time_speed">loading time/speed…</string>
+    <string name="version_number"> Version 1.0.0</string>
 </resources>

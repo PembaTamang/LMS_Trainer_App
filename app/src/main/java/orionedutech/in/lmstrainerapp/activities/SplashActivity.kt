@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.WindowManager
 import android.widget.ImageView
 import com.airbnb.lottie.RenderMode
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -18,10 +17,10 @@ import orionedutech.`in`.lmstrainerapp.BuildConfig
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.database.MDatabase
 import orionedutech.`in`.lmstrainerapp.mLog
+import orionedutech.`in`.lmstrainerapp.mLog.TAG
 import orionedutech.`in`.lmstrainerapp.versionCompare
 import pl.droidsonroids.gif.GifDrawable
 import pl.droidsonroids.gif.GifImageView
-import orionedutech.`in`.lmstrainerapp.mLog.TAG
 import java.io.IOException
 
 

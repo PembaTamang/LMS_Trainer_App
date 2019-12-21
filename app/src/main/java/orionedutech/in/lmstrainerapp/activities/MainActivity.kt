@@ -59,6 +59,7 @@ import orionedutech.`in`.lmstrainerapp.network.VersionChecker
 import orionedutech.`in`.lmstrainerapp.network.NetworkOps
 import orionedutech.`in`.lmstrainerapp.network.Urls
 import orionedutech.`in`.lmstrainerapp.network.response
+import java.lang.StringBuilder
 import java.util.concurrent.TimeUnit
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
@@ -135,22 +136,27 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             mi.title = mNewTitle
 
         }
-        val mi = m.getItem(m.size() - 1)
+
+
+
+       /* val mi = m.getItem(m.size() - 1)
         val font: Typeface? = ResourcesCompat.getFont(
             this,
             R.font.opensans_bold
         )
-        val mNewTitle = SpannableString("$mi Version(${BuildConfig.VERSION_NAME})")
+        val mNewTitle = SpannableString(mi.toString())
+
         mNewTitle.setSpan(font?.let {
             CustomTypefaceSpan(
                 "",
                 it
             )
         }, 0, mNewTitle.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-        mi.title = mNewTitle
+
+        mi.title = mNewTitle*/
+
         addDash()
         lastFrag = DashFragment().javaClass.simpleName
-        mLog.i(TAG, "first dash frag count ${supportFragmentManager.backStackEntryCount} ")
         checkDashBoard()
         headerView = nav_view.getHeaderView(0)
         setProfileImage()

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
@@ -16,14 +17,14 @@
         <item
             android:id="@+id/course"
             android:icon="@drawable/ic_course_icon"
-            android:title="Course"/>
+            android:title="Course" />
 
         <item
             android:id="@+id/assignment"
             android:icon="@drawable/ic_assignment"
             android:title="Assignment" />
         <item
-                android:id="@+id/assessment"
+            android:id="@+id/assessment"
             android:icon="@drawable/ic_assessment"
             android:title="Assessment" />
         <item
@@ -40,10 +41,10 @@
             android:title="Manual" />
         <item
             android:id="@+id/logout"
+            android:title="@null"
             android:icon="@drawable/ic_logout_sidemenu"
-            android:title="Log Out"/>
+            app:showAsAction="withText"
+            app:actionLayout="@layout/text_with_subtitle"/>
     </group>
-
-
 
 </menu>

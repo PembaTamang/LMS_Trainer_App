@@ -96,7 +96,7 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
     var busy = false
     var remainingMillis: Long = 0
     var timeinmillis: Long = 0
-
+    var noneAttempted = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assessment)
@@ -291,12 +291,20 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
         if (!review) {
             mainJSON.put("ans_data", questionJSON)
             mLog.i(TAG, "json - $questionJSON")
+            mLog.i(TAG,"overwritten length ${questionJSON.length()}" )
+            if(questionJSON.length() == 0 ){
+                noneAttempted = true
+            }
         } else {
             mLog.i(TAG, "old json - $oldjson")
             mLog.i(TAG, "new json - $questionJSON")
 
             val overwrittenJson = overwriteJson(questionJSON, oldjson)
             mainJSON.put("ans_data", overwrittenJson)
+            mLog.i(TAG,"overwritten length ${overwrittenJson.length()}" )
+            if(overwrittenJson.length() == 0){
+                noneAttempted = true
+            }
             mLog.i(TAG, "over written - $overwrittenJson")
 
         }
@@ -409,9 +417,21 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
         NetworkOps.post(Urls.assessmentAnsSubmit, mainJSON.toString(), this, object : response {
             override fun onrespose(string: String?) {
                 mLog.i(TAG, "response : $string")
-                if (string!!.isEmpty()) {
+                if (string!!.isNullOrEmpty()||string == "null") {
                     runOnUiThread {
                         showToast("null response by server")
+                        animation.visibility = INVISIBLE
+                        animation.cancelAnimation()
+                        status.visibility = INVISIBLE
+                        mainStatus.visibility = INVISIBLE
+                        MaterialAlertDialogBuilder(this@AssessmentActivity).setTitle("Alert")
+                            .setCancelable(false)
+                            .setMessage("No question was attempted.")
+                            .setPositiveButton("Exit"){dialogInterface, i ->
+                                dialogInterface.dismiss()
+                                examOn = false
+                                onBackPressed()
+                            }.create().show()
                     }
                     return
                 }
@@ -675,13 +695,18 @@ class AssessmentActivity : AppCompatActivity(), AssessmentAnswer {
         if (examOn) {
             mToast.showToast(this, "Please complete the assessment before leaving")
         } else {
-            MaterialAlertDialogBuilder(this).setTitle("Alert")
-                .setCancelable(true)
-                .setMessage("Do you want to go to the previous screen?")
-                .setPositiveButton("Ok") { dialogInterface, i ->
-                    dialogInterface.dismiss()
-                    super.onBackPressed()
-                }.create().show()
+            if(!noneAttempted){
+                MaterialAlertDialogBuilder(this).setTitle("Alert")
+                    .setCancelable(true)
+                    .setMessage("Do you want to go to the previous screen?")
+                    .setPositiveButton("Ok") { dialogInterface, i ->
+                        dialogInterface.dismiss()
+                        super.onBackPressed()
+                    }.create().show()
+            }else{
+                super.onBackPressed()
+            }
+
         }
     }
 }

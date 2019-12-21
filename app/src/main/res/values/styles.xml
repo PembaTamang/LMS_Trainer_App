@@ -159,5 +159,9 @@
         <item name="android:textColor">#FFFFFF</item>
     </style>
 
-
+    <style name="Bubble" parent="android:Widget.TextView">
+        <item name="android:gravity">start</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
 </resources>

@@ -98,7 +98,7 @@ class ScoreListFragment : Fragment() {
                     val endDate = scoredata.assesment_end_date
                     val totalQues = scoredata.assesment_total_questions
                     val correct = scoredata.assesment_total_questions_right
-                    val percentage  = scoredata.assesment_percentage
+                    var percentage  = scoredata.assesment_percentage
                     val scorelist = scoredata.response
                     arrayList.clear()
                     arrayList.addAll(scorelist)
@@ -113,6 +113,7 @@ class ScoreListFragment : Fragment() {
                         totalQ.text = String.format("Total Ques : %s ",totalQues)
                         rightans.text = String.format("Right Ans : %d ",correct)
                         dates.text = String.format("Start and End Date :  %s - %s",startDate,endDate)
+                        percentage = percentage.replace(",","")
                         progressBar.progress = percentage.toFloat()
                         percentageTV.text = String.format(" %s %%",percentage)
                         adapter.notifyDataSetChanged()

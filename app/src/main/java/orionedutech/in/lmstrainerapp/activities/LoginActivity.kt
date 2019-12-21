@@ -11,10 +11,12 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 
 import androidx.core.content.ContextCompat
 
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.snackbar.Snackbar
 import org.json.JSONObject
 import orionedutech.`in`.lmstrainerapp.network.NetworkOps
 import orionedutech.`in`.lmstrainerapp.network.Urls
@@ -55,13 +57,12 @@ class LoginActivity : BaseActivity() {
         )!!
         notOk.setBounds(0, 0, ok.intrinsicWidth, ok.intrinsicHeight)
 
-      /*  if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
             email.setText(getString(R.string.demo_user))
             password.setText(getString(R.string.demo_user_pass))
             emailText = (getString(R.string.demo_user))
             passwordText = (getString(R.string.demo_user_pass))
-
-        }*/
+        }
 
         email.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
@@ -100,6 +101,7 @@ class LoginActivity : BaseActivity() {
             if (!TextUtils.isEmpty(emailText) && !TextUtils.isEmpty(passwordText)) {
                 //login
                 if(passwordText.length>=6){
+
                loginUser(emailText, passwordText)
                 }else{
                     showToast("password should be min 6 characters")
@@ -115,6 +117,11 @@ class LoginActivity : BaseActivity() {
         data.put("user_password", passwordText)
         progress.visibility = View.VISIBLE
         login.isEnabled = false
+        val layoutParams =
+            login.layoutParams as ConstraintLayout.LayoutParams
+        layoutParams.width = ConstraintLayout.LayoutParams.WRAP_CONTENT
+        login.layoutParams = layoutParams
+
         login.text = ""
         email.isEnabled = false
         password.isEnabled = false
@@ -124,7 +131,12 @@ class LoginActivity : BaseActivity() {
             }
 
             override fun onrespose(string: String) {
-                mLog.i(TAG,"res : $string")
+                if(string.isNullOrEmpty()){
+                    runOnUiThread {
+                        loginFailed()
+                    }
+                    return
+                }
                 val gson = Gson()
                 val userModel = gson.fromJson(string, DCUserData::class.java)
                 if(userModel ==null){
@@ -179,7 +191,6 @@ class LoginActivity : BaseActivity() {
                                 mLog.i(TAG, "new user")
                                 dao.insertUser(user)
                                 goToMainActivity(user.name!!)
-
                             }
 
                         }
@@ -195,7 +206,19 @@ class LoginActivity : BaseActivity() {
             }
             override fun onfailure() {
 
-                loginFailed()
+                val snackbar = Snackbar.make(coordinator,"Login failed",Snackbar.LENGTH_SHORT)
+                snackbar.setBackgroundTint(ContextCompat.getColor(this@LoginActivity,R.color.orange))
+                snackbar.show()
+                val layoutParams =
+                    login.layoutParams as ConstraintLayout.LayoutParams
+                layoutParams.width = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
+                login.layoutParams = layoutParams
+                login.text = "Log In"
+                progress.cancelAnimation()
+                progress.visibility = View.GONE
+                login.isEnabled = true
+                email.isEnabled = true
+                password.isEnabled = true
             }
 
         }) { progress, speed, secs ->
@@ -210,7 +233,13 @@ class LoginActivity : BaseActivity() {
 
     fun loginFailed() {
         runOnUiThread {
-            showToast("Error")
+            val snackbar = Snackbar.make(coordinator,"Wrong credentials",Snackbar.LENGTH_SHORT)
+            snackbar.setBackgroundTint(ContextCompat.getColor(this,R.color.orange))
+            snackbar.show()
+            val layoutParams =
+                login.layoutParams as ConstraintLayout.LayoutParams
+            layoutParams.width = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
+            login.layoutParams = layoutParams
             login.text = "Log In"
             progress.cancelAnimation()
             progress.visibility = View.GONE
