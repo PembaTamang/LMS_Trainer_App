@@ -43,6 +43,7 @@
         android:layout_marginEnd="4dp"
         android:text="@string/loading"
         android:textSize="12sp"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/circularProgressBar"
         app:layout_constraintStart_toEndOf="@+id/imageView8"
         app:layout_constraintTop_toBottomOf="@+id/textView16" />
@@ -53,6 +54,7 @@
         android:layout_height="wrap_content"
         android:text="@string/loading"
         android:textSize="12sp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/name"
         app:layout_constraintStart_toStartOf="@+id/name"
         app:layout_constraintTop_toBottomOf="@+id/name" />
@@ -61,47 +63,42 @@
         android:id="@+id/time"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
         android:text="@string/loading"
         android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="@+id/email"
-        app:layout_constraintStart_toStartOf="@+id/email"
+        app:layout_constraintEnd_toStartOf="@+id/circularProgressBar"
+        app:layout_constraintStart_toEndOf="@+id/imageView8"
         app:layout_constraintTop_toBottomOf="@+id/email" />
 
     <TextView
         android:id="@+id/totalQ"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
         android:text="@string/loading"
         android:textSize="12sp"
-        app:layout_constraintEnd_toStartOf="@+id/rightAns"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/imageView8"
+        app:layout_constraintEnd_toEndOf="@id/time"
         app:layout_constraintStart_toStartOf="@+id/time"
-        app:layout_constraintTop_toBottomOf="@+id/time" />
+        app:layout_constraintTop_toBottomOf="@id/time" />
 
     <TextView
         android:id="@+id/rightAns"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="4dp"
-        android:textColor="@color/green"
+        android:text="@string/loading"
         android:textSize="12sp"
-        app:layout_constraintEnd_toStartOf="@+id/circularProgressBar"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/totalQ"
-        app:layout_constraintTop_toTopOf="@+id/totalQ" />
+        app:layout_constraintEnd_toEndOf="@id/totalQ"
+        app:layout_constraintStart_toStartOf="@+id/totalQ"
+        app:layout_constraintTop_toBottomOf="@id/totalQ" />
 
     <TextView
         android:id="@+id/dates"
-        android:layout_width="0dp"
+        android:layout_width="268dp"
         android:layout_height="wrap_content"
         android:text="@string/loading"
         android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="@+id/rightAns"
-        app:layout_constraintStart_toStartOf="@+id/totalQ"
-        app:layout_constraintTop_toBottomOf="@+id/totalQ" />
+        app:layout_constraintTop_toBottomOf="@id/rightAns"
+        app:layout_constraintStart_toStartOf="@id/rightAns"
+        app:layout_constraintEnd_toEndOf="@id/rightAns"/>
 
     <com.mikhaellopez.circularprogressbar.CircularProgressBar
         android:id="@+id/circularProgressBar"
@@ -232,7 +229,7 @@
         android:gravity="center"
         android:paddingStart="2dp"
         android:paddingEnd="2dp"
-        android:text="Student Answer"
+        android:text=" Answer Given"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="12sp"

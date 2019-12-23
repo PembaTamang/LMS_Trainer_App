@@ -28,6 +28,7 @@ class SplashActivity : BaseActivity() {
     var versionPref :SharedPreferences? = null
     lateinit var imageView : GifImageView
     lateinit var applogo : ImageView
+    lateinit var loginPrefs : SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
@@ -41,7 +42,7 @@ class SplashActivity : BaseActivity() {
                 or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_FULLSCREEN)
         setContentView(R.layout.activity_splash)
-
+        loginPrefs = getSharedPreferences("login", Context.MODE_PRIVATE)
         versionPref = getSharedPreferences("appversion", Context.MODE_PRIVATE)
         imageView = gif
         applogo = logo
@@ -68,16 +69,26 @@ class SplashActivity : BaseActivity() {
         }
 
         if(!versionPref!!.getBoolean("update",false)){
-            launch {
-                applicationContext?.let {
-                    startActivity(Intent(it,if(MDatabase(it).getUserDao().userDataExists()) MainActivity::class.java else LoginActivity::class.java ))
-                    overridePendingTransition(
-                        R.anim.enter_from_right,
-                        R.anim.exit_to_left
-                    )
-                    finish()
+            if(!loginPrefs.getBoolean("logged_out",false)){
+                launch {
+                    applicationContext?.let {
+                        startActivity(Intent(it,if(MDatabase(it).getUserDao().userDataExists()) MainActivity::class.java else LoginActivity::class.java ))
+                        overridePendingTransition(
+                            R.anim.enter_from_right,
+                            R.anim.exit_to_left
+                        )
+                        finish()
+                    }
                 }
+            }else{
+                startActivity(Intent(this,LoginActivity::class.java ))
+                overridePendingTransition(
+                    R.anim.enter_from_right,
+                    R.anim.exit_to_left
+                )
+                finish()
             }
+
         }else{
             imageView.alpha = 0.2f
             applogo.alpha = 0.2f

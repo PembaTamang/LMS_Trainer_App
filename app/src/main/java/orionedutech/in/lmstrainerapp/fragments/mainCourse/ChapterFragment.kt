@@ -106,7 +106,7 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
             "2" -> {
                 isUnit = false
                 isUnitData = false
-                cType.text = "Subunit List"
+                cType.text = "Sub Unit List"
                 getSubUnitData()
             }
             else -> {

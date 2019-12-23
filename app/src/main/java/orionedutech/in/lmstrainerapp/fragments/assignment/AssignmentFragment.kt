@@ -94,8 +94,17 @@ class AssignmentFragment : BaseFragment(), RecyclerItemClick {
                 animator.start()
                 view.name.setCompoundDrawablesWithIntrinsicBounds(null, null, ascendingName, null)
                 ascendingNames.set(false)
-                //sort by descending names
 
+                CoroutineScope(Dispatchers.IO).launch {
+                    val templist =
+                        arrayList.sortedWith(compareBy(DCAssignment::assignment_name))
+                    arrayList.clear()
+                    arrayList.addAll(templist)
+                    withContext(Dispatchers.Main) {
+                        // notifydatasetchanged()
+                        adapter.notifyDataSetChanged()
+                    }
+                }
 
             } else {
                 val animator =
@@ -103,8 +112,16 @@ class AssignmentFragment : BaseFragment(), RecyclerItemClick {
                 animator.start()
                 view.name.setCompoundDrawablesWithIntrinsicBounds(null, null, descendingName, null)
                 ascendingNames.set(true)
-                //sort by ascending names
-
+                CoroutineScope(Dispatchers.IO).launch {
+                    val templist =
+                        arrayList.sortedWith(compareByDescending(DCAssignment::assignment_name))
+                    arrayList.clear()
+                    arrayList.addAll(templist)
+                    withContext(Dispatchers.Main) {
+                        // notifydatasetchanged()
+                        adapter.notifyDataSetChanged()
+                    }
+                }
 
             }
         }
@@ -123,7 +140,16 @@ class AssignmentFragment : BaseFragment(), RecyclerItemClick {
                 animator.start()
                 view.batch.setCompoundDrawablesWithIntrinsicBounds(null, null, ascendingBatch, null)
                 ascendingBatches.set(false)
-                //sort by descending names
+                CoroutineScope(Dispatchers.IO).launch {
+                    val templist =
+                        arrayList.sortedWith(compareBy(DCAssignment::batch_name))
+                    arrayList.clear()
+                    arrayList.addAll(templist)
+                    withContext(Dispatchers.Main) {
+                        // notifydatasetchanged()
+                        adapter.notifyDataSetChanged()
+                    }
+                }
 
 
             } else {
@@ -137,12 +163,76 @@ class AssignmentFragment : BaseFragment(), RecyclerItemClick {
                     null
                 )
                 ascendingBatches.set(true)
-                //sort by ascending names
+                CoroutineScope(Dispatchers.IO).launch {
+                    val templist =
+                        arrayList.sortedWith(compareByDescending(DCAssignment::batch_name))
+                    arrayList.clear()
+                    arrayList.addAll(templist)
+                    withContext(Dispatchers.Main) {
+                        // notifydatasetchanged()
+                        adapter.notifyDataSetChanged()
+                    }
+                }
 
 
             }
         }
 
+
+        val ascendingCourses = AtomicBoolean(true)
+        val ascendingCourse =
+            context?.let { ContextCompat.getDrawable(it, R.drawable.animated_ascending) }
+        val descendingCourse =
+            context?.let { ContextCompat.getDrawable(it, R.drawable.animated_descending) }
+        view.course.setOnClickListener {
+            if (ascendingCourses.get()) {
+                val animator =
+                    ObjectAnimator.ofInt(ascendingBatch, "level", 0, 10000).setDuration(500)
+                animator.start()
+                view.course.setCompoundDrawablesWithIntrinsicBounds(null, null, ascendingCourse, null)
+                ascendingCourses.set(false)
+                CoroutineScope(Dispatchers.IO).launch {
+                    val templist =
+                        arrayList.sortedWith(compareBy(DCAssignment::course_name))
+                    arrayList.clear()
+                    arrayList.addAll(templist)
+                    withContext(Dispatchers.Main) {
+                        // notifydatasetchanged()
+                        adapter.notifyDataSetChanged()
+                    }
+                }
+
+
+            } else {
+                val animator =
+                    ObjectAnimator.ofInt(descendingBatch, "level", 0, 10000).setDuration(500)
+                animator.start()
+                view.course.setCompoundDrawablesWithIntrinsicBounds(
+                    null,
+                    null,
+                    descendingCourse,
+                    null
+                )
+                ascendingCourses.set(true)
+                CoroutineScope(Dispatchers.IO).launch {
+                    val templist =
+                        arrayList.sortedWith(compareByDescending(DCAssignment::course_name))
+                    arrayList.clear()
+                    arrayList.addAll(templist)
+                    withContext(Dispatchers.Main) {
+                        // notifydatasetchanged()
+                        adapter.notifyDataSetChanged()
+                    }
+                }
+
+
+            }
+
+
+
+
+
+        }
 
 /*
         for (i in 0..49) {

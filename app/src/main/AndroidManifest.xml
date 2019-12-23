@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
     <application
         android:allowBackup="false"
@@ -71,6 +72,11 @@
         <receiver android:name=".network.downloader.CancelDownloadListener">
             <intent-filter>
                 <action android:name="orionedutech.in.lmstrainerapp.stop" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".fragments.mainCourse.CallListenerBM">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver>
         <provider

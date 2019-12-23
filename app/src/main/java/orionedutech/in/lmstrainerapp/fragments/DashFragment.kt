@@ -240,7 +240,13 @@ class DashFragment : BaseFragment() {
         chart.isScaleXEnabled = true
         chart.isClickable = false
         chart.data = bardata
+        chart.isClickable = false
+        chart.isEnabled = false
+        chart.setTouchEnabled(false)
+        chart.setPinchZoom(false)
         chart.invalidate()
+
+
     }
 
     private fun showAnimation() {

@@ -650,10 +650,7 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
             topStatus.visibility = View.VISIBLE
         }
         val json = JSONObject()
-        //todo remove this later
-        //  json.put("chapter_id", chapterID)
-        json.put("chapter_id", "75")
-
+        json.put("chapter_id", chapterID)
         NetworkOps.post(Urls.trainingActivity, json.toString(), this, object : response {
             override fun onInternetfailure() {
                 if (isFinishing) {

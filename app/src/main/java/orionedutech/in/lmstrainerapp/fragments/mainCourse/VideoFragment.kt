@@ -8,6 +8,8 @@ import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
+import android.telephony.PhoneStateListener
+import android.telephony.TelephonyManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,8 +72,8 @@ class VideoFragment : Fragment() {
     var isTimerRunning = false
     var ended = false
     private lateinit var fullscreendialog: Dialog
-    lateinit var fullScreenPlayerView : PlayerView
-    lateinit var videoPref : SharedPreferences
+    lateinit var fullScreenPlayerView: PlayerView
+    lateinit var videoPref: SharedPreferences
     var trainingID = ""
     var trainerID = ""
     var centerID = ""
@@ -81,7 +83,7 @@ class VideoFragment : Fragment() {
     var moduleID = ""
     var unitID = ""
     var subUnitID = ""
-    var startTime : Long = 0L
+    var startTime: Long = 0L
     var once = false
 
     override fun onCreateView(
@@ -113,8 +115,8 @@ class VideoFragment : Fragment() {
         moduleID = bundle.getString("module_id")!!
         unitID = bundle.getString("unit_id")!!
         subUnitID = bundle.getString("subunit_id")!!
-         mLog.i(TAG, " $mediaUrl")
-       // mediaUrl = "https://orionedutech.co.in/cglms_real/uploads/courses/units/lessons/6CMTdz7txu.mp4"
+        mLog.i(TAG, " $mediaUrl")
+        // mediaUrl = "https://orionedutech.co.in/cglms_real/uploads/courses/units/lessons/6CMTdz7txu.mp4"
         videoPref = activity!!.getSharedPreferences("videoPref", Context.MODE_PRIVATE)
 
         controls = view.controlview
@@ -125,11 +127,11 @@ class VideoFragment : Fragment() {
         startActivity = view.button
 
         startActivity.setOnClickListener {
-           //go to activity
-            val intent = Intent(context,TrainerActivity::class.java)
-            intent.putExtra("chapter_id",chapterid)
+            //go to activity
+            val intent = Intent(context, TrainerActivity::class.java)
+            intent.putExtra("chapter_id", chapterid)
             startActivity(intent)
-            activity!!.supportFragmentManager.popBackStack()
+            //activity!!.supportFragmentManager.popBackStack()
             activity!!.overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left)
 
         }
@@ -211,8 +213,8 @@ class VideoFragment : Fragment() {
         player.addListener(playbackStateListener)
 
         player.playWhenReady = playWhenReady
-        //todo uncomment later
-       // controls.setControlDispatcher(PositionLimitingControlDispatcher())
+
+        controls.setControlDispatcher(PositionLimitingControlDispatcher())
         player.prepare(mediaSource, false, false)
 
 
@@ -254,30 +256,33 @@ class VideoFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mLog.i(TAG,"adding bookmark")
-        videoPref.edit().putLong(mediaUrl,player.contentPosition).apply()
+        mLog.i(TAG, "adding bookmark")
+        videoPref.edit().putLong(mediaUrl, player.contentPosition).apply()
         activity!!.window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
         sendUsageData()
     }
 
     private fun sendUsageData() {
         val json = JSONObject()
-        json.put("training_id",trainingID)
-        json.put("user_id",trainerID)
-        json.put("user_type","3")
-        json.put("center_id",centerID)
-        json.put("batch_id",batchID)
-        json.put("current_course_id",courseID)
-        json.put("current_chapter_id",chapterid)
-        json.put("current_storage_id",storageID)
-        json.put("module_id",moduleID)
-        json.put("media_seek",(player.contentPosition/1000).toString())
-        json.put("media_seek_remain",((player.duration - player.currentPosition)/1000).toString())
-        json.put("media_duration",(player.duration/1000).toString())
-        json.put("is_book_marked", if(ended) "2" else "1")
-        json.put("current_unit_id",unitID)
-        json.put("current_sub_unit_id",subUnitID)
-        json.put("media_type","2")
+        json.put("training_id", trainingID)
+        json.put("user_id", trainerID)
+        json.put("user_type", "3")
+        json.put("center_id", centerID)
+        json.put("batch_id", batchID)
+        json.put("current_course_id", courseID)
+        json.put("current_chapter_id", chapterid)
+        json.put("current_storage_id", storageID)
+        json.put("module_id", moduleID)
+        json.put("media_seek", (player.contentPosition / 1000).toString())
+        json.put(
+            "media_seek_remain",
+            ((player.duration - player.currentPosition) / 1000).toString()
+        )
+        json.put("media_duration", (player.duration / 1000).toString())
+        json.put("is_book_marked", if (ended) "2" else "1")
+        json.put("current_unit_id", unitID)
+        json.put("current_sub_unit_id", subUnitID)
+        json.put("media_type", "2")
 
         val builder = Data.Builder()
         builder.putString("json", json.toString())
@@ -304,27 +309,28 @@ class VideoFragment : Fragment() {
         }
     }
 
-    override fun onDetach() {
-        super.onDetach()
 
 
-    }
     private fun releasePlayer() {
         if (player != null) {
             playWhenReady = player.playWhenReady
             playbackPosition = player.currentPosition
             currentWindow = player.currentWindowIndex
+            videoPref.edit().putLong(mediaUrl, player.contentPosition).apply()
             player.release()
-            if(isTimerRunning){
-            timer.cancel()
+            if (isTimerRunning) {
+                timer.cancel()
+                isTimerRunning = false
+                once = false
             }
+
         }
     }
 
     inner class PlaybackStateListener : Player.EventListener {
         override fun onPlayerError(error: ExoPlaybackException?) {
             super.onPlayerError(error)
-            mLog.i(TAG,"on error")
+            mLog.i(TAG, "on error")
             var errorString = ""
             when (error!!.type) {
                 ExoPlaybackException.TYPE_REMOTE -> {
@@ -348,14 +354,13 @@ class VideoFragment : Fragment() {
                     errorString = "unexpected"
                 }
             }
-           MaterialAlertDialogBuilder(context).setTitle("An error has occured")
-               .setMessage("Error details : $errorString")
-               .setCancelable(false)
-               .setPositiveButton("Go back"){
-                   dialogInterface, i ->
-                   dialogInterface.dismiss()
-                   activity!!.onBackPressed()
-               }.create().show()
+            MaterialAlertDialogBuilder(context).setTitle("An error has occured")
+                .setMessage("Error details : $errorString")
+                .setCancelable(false)
+                .setPositiveButton("Go back") { dialogInterface, i ->
+                    dialogInterface.dismiss()
+                    activity!!.onBackPressed()
+                }.create().show()
         }
 
         override fun onPlayerStateChanged(
@@ -386,10 +391,10 @@ class VideoFragment : Fragment() {
                         runTimer()
                         isTimerRunning = true
                     }
-                    if(!once){
+                    if (!once) {
                         startTime = System.currentTimeMillis()
-                    player.seekTo(videoPref.getLong(mediaUrl,0))
-                    once = true
+                        player.seekTo(videoPref.getLong(mediaUrl, 0))
+                        once = true
                     }
                 }
                 ExoPlayer.STATE_ENDED -> {
@@ -397,7 +402,7 @@ class VideoFragment : Fragment() {
                     buffering.visibility = View.INVISIBLE
                     buffering.cancelAnimation()
                     startActivity.isEnabled = true
-                    ended  = true
+                    ended = true
 
                 }
                 else -> stateString = "UNKNOWN_STATE             -"
@@ -421,7 +426,6 @@ class VideoFragment : Fragment() {
     }
 
 
-
     private class PositionLimitingControlDispatcher :
         DefaultControlDispatcher() {
         private var maxPlayedPositionMs: Long = 0
@@ -431,7 +435,7 @@ class VideoFragment : Fragment() {
         }
 
         // Note: This implementation assumes single window content. You might need to do
-// something more complicated, depending on your use case.
+        // something more complicated, depending on your use case.
         override fun dispatchSeekTo(
             player: Player,
             windowIndex: Int,
@@ -444,4 +448,6 @@ class VideoFragment : Fragment() {
             return true
         }
     }
+
+
 }

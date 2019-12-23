@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.style.RelativeSizeSpan
 import android.view.*
 import android.view.View.VISIBLE
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -59,8 +60,8 @@ import orionedutech.`in`.lmstrainerapp.network.VersionChecker
 import orionedutech.`in`.lmstrainerapp.network.NetworkOps
 import orionedutech.`in`.lmstrainerapp.network.Urls
 import orionedutech.`in`.lmstrainerapp.network.response
-import java.lang.StringBuilder
 import java.util.concurrent.TimeUnit
+import kotlin.text.StringBuilder
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
     MoveNavBar.move, profilebooleantoggle.capture, SetProfileImage.Image {
@@ -82,8 +83,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     var permissions = arrayOf(
         android.Manifest.permission.READ_EXTERNAL_STORAGE,
         android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        android.Manifest.permission.CAMERA
+        android.Manifest.permission.CAMERA,
+        android.Manifest.permission.READ_PHONE_STATE
     )
+    lateinit var loginPrefs : SharedPreferences
     var profile = false
     lateinit var barPreferences: SharedPreferences
     private fun hasPermissions(context: Context, vararg permissions: String): Boolean =
@@ -95,14 +98,15 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         bottomNav = bottom_navigation
-
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         profilePref = getSharedPreferences("profile", Context.MODE_PRIVATE)
         versionPref = getSharedPreferences("appversion", Context.MODE_PRIVATE)
+        loginPrefs = getSharedPreferences("login", Context.MODE_PRIVATE)
         notification.setOnClickListener {
             mLog.i(TAG,"clicked")
         }
         setSupportActionBar(toolbar)
+        toolbar.title = ""
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val toggle = ActionBarDrawerToggle(
             this, drawerLayout, toolbar,
@@ -139,21 +143,24 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
 
 
-       /* val mi = m.getItem(m.size() - 1)
+       val mi = m.getItem(m.size() - 1)
         val font: Typeface? = ResourcesCompat.getFont(
             this,
             R.font.opensans_bold
         )
+      /*  val font1: Typeface? = ResourcesCompat.getFont(
+            this,
+            R.font.opensans_regular
+        )*/
         val mNewTitle = SpannableString(mi.toString())
+        mNewTitle.setSpan(font?.let { CustomTypefaceSpan("", it)}, 0, mNewTitle.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+        /* val mNewTitle = SpannableString(StringBuilder().append(mi.toString()).append(resources.getString(R.string.version_number)))
 
-        mNewTitle.setSpan(font?.let {
-            CustomTypefaceSpan(
-                "",
-                it
-            )
-        }, 0, mNewTitle.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-
-        mi.title = mNewTitle*/
+         mNewTitle.setSpan(font?.let { CustomTypefaceSpan("", it)}, 0, mNewTitle.indexOf("t"), Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+         mNewTitle.setSpan(font1?.let { CustomTypefaceSpan("", it)},  mNewTitle.indexOf("t")+1,mNewTitle.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+         mNewTitle.setSpan(RelativeSizeSpan(0.7f),  mNewTitle.indexOf("t")+1,mNewTitle.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+ */
+        mi.title = mNewTitle
 
         addDash()
         lastFrag = DashFragment().javaClass.simpleName
@@ -468,6 +475,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 launch {
                     applicationContext?.let {
                         startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+                        loginPrefs.edit().putBoolean("logged_out",true).apply()
                         overridePendingTransition(
                             R.anim.enter_from_left,
                             R.anim.exit_to_right

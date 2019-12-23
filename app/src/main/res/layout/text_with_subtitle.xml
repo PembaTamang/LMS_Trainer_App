@@ -1,23 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout3"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:gravity="start"
-    android:orientation="vertical">
+    android:background="@color/black"
+    android:layout_gravity="start">
 
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/textView29"
+        style="@style/Bubble"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="title"
-        style="@style/Bubble"
+        android:textAlignment="textStart"
         android:textAppearance="@style/OpenSansRegular"
-        android:textAlignment="textStart" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/textView31"
         style="@style/Bubble"
-        android:textAppearance="@style/OpenSansRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="sub Title"
         android:textAlignment="textStart"
-        android:text="sub Title"/>
-</LinearLayout>
+        android:textAppearance="@style/OpenSansRegular"
+        app:layout_constraintStart_toStartOf="@+id/textView29"
+        app:layout_constraintTop_toBottomOf="@+id/textView29" />
+</androidx.constraintlayout.widget.ConstraintLayout>

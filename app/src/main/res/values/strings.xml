@@ -21,5 +21,6 @@
     <string name="pickernotworking"><u>file picker not working?</u></string>
 
     <string name="time_speed">loading time/speed…</string>
-    <string name="version_number"> Version 1.0.0</string>
+    <string name="version_number">App version 1.0.0</string>
+    <string name="start_stt">Please go through the entire video and start the related Activity</string>
 </resources>

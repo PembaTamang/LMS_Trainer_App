@@ -23,6 +23,7 @@
         android:background="@color/colorPrimary"
         android:elevation="0dp"
         android:fitsSystemWindows="true"
+        app:itemMaxLines="2"
         app:headerLayout="@layout/nav_header_main"
         app:itemBackground="@drawable/drawer_selected_item"
         app:itemIconTint="@color/nav_text_colors"

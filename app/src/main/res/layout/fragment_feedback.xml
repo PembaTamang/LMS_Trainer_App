@@ -114,7 +114,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:backgroundTint="@color/red"
+        android:backgroundTint="@color/green"
         android:text="Give Feedback"
         android:textColor="@color/white"
         app:cornerRadius="8dp"

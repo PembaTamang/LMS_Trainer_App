@@ -1,6 +1,8 @@
 package orionedutech.`in`.lmstrainerapp.activities
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
@@ -38,13 +40,15 @@ class LoginActivity : BaseActivity() {
     private lateinit var login: MaterialButton
     private var emailText: String = ""
     private var passwordText: String = ""
-
+    lateinit var loginPrefs : SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         email = findViewById(R.id.editText)
         password = findViewById(R.id.editText2)
         login = findViewById(R.id.login)
+        loginPrefs = getSharedPreferences("login", Context.MODE_PRIVATE)
+
         val ok: Drawable = ContextCompat.getDrawable(
             this,
             R.drawable.check
@@ -57,13 +61,21 @@ class LoginActivity : BaseActivity() {
         )!!
         notOk.setBounds(0, 0, ok.intrinsicWidth, ok.intrinsicHeight)
 
-        if (BuildConfig.DEBUG) {
+    /*    if (BuildConfig.DEBUG) {
             email.setText(getString(R.string.demo_user))
             password.setText(getString(R.string.demo_user_pass))
             emailText = (getString(R.string.demo_user))
             passwordText = (getString(R.string.demo_user_pass))
+        }*/
+        if(loginPrefs.getBoolean("logged_out",false)){
+            val mail = loginPrefs.getString("username","")
+            val pass = loginPrefs.getString("password","")
+            email.setText(mail)
+            password.setText(pass)
+            emailText = mail!!
+            passwordText = pass!!
+            password.setCompoundDrawables(null, null, ok, null)
         }
-
         email.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
 
@@ -149,7 +161,7 @@ class LoginActivity : BaseActivity() {
                     mLog.i(TAG, "success")
                     val userData = userModel.userdata
                     val trainer = userModel.trainer_data
-
+                    loginPrefs.edit().putBoolean("logged_out",false).apply()
                     launch {
                         applicationContext?.let {
                             val dao: UserDao = MDatabase(it)
@@ -182,15 +194,20 @@ class LoginActivity : BaseActivity() {
                                 if (user == dao.getuserDetails()) {
                                     mLog.i(TAG, "same user enter it")
                                     goToMainActivity(user.name!!)
+
+
                                 } else {
                                     mLog.i(TAG, "different user")
                                     dao.insertUser(user)
                                     goToMainActivity(user.name!!)
+                                    loginPrefs.edit().putString("username",emailText).putString("password",passwordText).apply()
                                 }
                             } else {
                                 mLog.i(TAG, "new user")
                                 dao.insertUser(user)
                                 goToMainActivity(user.name!!)
+
+                                loginPrefs.edit().putString("username",emailText).putString("password",passwordText).apply()
                             }
 
                         }
@@ -259,7 +276,7 @@ class LoginActivity : BaseActivity() {
                 R.anim.enter_from_right, R.anim.exit_to_left
             )
             finish()
-        }, 1000)
+        }, 1500)
 
     }
 

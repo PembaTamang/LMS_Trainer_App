@@ -83,7 +83,7 @@ class BatchFragment : Fragment() {
                 val animator =
                     ObjectAnimator.ofInt(ascending, "level", 0, 10000).setDuration(500)
                 animator.start()
-                batchName.setCompoundDrawablesWithIntrinsicBounds(null, null, ascending, null)
+                batchName.setCompoundDrawablesWithIntrinsicBounds(null, null, descending, null)
                 ascendingNames.set(false)
                 //sort by descending names
                 CoroutineScope(IO).launch {
@@ -100,7 +100,7 @@ class BatchFragment : Fragment() {
                 val animator =
                     ObjectAnimator.ofInt(descending, "level", 0, 10000).setDuration(500)
                 animator.start()
-                batchName.setCompoundDrawablesWithIntrinsicBounds(null, null, descending, null)
+                batchName.setCompoundDrawablesWithIntrinsicBounds(null, null, ascending, null)
                 ascendingNames.set(true)
                 //sort by ascending names
                 CoroutineScope(IO).launch {
@@ -126,7 +126,7 @@ class BatchFragment : Fragment() {
                 batchCenter.setCompoundDrawablesWithIntrinsicBounds(
                     null,
                     null,
-                    ascending,
+                    descending,
                     null
                 )
                 ascendingCenters.set(false)
@@ -148,7 +148,7 @@ class BatchFragment : Fragment() {
                 batchCenter.setCompoundDrawablesWithIntrinsicBounds(
                     null,
                     null,
-                    descending,
+                    ascending,
                     null
                 )
                 ascendingCenters.set(true)
@@ -178,7 +178,7 @@ class BatchFragment : Fragment() {
                 batchCourse.setCompoundDrawablesWithIntrinsicBounds(
                     null,
                     null,
-                    ascending,
+                    descending,
                     null
                 )
                 ascendingCourses.set(false)
@@ -200,7 +200,7 @@ class BatchFragment : Fragment() {
                 batchCourse.setCompoundDrawablesWithIntrinsicBounds(
                     null,
                     null,
-                    descending,
+                    ascending,
                     null
                 )
                 ascendingCourses.set(true)

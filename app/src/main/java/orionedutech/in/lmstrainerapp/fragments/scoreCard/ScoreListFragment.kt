@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView
 import com.google.gson.Gson
@@ -110,8 +111,9 @@ class ScoreListFragment : Fragment() {
                         email.text = mail
                         name.text = naam
                         time.text = String.format("Time : %s minutes",samay)
-                        totalQ.text = String.format("Total Ques : %s ",totalQues)
-                        rightans.text = String.format("Right Ans : %d ",correct)
+                        totalQ.text = String.format("Total Questions : %s ",totalQues)
+                        rightans.text = String.format("Right Answers : %d ",correct)
+                        rightans.setTextColor(ContextCompat.getColor(context!!,R.color.green))
                         dates.text = String.format("Start and End Date :  %s - %s",startDate,endDate)
                         percentage = percentage.replace(",","")
                         progressBar.progress = percentage.toFloat()

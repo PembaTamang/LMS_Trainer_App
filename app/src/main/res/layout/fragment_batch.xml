@@ -90,7 +90,7 @@
         android:background="@color/black"
         android:drawableEnd="@drawable/ascending"
         android:padding="4dp"
-        android:text="Batch Center"
+        android:text="Center Names"
         android:drawablePadding="4dp"
         android:textAlignment="textStart"
         android:textAppearance="@style/OpenSansSemiBold"

@@ -5,11 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:fillViewport="true"
     tools:context=".fragments.DashFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/textView3"
@@ -17,23 +18,23 @@
             android:layout_height="wrap_content"
             android:background="@color/blue"
             android:gravity="bottom"
+            android:minHeight="0dp"
             android:paddingStart="24dp"
             android:text="Welcome"
             android:textAlignment="gravity"
             android:textAppearance="@style/Baloo"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:minHeight="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/name"
-            android:minHeight="0dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/blue"
+            android:minHeight="0dp"
             android:paddingStart="24dp"
             android:text="Firstname Lastname"
             android:textAppearance="@style/Baloo"
@@ -118,10 +119,10 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingTop="16dp"
-                android:paddingBottom="16dp"
                 android:paddingStart="8dp"
-                android:paddingEnd="8dp">
+                android:paddingTop="16dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="16dp">
 
                 <TextView
                     android:id="@+id/textView4"
@@ -203,10 +204,10 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingTop="16dp"
-                android:paddingBottom="16dp"
                 android:paddingStart="8dp"
-                android:paddingEnd="8dp">
+                android:paddingTop="16dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="16dp">
 
                 <TextView
                     android:id="@+id/textView7"
@@ -264,10 +265,10 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingTop="16dp"
-                android:paddingBottom="16dp"
                 android:paddingStart="8dp"
-                android:paddingEnd="8dp">
+                android:paddingTop="16dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="16dp">
 
                 <TextView
                     android:id="@+id/textView8"
@@ -338,12 +339,24 @@
         <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/bar"
             android:layout_width="0dp"
-            android:layout_height="150dp"
+            android:layout_height="0dp"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/textView32"
             app:layout_constraintEnd_toEndOf="@+id/dashSpinner"
             app:layout_constraintStart_toStartOf="@+id/dashSpinner"
             app:layout_constraintTop_toBottomOf="@+id/dashSpinner" />
 
+        <TextView
+            android:id="@+id/textView32"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/version_number"
+            android:textAppearance="@style/OpenSansRegular"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
