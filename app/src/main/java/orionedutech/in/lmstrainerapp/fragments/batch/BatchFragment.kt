@@ -29,8 +29,8 @@ import orionedutech.`in`.lmstrainerapp.mToast
 import orionedutech.`in`.lmstrainerapp.mToast.showToast
 import orionedutech.`in`.lmstrainerapp.network.NetworkOps
 import orionedutech.`in`.lmstrainerapp.network.Urls
-import orionedutech.`in`.lmstrainerapp.network.dataModels.DCBatchesLong
-import orionedutech.`in`.lmstrainerapp.network.dataModels.DCBatchesLongList
+import orionedutech.`in`.lmstrainerapp.network.dataModels.DCBatchFragment
+import orionedutech.`in`.lmstrainerapp.network.dataModels.DCBatchFragmentItem
 import orionedutech.`in`.lmstrainerapp.network.response
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -46,12 +46,13 @@ class BatchFragment : Fragment() {
     lateinit var createBatch: MaterialButton
     lateinit var batchName: TextView
     lateinit var batchCenter: TextView
-    lateinit var batchCourse : TextView
+    lateinit var batchCourse: TextView
+    lateinit var nosTV : TextView
     lateinit var course: TextView
     lateinit var recyclerView: ShimmerRecyclerView
     lateinit var adapter: BatchAdapterAlt
     lateinit var refresh: SwipeRefreshLayout
-    var arrayList: ArrayList<DCBatchesLong> = ArrayList()
+    var arrayList: ArrayList<DCBatchFragmentItem> = ArrayList()
 
 
     override fun onCreateView(
@@ -66,11 +67,14 @@ class BatchFragment : Fragment() {
         batchCourse = view.course
         course = view.course
         recyclerView = view.recycler
+        nosTV = view.nostds
         refresh = view.swipe
         recyclerView.layoutManager = LinearLayoutManager(context)
         adapter = BatchAdapterAlt(arrayList)
         recyclerView.adapter = adapter
-
+        view.back.setOnClickListener {
+            activity!!.onBackPressed()
+        }
 
         val ascending =
             context?.let { ContextCompat.getDrawable(it, R.drawable.animated_ascending) }
@@ -88,11 +92,11 @@ class BatchFragment : Fragment() {
                 //sort by descending names
                 CoroutineScope(IO).launch {
                     val templist =
-                        arrayList.sortedWith(compareByDescending(DCBatchesLong::batch_name))
+                        arrayList.sortedWith(compareByDescending(DCBatchFragmentItem::batch_name))
                     arrayList.clear()
                     arrayList.addAll(templist)
                     withContext(Main) {
-                       // notifydatasetchanged()
+                        // notifydatasetchanged()
                         adapter.notifyDataSetChanged()
                     }
                 }
@@ -104,11 +108,11 @@ class BatchFragment : Fragment() {
                 ascendingNames.set(true)
                 //sort by ascending names
                 CoroutineScope(IO).launch {
-                    val templist = arrayList.sortedWith(compareBy(DCBatchesLong::batch_name))
+                    val templist = arrayList.sortedWith(compareBy(DCBatchFragmentItem::batch_name))
                     arrayList.clear()
                     arrayList.addAll(templist)
                     withContext(Main) {
-                       // notifydatasetchanged()
+                        // notifydatasetchanged()
                         adapter.notifyDataSetChanged()
                     }
 
@@ -133,11 +137,11 @@ class BatchFragment : Fragment() {
                 //sort by descending centers
                 CoroutineScope(IO).launch {
                     val templist =
-                        arrayList.sortedWith(compareByDescending(DCBatchesLong::batch_center))
+                        arrayList.sortedWith(compareByDescending(DCBatchFragmentItem::batch_center_name))
                     arrayList.clear()
                     arrayList.addAll(templist)
                     withContext(Main) {
-                       // notifydatasetchanged()
+                        // notifydatasetchanged()
                         adapter.notifyDataSetChanged()
                     }
                 }
@@ -154,19 +158,17 @@ class BatchFragment : Fragment() {
                 ascendingCenters.set(true)
                 //sort by ascending centers
                 CoroutineScope(IO).launch {
-                    val templist = arrayList.sortedWith(compareBy(DCBatchesLong::batch_center))
+                    val templist = arrayList.sortedWith(compareBy(DCBatchFragmentItem::batch_center_name))
                     arrayList.clear()
                     arrayList.addAll(templist)
                     withContext(Main) {
-                       // notifydatasetchanged()
+                        // notifydatasetchanged()
                         adapter.notifyDataSetChanged()
                     }
                 }
 
             }
         }
-
-
 
 
         val ascendingCourses = AtomicBoolean(true)
@@ -185,7 +187,7 @@ class BatchFragment : Fragment() {
                 //sort by descending centers
                 CoroutineScope(IO).launch {
                     val templist =
-                        arrayList.sortedWith(compareByDescending(DCBatchesLong::courses_wbt))
+                        arrayList.sortedWith(compareByDescending(DCBatchFragmentItem::batch_code))
                     arrayList.clear()
                     arrayList.addAll(templist)
                     withContext(Main) {
@@ -206,7 +208,55 @@ class BatchFragment : Fragment() {
                 ascendingCourses.set(true)
                 //sort by ascending centers
                 CoroutineScope(IO).launch {
-                    val templist = arrayList.sortedWith(compareBy(DCBatchesLong::courses_wbt))
+                    val templist = arrayList.sortedWith(compareBy(DCBatchFragmentItem::batch_code))
+                    arrayList.clear()
+                    arrayList.addAll(templist)
+                    withContext(Main) {
+                        // notifydatasetchanged()
+                        adapter.notifyDataSetChanged()
+                    }
+                }
+
+            }
+        }
+        val ascendingNos = AtomicBoolean(true)
+        nosTV.setOnClickListener {
+            if (ascendingNos.get()) {
+                val animator =
+                    ObjectAnimator.ofInt(ascending, "level", 0, 10000).setDuration(500)
+                animator.start()
+                nosTV.setCompoundDrawablesWithIntrinsicBounds(
+                    null,
+                    null,
+                    descending,
+                    null
+                )
+                ascendingNos.set(false)
+                //sort by descending centers
+                CoroutineScope(IO).launch {
+                    val templist =
+                        arrayList.sortedWith(compareByDescending(DCBatchFragmentItem::batch_total_students))
+                    arrayList.clear()
+                    arrayList.addAll(templist)
+                    withContext(Main) {
+                        // notifydatasetchanged()
+                        adapter.notifyDataSetChanged()
+                    }
+                }
+            } else {
+                val animator =
+                    ObjectAnimator.ofInt(descending, "level", 0, 10000).setDuration(500)
+                animator.start()
+                nosTV.setCompoundDrawablesWithIntrinsicBounds(
+                    null,
+                    null,
+                    ascending,
+                    null
+                )
+                ascendingNos.set(true)
+                //sort by ascending centers
+                CoroutineScope(IO).launch {
+                    val templist = arrayList.sortedWith(compareBy(DCBatchFragmentItem::batch_total_students))
                     arrayList.clear()
                     arrayList.addAll(templist)
                     withContext(Main) {
@@ -243,14 +293,14 @@ class BatchFragment : Fragment() {
                 centerID = userDao.getCenterID()
                 val json = JSONObject()
                 json.put("trainer_id", uid)
-                json.put("batch_id",batches)
+                json.put("batch_id", batches)
                 getBatches(json.toString())
             }
         }
     }
 
     private fun getBatches(json: String) {
-        if(activity==null){
+        if (activity == null) {
             return
         }
         activity!!.runOnUiThread {
@@ -258,10 +308,14 @@ class BatchFragment : Fragment() {
         }
         NetworkOps.post(Urls.batchesUrl, json, context, object : response {
             override fun onrespose(string: String?) {
-                val batchData = Gson().fromJson(string, DCBatchesLongList::class.java)
+                if(string.isNullOrEmpty()){
+                    onfailure()
+                    return
+                }
+                val batchData = Gson().fromJson(string, DCBatchFragment::class.java)
 
                 if (batchData == null) {
-                    if(activity==null){
+                    if (activity == null) {
                         return
                     }
                     activity!!.runOnUiThread {
@@ -273,12 +327,12 @@ class BatchFragment : Fragment() {
                     val batch = batchData.batches
                     arrayList.clear()
                     arrayList.addAll(batch)
-                    if (activity == null){
-                    return
+                    if (activity == null) {
+                        return
                     }
                     activity!!.runOnUiThread {
                         recyclerView.hideShimmerAdapter()
-                       // notifydatasetchanged()
+                        // notifydatasetchanged()
                         adapter.notifyDataSetChanged()
                     }
                 } else {
@@ -293,7 +347,7 @@ class BatchFragment : Fragment() {
             }
 
             override fun onInternetfailure() {
-                if(activity==null){
+                if (activity == null) {
                     return
                 }
                 activity!!.runOnUiThread {
@@ -320,7 +374,7 @@ class BatchFragment : Fragment() {
     }
 
     private fun runFailureCode() {
-        if (activity == null){
+        if (activity == null) {
             return
         }
         activity!!.runOnUiThread {

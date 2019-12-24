@@ -22,5 +22,9 @@
 
     <string name="time_speed">loading time/speed…</string>
     <string name="version_number">App version 1.0.0</string>
-    <string name="start_stt">Please go through the entire video and start the related Activity</string>
+    <string name="start_stt"> Please go through the entire video and start the activities</string>
+    <string name="n_of_students">Number of\nStudents</string>
+    <string name="batch_name">Batch\nName</string>
+    <string name="center_name">Center\nName</string>
+    <string name="batch_code">Batch\nCode</string>
 </resources>

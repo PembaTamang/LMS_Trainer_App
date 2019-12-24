@@ -1,6 +1,7 @@
 package orionedutech.in.lmstrainerapp.network;
 
 import android.content.Context;
+import android.os.Handler;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 
@@ -27,7 +28,6 @@ import okhttp3.Response;
 
 import orionedutech.in.lmstrainerapp.mLog;
 import static orionedutech.in.lmstrainerapp.mLog.TAG;
-import static orionedutech.in.lmstrainerapp.MUtilsKt.noInternetSnackBar;
 import static orionedutech.in.lmstrainerapp.MUtilsKt.showToast;
 import static orionedutech.in.lmstrainerapp.MUtilsKt.isConnected;
 
@@ -43,7 +43,8 @@ public class NetworkOps {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 resp.onfailure();
-                showToast(context,"server error");
+               showToast(context,"server error");
+
             }
 
             @Override
@@ -51,7 +52,7 @@ public class NetworkOps {
                 if(response.isSuccessful()) {
                     resp.onrespose(Objects.requireNonNull(response.body()).string());
                 }else{
-                    showToast(context,"server error : " + response.code());
+                   showToast(context,"server error : " + response.code());
                 }
             }
         });

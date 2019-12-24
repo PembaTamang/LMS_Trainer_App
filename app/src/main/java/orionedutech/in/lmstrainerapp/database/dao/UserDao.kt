@@ -100,5 +100,17 @@ interface UserDao {
     suspend fun userDataExists(): Boolean {
         return getUserTableCount()>0
     }
+    @Update
+    suspend fun update(user: User)
+
+    @Transaction
+   suspend fun updateProfileInfo(name:String,phone:String,center:String,email:String,dob:String){
+        val user =getuserDetails()
+        user.name = name
+        user.centerName = center
+        user.email = email
+        user.user_dob = dob
+        update(user)
+    }
 
 }

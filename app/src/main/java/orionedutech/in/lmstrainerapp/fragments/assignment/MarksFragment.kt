@@ -95,7 +95,9 @@ class MarksFragment : Fragment() {
         assignmentContainer = view.materialCardView8
         totalContainer = view.materialCardView10
         studentContainer = view.materialCardView9
-
+        view.back.setOnClickListener {
+            activity!!.onBackPressed()
+        }
         batchAdapter = BatchSpinAdapter(
             context!!,
             android.R.layout.simple_list_item_1,

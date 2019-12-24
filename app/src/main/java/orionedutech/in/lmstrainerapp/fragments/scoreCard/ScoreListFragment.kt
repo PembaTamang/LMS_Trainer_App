@@ -1,6 +1,8 @@
 package orionedutech.`in`.lmstrainerapp.fragments.scoreCard
 
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,10 +12,15 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView
 import com.google.gson.Gson
 import com.mikhaellopez.circularprogressbar.CircularProgressBar
+import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.fragment_score_list.view.*
+import kotlinx.android.synthetic.main.fragment_score_list.view.name
+import kotlinx.android.synthetic.main.nav_header_main.view.*
 import org.json.JSONObject
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.adapters.recyclerviews.ScoreListAdapter
@@ -43,6 +50,8 @@ class ScoreListFragment : Fragment() {
     lateinit var percentageTV: TextView
     lateinit var progressBar: CircularProgressBar
     lateinit var recyclerView: ShimmerRecyclerView
+    lateinit var profileImage : CircleImageView
+    lateinit var profilePref: SharedPreferences
     var naam = ""
     var mail = ""
     var arrayList: ArrayList<DCScoreList> = ArrayList()
@@ -71,14 +80,23 @@ class ScoreListFragment : Fragment() {
         totalQ = view.totalQ
         rightans = view.rightAns
         dates = view.dates
+        profileImage = view.imageView8
         percentageTV = view.progressTV
         progressBar = view.circularProgressBar
         recyclerView = view.recycler
         recyclerView.layoutManager = LinearLayoutManager(context)
         adapter = ScoreListAdapter(arrayList)
         recyclerView.adapter = adapter
+        profilePref = activity!!.getSharedPreferences("profile", Context.MODE_PRIVATE)
+        val imageURL = profilePref.getString("image", "")
+        if (imageURL != "") {
+            Glide.with(this).load(imageURL).skipMemoryCache(true).diskCacheStrategy(
+                DiskCacheStrategy.NONE).into(profileImage)
+        }
         getScoreData(json.toString())
-
+        view.back.setOnClickListener {
+            activity!!.onBackPressed()
+        }
         return view
     }
 

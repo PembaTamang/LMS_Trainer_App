@@ -5,27 +5,27 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "user_table")
 data class User(
-val userID:String?,
-val userName:String?,
-val userRoleName:String?,
-val adminID:String? ,
-val name:String? ,
-val email:String?,
-val phoneNumber:String?,
-val adminType:String?,
-val batchID:String?,
-val centerID:String?,
-val batchName:String?,
-val centerName:String?,
-val password:String?,
-val pan:String?,
-val aadhar:String?,
-val user_doj:String?,
-val user_dob:String?,
-val last_qualification:String?,
-val prof_qualification:String?,
-val workExperice:String?,
-val userprofileid: String?
+var userID:String?,
+var userName:String?,
+var userRoleName:String?,
+var adminID:String? ,
+var name:String? ,
+var email:String?,
+var phoneNumber:String?,
+var adminType:String?,
+var batchID:String?,
+var centerID:String?,
+var batchName:String?,
+var centerName:String?,
+var password:String?,
+var pan:String?,
+var aadhar:String?,
+var user_doj:String?,
+var user_dob:String?,
+var last_qualification:String?,
+var prof_qualification:String?,
+var workExperice:String?,
+var userprofileid: String?
 
 ) {
     @PrimaryKey(autoGenerate = true)

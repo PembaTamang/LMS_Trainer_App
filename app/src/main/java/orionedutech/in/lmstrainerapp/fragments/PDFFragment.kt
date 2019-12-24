@@ -73,7 +73,9 @@ class PDFFragment : BaseFragment() {
                 }.load()
 
 
-
+        view.back.setOnClickListener {
+            activity!!.onBackPressed()
+        }
         view.export.setOnClickListener {
             MaterialAlertDialogBuilder(context).setTitle("Alert")
                 .setMessage("Do you want to export the file to storage?")

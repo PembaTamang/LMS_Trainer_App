@@ -18,6 +18,18 @@
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/back"
+        android:layout_width="50dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/back"
+        app:layout_constraintBottom_toBottomOf="@+id/pdfName"
+        app:layout_constraintEnd_toStartOf="@+id/export"
+        app:layout_constraintTop_toTopOf="@+id/pdfName" />
     <ImageButton
         android:id="@+id/export"
         android:layout_width="50dp"
@@ -54,10 +66,12 @@
         android:visibility="gone"
         app:lottie_fileName="download.json"
         app:lottie_loop="true" />
+
     <TextView
         android:id="@+id/wait"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="please wait while the pdf is being downloaded..."
         android:textAppearance="@style/OpenSansRegular"
         app:layout_constraintBottom_toBottomOf="@+id/swipe"

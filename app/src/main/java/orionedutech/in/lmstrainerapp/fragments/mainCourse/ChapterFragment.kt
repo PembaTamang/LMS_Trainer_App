@@ -82,7 +82,9 @@ class ChapterFragment : Fragment(), RecyclerItemClick {
         adapter = ChapterAdapter(arrayList, this)
         recyclerView.adapter = adapter
         val bundle = arguments!!
-
+        view.back.setOnClickListener {
+            activity!!.onBackPressed()
+        }
         trainerID = bundle.getString("trainerID","")
         trainingID = bundle.getString("trainingID","")
         uniqueID = bundle.getString("uniqueID", "")

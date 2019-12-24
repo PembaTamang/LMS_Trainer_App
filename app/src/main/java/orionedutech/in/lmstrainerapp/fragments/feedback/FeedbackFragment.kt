@@ -97,7 +97,9 @@ class FeedbackFragment : BaseFragment() {
             }
 
         }
-
+        view.back.setOnClickListener {
+            activity!!.onBackPressed()
+        }
         courseSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(p0: AdapterView<*>?) {
             }

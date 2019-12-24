@@ -68,7 +68,9 @@ class ManualFragment : BaseFragment(), PDFDownloadComplete.complete {
             WindowManager.LayoutParams.FLAG_SECURE
         )
         val view = inflater.inflate(R.layout.fragment_manual, container, false)
-
+        view.back.setOnClickListener {
+            activity!!.onBackPressed()
+        }
         pdfView = view.pdfView
         animation = view.animation1
         waitText = view.wait

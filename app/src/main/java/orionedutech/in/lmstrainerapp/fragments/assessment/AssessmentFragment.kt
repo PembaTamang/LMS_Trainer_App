@@ -129,7 +129,9 @@ class AssessmentFragment : BaseFragment(), RecyclerItemClick {
             }
 
         }
-
+        view.back.setOnClickListener {
+            activity!!.onBackPressed()
+        }
         view.button.setOnClickListener {
             launch {
                 context?.let {

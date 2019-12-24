@@ -75,7 +75,9 @@ class AssignmentFragment : BaseFragment(), RecyclerItemClick {
             //upload code here
             moveToFragment(AssignmentUploadFragment())
         }
-
+        view.back.setOnClickListener {
+            activity!!.onBackPressed()
+        }
         giveMarks.setOnClickListener {
             moveToFragment(MarksFragment())
 

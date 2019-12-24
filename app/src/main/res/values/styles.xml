@@ -151,12 +151,23 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
+    <style name="DateDialogTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert.Bridge">
+        <item name="colorAccent">@color/blue</item>
+    </style>
+
     <style name="NegativeButtonStyle1" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">#FFFFFF</item>
     </style>
 
     <style name="PositiveButtonStyle1" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">#FFFFFF</item>
+    </style>
+    <style name="NegativeButtonStyle2" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/blue</item>
+    </style>
+
+    <style name="PositiveButtonStyle2" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/blue</item>
     </style>
 
     <style name="Bubble" parent="android:Widget.TextView">

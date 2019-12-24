@@ -138,7 +138,9 @@ class VideoFragment : Fragment() {
 
         playbackStateListener = PlaybackStateListener()
         currentAudioLevel = 0f
-
+        view.back.setOnClickListener {
+            activity!!.onBackPressed()
+        }
         mute.setOnClickListener {
             if (!muteAudio) {
                 player.audioComponent!!.volume = 0f

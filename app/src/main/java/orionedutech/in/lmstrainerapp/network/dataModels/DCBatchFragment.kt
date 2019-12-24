@@ -1,6 +1,7 @@
 package orionedutech.`in`.lmstrainerapp.network.dataModels
 
-data class DCBatchesLongList(
-    val batches: List<DCBatchesLong>,
+
+data class DCBatchFragment(
+    val batches: List<DCBatchFragmentItem>,
     val success: String
 )

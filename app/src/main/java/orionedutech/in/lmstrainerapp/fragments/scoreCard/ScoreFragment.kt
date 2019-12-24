@@ -85,6 +85,9 @@ class ScoreFragment : Fragment(), RecyclerItemClick {
                 getScoreData(json.toString())
             }
         }
+        view.back.setOnClickListener {
+            activity!!.onBackPressed()
+        }
         return view
     }
 

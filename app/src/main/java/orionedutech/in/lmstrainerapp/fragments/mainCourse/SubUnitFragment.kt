@@ -91,6 +91,9 @@ class SubUnitFragment : Fragment(), RecyclerItemClick {
         adapter = ChapterAdapter1(arrayList, this)
         recyclerView.adapter = adapter
         isUnitData = false
+        view.back.setOnClickListener {
+            activity!!.onBackPressed()
+        }
         getData()
 
         return view
