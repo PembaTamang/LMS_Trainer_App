@@ -70,11 +70,6 @@ fun Context.isConnected():Boolean {
     return result
 }
 
-fun Context.hideKeyboard(view: View) {
-    val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
-}
-
 fun Context.noInternetSnackBar(view: View) {
 Handler(Looper.getMainLooper()).run {
     val snackbar = Snackbar.make(
@@ -100,27 +95,6 @@ Handler(Looper.getMainLooper()).run {
 
 }
           }
-
-fun getFileUri(context : Context,file : File) : Uri {
-    return  FileProvider.getUriForFile(context, "orionedutech.in.lmstrainerapp.fileprovider", file)
-}
- fun getOrientation(context: Context, photoUri: Uri): Int {
-    var cursor = context.contentResolver.query(
-        photoUri,
-        arrayOf(MediaStore.Images.ImageColumns.ORIENTATION), null, null, null
-    )
-
-    if (cursor!!.count != 1) {
-        cursor.close()
-        return -1
-    }
-
-    cursor.moveToFirst()
-    val orientation = cursor.getInt(0)
-    cursor.close()
-    cursor = null
-    return orientation
-}
 
 fun versionCompare(str1:String, str2:String):Int {
     //here 1 means update 0 means no update

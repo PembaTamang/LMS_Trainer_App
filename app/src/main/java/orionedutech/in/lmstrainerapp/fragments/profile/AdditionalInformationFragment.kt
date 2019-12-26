@@ -292,6 +292,10 @@ class AdditionalInformationFragment : BaseFragment() {
                                     userDao!!.updateAddtionalInfo(pan,aadhar,doj,qualification,experience)
                                     setDataFromDB()
                                     disableETs()
+                                    editing = false
+                                    if(activity==null){
+                                        return@launch
+                                    }
                                     activity!!.runOnUiThread{
                                         mToast.showToast(context, "data updated successfully")
                                         submit.text = "Update Info"
@@ -337,6 +341,9 @@ class AdditionalInformationFragment : BaseFragment() {
     }
 
     private fun disableETs() {
+        if(activity==null){
+            return
+        }
         activity!!.runOnUiThread {
             dojET.isClickable =false
             experienceET.isClickable = false
@@ -352,6 +359,9 @@ class AdditionalInformationFragment : BaseFragment() {
     }
 
     private fun enableETs() {
+        if(activity==null){
+            return
+        }
        activity!!.runOnUiThread {
            dojET.isClickable = true
            experienceET.isClickable = true
@@ -393,7 +403,6 @@ class AdditionalInformationFragment : BaseFragment() {
         var id = ""
         CoroutineScope(IO).launch {
             id = userDao!!.getUserID()
-            mLog.i(TAG,"id $id")
             cl.countDown()
         }
         cl.await()

@@ -268,6 +268,7 @@ class ProfileInformationFragment : BaseFragment() {
                                         )
                                         setProfileDataFromDB()
                                         disableETs()
+                                        editing = false
                                         if(activity==null){
                                             return@launch
                                         }

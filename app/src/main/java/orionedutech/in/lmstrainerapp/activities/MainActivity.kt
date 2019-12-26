@@ -6,8 +6,10 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Typeface
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.provider.Settings
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.RelativeSizeSpan
@@ -75,8 +77,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private var exit = false
     private var lastpop = false
     private var lastFrag: String = ""
-    var headerView : View? = null
-    lateinit var versionPref : SharedPreferences
+    var headerView: View? = null
+    lateinit var versionPref: SharedPreferences
     private lateinit var bottomNav: BottomNavigationView
     lateinit var profilePref: SharedPreferences
     private val permissionCode = 100
@@ -86,7 +88,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         android.Manifest.permission.CAMERA,
         android.Manifest.permission.READ_PHONE_STATE
     )
-    lateinit var loginPrefs : SharedPreferences
+    lateinit var loginPrefs: SharedPreferences
     var profile = false
     lateinit var barPreferences: SharedPreferences
     var permissionShown = false
@@ -105,7 +107,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         versionPref = getSharedPreferences("appversion", Context.MODE_PRIVATE)
         loginPrefs = getSharedPreferences("login", Context.MODE_PRIVATE)
         notification.setOnClickListener {
-            mLog.i(TAG,"clicked")
+            mLog.i(TAG, "clicked")
         }
         setSupportActionBar(toolbar)
         toolbar.title = ""
@@ -117,7 +119,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         )
         barPreferences = getSharedPreferences("bar", Context.MODE_PRIVATE)
         //for camera
-      //  barPreferences.edit().putBoolean("move", true).apply()
+        //  barPreferences.edit().putBoolean("move", true).apply()
 
         drawerLayout.addDrawerListener(toggle)
 
@@ -144,18 +146,22 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
 
 
-
-       val mi = m.getItem(m.size() - 1)
+        val mi = m.getItem(m.size() - 1)
         val font: Typeface? = ResourcesCompat.getFont(
             this,
             R.font.opensans_bold
         )
-      /*  val font1: Typeface? = ResourcesCompat.getFont(
-            this,
-            R.font.opensans_regular
-        )*/
+        /*  val font1: Typeface? = ResourcesCompat.getFont(
+              this,
+              R.font.opensans_regular
+          )*/
         val mNewTitle = SpannableString(mi.toString())
-        mNewTitle.setSpan(font?.let { CustomTypefaceSpan("", it)}, 0, mNewTitle.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+        mNewTitle.setSpan(
+            font?.let { CustomTypefaceSpan("", it) },
+            0,
+            mNewTitle.length,
+            Spannable.SPAN_INCLUSIVE_INCLUSIVE
+        )
         /* val mNewTitle = SpannableString(StringBuilder().append(mi.toString()).append(resources.getString(R.string.version_number)))
 
          mNewTitle.setSpan(font?.let { CustomTypefaceSpan("", it)}, 0, mNewTitle.indexOf("t"), Spannable.SPAN_INCLUSIVE_INCLUSIVE)
@@ -212,7 +218,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                             profile = true
                             bottomNav.menu.setGroupCheckable(0, true, true)
                             lastFrag = ParentFragment::class.java.simpleName
-                            val fragment =  ParentFragment()
+                            val fragment = ParentFragment()
                             ft = supportFragmentManager.beginTransaction()
                             ft.setCustomAnimations(
                                 R.anim.enter_from_right,
@@ -220,7 +226,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                                 R.anim.enter_from_left,
                                 R.anim.exit_to_right
                             )
-                            ft.add(R.id.mainContainer,fragment)
+                            ft.add(R.id.mainContainer, fragment)
                             ft.addToBackStack(null)
                             ft.commit()
                             lastpop = false
@@ -253,10 +259,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         if (!hasPermissions(this, *permissions)) {
             MaterialAlertDialogBuilder(this).setTitle("Alert")
                 .setCancelable(false)
-                .setMessage("The following permissions are mandatory for the app to work.\n\n1. Camera permission for taking profile photos.\n2. Storage " +
-                        "permission for saving files.\n\n3. Call management permission to detect incoming calls while playing videos.")
-                .setPositiveButton("give permissions"){
-                        dialogInterface, i ->
+                .setMessage(
+                    "The following permissions are mandatory for the app to work.\n\n1. Camera permission for taking profile photos.\n2. Storage " +
+                            "permission for saving files.\n\n3. Call management permission to detect incoming calls while playing videos."
+                )
+                .setPositiveButton("give permissions") { dialogInterface, i ->
                     dialogInterface.dismiss()
                     ActivityCompat.requestPermissions(this, permissions, permissionCode)
 
@@ -274,15 +281,15 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 .setConstraints(constraints)
                 .build()
         WorkManager.getInstance(this)
-            .enqueueUniquePeriodicWork("mtag",ExistingPeriodicWorkPolicy.KEEP,saveRequest)
+            .enqueueUniquePeriodicWork("mtag", ExistingPeriodicWorkPolicy.KEEP, saveRequest)
         FireOnetimeCheck()
     }
 
     private fun FireOnetimeCheck() {
         NetworkOps.get(
-            Urls.appVersionUrl,this,object : response{
+            Urls.appVersionUrl, this, object : response {
                 override fun onInternetfailure() {
-                onfailure()
+                    onfailure()
                 }
 
                 override fun onrespose(string: String?) {
@@ -296,14 +303,18 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                         var version = json.getString("response")
                         val appversion = BuildConfig.VERSION_NAME
                         val res = versionCompare(version, appversion)
-                        mLog.i(TAG,"version $version appversion $appversion result $res")
+                        mLog.i(TAG, "version $version appversion $appversion result $res")
                         if (res == 1) {
                             versionPref.edit().putBoolean("update", true).apply()
-                            versionPref.edit().putString("version",BuildConfig.VERSION_NAME).apply()
+                            versionPref.edit().putString("version", BuildConfig.VERSION_NAME)
+                                .apply()
                             runOnUiThread {
                                 val dialogueView = LayoutInflater.from(this@MainActivity)
                                     .inflate(R.layout.update_alert, null, false)
-                                val builder = MaterialAlertDialogBuilder(this@MainActivity,R.style.mAlertDialogTheme1)
+                                val builder = MaterialAlertDialogBuilder(
+                                    this@MainActivity,
+                                    R.style.mAlertDialogTheme1
+                                )
                                     .setCancelable(false)
                                     .setView(dialogueView)
                                 val dialogue = builder.create()
@@ -314,32 +325,37 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                                 dialogueView.update.setOnClickListener {
                                     dialogue.dismiss()
                                     val intent = Intent(Intent.ACTION_VIEW)
-                                    intent.data = Uri.parse("https://play.google.com/store/apps/details?id=$packageName")
+                                    intent.data =
+                                        Uri.parse("https://play.google.com/store/apps/details?id=$packageName")
                                     intent.setPackage("com.android.vending")
                                     startActivity(intent)
-                                    overridePendingTransition(R.anim.enter_from_right,R.anim.exit_to_left)
+                                    overridePendingTransition(
+                                        R.anim.enter_from_right,
+                                        R.anim.exit_to_left
+                                    )
 
                                     finish()
                                 }
                                 dialogue.show()
-                                drawer_layout.alpha =0.2f
+                                drawer_layout.alpha = 0.2f
                             }
 
                         } else {
                             versionPref.edit().putBoolean("update", false).apply()
-                            versionPref.edit().putString("version",BuildConfig.VERSION_NAME).apply()
+                            versionPref.edit().putString("version", BuildConfig.VERSION_NAME)
+                                .apply()
                         }
-                    }else{
+                    } else {
                         onfailure()
                     }
                 }
 
                 override fun onfailure() {
                     Handler().postDelayed({
-                        if(!this@MainActivity.isFinishing){
+                        if (!this@MainActivity.isFinishing) {
                             FireOnetimeCheck()
                         }
-                    },5000)
+                    }, 5000)
                 }
 
             })
@@ -349,7 +365,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         val imageURL = profilePref.getString("image", "")
         if (imageURL != "") {
             Glide.with(this).load(imageURL).skipMemoryCache(true).diskCacheStrategy(
-                DiskCacheStrategy.NONE).into(headerView!!.profile_image)
+                DiskCacheStrategy.NONE
+            ).into(headerView!!.profile_image)
         }
     }
 
@@ -484,6 +501,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         return true
     }
 
+
     private fun showLogOutAlert() {
         MaterialAlertDialogBuilder(this)
             .setTitle("Alert")
@@ -492,7 +510,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 launch {
                     applicationContext?.let {
                         startActivity(Intent(this@MainActivity, LoginActivity::class.java))
-                        loginPrefs.edit().putBoolean("logged_out",true).apply()
+                        loginPrefs.edit().putBoolean("logged_out", true).apply()
                         overridePendingTransition(
                             R.anim.enter_from_left,
                             R.anim.exit_to_right
@@ -558,8 +576,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
             if (supportFragmentManager.backStackEntryCount > 1) {
                 if (getlastFrag() != "ParentFragment") {
-                        supportFragmentManager.popBackStack()
-                            mLog.i(TAG, "popping")
+                    supportFragmentManager.popBackStack()
+                    mLog.i(TAG, "popping")
                 }
             } else {
                 if (getlastFrag() == DashFragment().javaClass.simpleName) {
@@ -604,33 +622,37 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     override fun setImage() {
-    setProfileImage()
-     }
+        setProfileImage()
+    }
 
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
-        grantResults: IntArray) {
+        grantResults: IntArray
+    ) {
 
-        if(requestCode==permissionCode){
-       val needPermission =   !hasPermissions(this,*permissions)
-            if(needPermission){
-                if(!permissionShown){
-                permissionShown = true
-                checkPermissions()
-                }else{
+        if (requestCode == permissionCode) {
+            val needPermission = !hasPermissions(this, *permissions)
+            if (needPermission) {
+                if (!permissionShown) {
+                    permissionShown = true
+                    checkPermissions()
+                } else {
                     MaterialAlertDialogBuilder(this).setTitle("The app cannot work without all the permissions")
                         .setCancelable(false)
-                        .setMessage("All permissions are mandatory")
-                        .setPositiveButton("exit"){
-                            dialogInterface, i ->
+                        .setMessage("All permissions are mandatory. Please give the permissions from the settings screen")
+                        .setPositiveButton("exit") { dialogInterface, i ->
                             dialogInterface.dismiss()
                             finish()
-                        }.setNegativeButton("Give permission"){
-                            dialogInterface, i ->
+                        }.setNegativeButton("Give permission manually") { dialogInterface, i ->
                             dialogInterface.dismiss()
-                            checkPermissions()
+                            //perform check
+                            startActivity(Intent().apply {
+                                action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                                data = Uri.fromParts("package", packageName, null)
+                            })
+                            finish()
                         }.create().show()
                 }
             }
