@@ -7,10 +7,9 @@
     android:background="@color/white"
     android:fillViewport="true"
     tools:context=".fragments.DashFragment">
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/textView3"
@@ -119,9 +118,6 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingStart="8dp"
-                android:paddingTop="16dp"
-                android:paddingEnd="8dp"
                 android:paddingBottom="16dp">
 
                 <!-- <TextView
@@ -151,10 +147,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginBottom="10dp"
                     android:text="courses enrolled :"
-                    android:textAppearance="@style/OpenSansRegular"
                     android:textAllCaps="true"
+                    android:textAppearance="@style/OpenSansRegular"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -164,11 +159,13 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="10dp"
                     android:padding="4dp"
                     android:src="@drawable/ic_enrolled_courses"
                     app:layout_constraintBottom_toBottomOf="@+id/courseCount"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/courseCount" />
+                    app:layout_constraintTop_toTopOf="@+id/courseCount"
+                    app:layout_constraintVertical_bias="0.348" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.card.MaterialCardView>
@@ -209,11 +206,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingStart="8dp"
-                android:paddingTop="16dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="16dp">
+                android:layout_height="match_parent">
 
                 <!--                <TextView
                     android:id="@+id/textView7"
@@ -242,10 +235,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginBottom="10dp"
                     android:text="number of batches :"
-                    android:textAppearance="@style/OpenSansRegular"
                     android:textAllCaps="true"
+                    android:textAppearance="@style/OpenSansRegular"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -277,11 +269,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingStart="8dp"
-                android:paddingTop="16dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="16dp">
+                android:layout_height="match_parent">
 
                 <!--             <TextView
                     android:id="@+id/textView8"
@@ -360,6 +348,9 @@
             android:id="@+id/bar"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:minHeight="200dp"
+            app:layout_constraintHeight_default="spread"
+            app:layout_constraintDimensionRatio="H,16:9"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toTopOf="@+id/textView32"
@@ -380,6 +371,4 @@
             app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </ScrollView>

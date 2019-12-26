@@ -5,6 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
     android:paddingBottom="8dp"
     tools:context=".fragments.profile.AdditionalInformationFragment">
     <TextView
@@ -44,11 +47,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:enabled="false"
+                android:lines="1"
                 android:maxLines="1"
+                android:inputType="text"
                 android:textColor="@color/profile_edit_text_color" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
+            android:id="@+id/line1"
             style="@style/MyEditText"
             android:layout_width="match_parent"
             android:layout_height="4dp"
@@ -75,11 +81,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:enabled="false"
+                android:lines="1"
                 android:maxLines="1"
+                android:inputType="text"
                 android:textColor="@color/profile_edit_text_color" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
+            android:id="@+id/line2"
             style="@style/MyEditText"
             android:layout_width="match_parent"
             android:layout_height="4dp"
@@ -104,12 +113,16 @@
                 android:id="@+id/doj"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:lines="1"
                 android:maxLines="1"
-                android:enabled="false"
+                android:clickable="false"
+                android:focusable="false"
+                android:inputType="none"
                 android:textColor="@color/profile_edit_text_color" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
+            android:id="@+id/line3"
             style="@style/MyEditText"
             android:layout_width="match_parent"
             android:layout_height="4dp"
@@ -135,12 +148,15 @@
                 android:id="@+id/qualification"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:lines="1"
                 android:maxLines="1"
+                android:inputType="text"
                 android:enabled="false"
                 android:textColor="@color/profile_edit_text_color" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
+            android:id="@+id/line4"
             style="@style/MyEditText"
             android:layout_width="match_parent"
             android:layout_height="4dp"
@@ -165,7 +181,7 @@
                 android:id="@+id/experience"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:enabled="false"
+                android:lines="1"
                 android:maxLines="1"
                 android:clickable="false"
                 android:focusable="false"
@@ -174,6 +190,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
+            android:id="@+id/line5"
             style="@style/MyEditText"
             android:layout_width="match_parent"
             android:layout_height="4dp"
@@ -182,6 +199,7 @@
             android:src="@drawable/rounded_bottom"
             android:tint="@color/blue" />
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_marginTop="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -191,7 +209,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:enabled="false"
-                android:text="Update profile"
+                android:backgroundTint="@color/orangegreybutton"
+                android:text="Update info"
                 app:cornerRadius="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -201,6 +220,7 @@
                 android:id="@+id/lottie"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:elevation="2dp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/updateProfile"

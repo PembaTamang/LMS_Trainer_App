@@ -119,6 +119,9 @@ class AssignmentUploadFragment : BaseFragment() {
         batchSpinner = view.batch
         browseButton = view.browse
         uploadButon = view.upload
+        view.back.setOnClickListener {
+        activity!!.onBackPressed()
+        }
         pickerPreferences = activity!!.getSharedPreferences("filepicker", Context.MODE_PRIVATE)
         browseButton.isEnabled = false
         uploadButon.isEnabled = false

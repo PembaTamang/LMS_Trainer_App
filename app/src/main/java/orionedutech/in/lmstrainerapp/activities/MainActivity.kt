@@ -89,6 +89,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     lateinit var loginPrefs : SharedPreferences
     var profile = false
     lateinit var barPreferences: SharedPreferences
+    var permissionShown = false
+
     private fun hasPermissions(context: Context, vararg permissions: String): Boolean =
         permissions.all {
             ActivityCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
@@ -233,9 +235,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
 
         })
-        if (!hasPermissions(this, *permissions)) {
-            ActivityCompat.requestPermissions(this, permissions, permissionCode)
-        }
+        checkPermissions()
         Handler().postDelayed({
             cameraControls.visibility = VISIBLE
         }, 1500)
@@ -246,6 +246,23 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         profilebooleantoggle.theRealInstance.setListener(this)
         SetProfileImage.classInstance!!.setListener(this)
         setVersionWorker()
+    }
+
+    private fun checkPermissions() {
+
+        if (!hasPermissions(this, *permissions)) {
+            MaterialAlertDialogBuilder(this).setTitle("Alert")
+                .setCancelable(false)
+                .setMessage("The following permissions are mandatory for the app to work.\n\n1. Camera permission for taking profile photos.\n2. Storage " +
+                        "permission for saving files.\n\n3. Call management permission to detect incoming calls while playing videos.")
+                .setPositiveButton("give permissions"){
+                        dialogInterface, i ->
+                    dialogInterface.dismiss()
+                    ActivityCompat.requestPermissions(this, permissions, permissionCode)
+
+                }.create().show()
+
+        }
     }
 
     private fun setVersionWorker() {
@@ -591,6 +608,35 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
      }
 
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray) {
 
+        if(requestCode==permissionCode){
+       val needPermission =   !hasPermissions(this,*permissions)
+            if(needPermission){
+                if(!permissionShown){
+                permissionShown = true
+                checkPermissions()
+                }else{
+                    MaterialAlertDialogBuilder(this).setTitle("The app cannot work without all the permissions")
+                        .setCancelable(false)
+                        .setMessage("All permissions are mandatory")
+                        .setPositiveButton("exit"){
+                            dialogInterface, i ->
+                            dialogInterface.dismiss()
+                            finish()
+                        }.setNegativeButton("Give permission"){
+                            dialogInterface, i ->
+                            dialogInterface.dismiss()
+                            checkPermissions()
+                        }.create().show()
+                }
+            }
+        }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
 
 }

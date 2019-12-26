@@ -164,7 +164,7 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
                     topStatus.visibility = GONE
                     MaterialAlertDialogBuilder(this).setTitle("Alert")
                         .setCancelable(false)
-                        .setMessage("You have completed all the activities")
+                        .setMessage("All the activities have been completed, now go to the next chapter.")
                         .setPositiveButton("Exit"){
                             dialogInterface, i ->
                             dialogInterface.dismiss()

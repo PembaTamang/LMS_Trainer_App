@@ -3,6 +3,7 @@ package orionedutech.`in`.lmstrainerapp.fragments.mainCourse
 import android.content.Context
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyManager
+import orionedutech.`in`.lmstrainerapp.interfaces.PauseInterface
 import orionedutech.`in`.lmstrainerapp.mLog
 
 class CallListener(val context: Context) : PhoneStateListener() {
@@ -11,7 +12,7 @@ class CallListener(val context: Context) : PhoneStateListener() {
         super.onCallStateChanged(state, phoneNumber)
         if (state == TelephonyManager.CALL_STATE_RINGING) {
             mLog.i(mLog.TAG,"phone Number $phoneNumber")
-
+            PauseInterface.classInstance!!.pauseVideo()
             }
     }
 }

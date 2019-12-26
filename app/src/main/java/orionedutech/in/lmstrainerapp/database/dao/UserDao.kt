@@ -109,7 +109,19 @@ interface UserDao {
         user.name = name
         user.centerName = center
         user.email = email
+        user.phoneNumber = phone
         user.user_dob = dob
+        update(user)
+    }
+
+    @Transaction
+    suspend fun updateAddtionalInfo(pan:String,aadhar:String,doj:String,qualification:String,experience:String){
+        val user  = getuserDetails()
+        user.pan = pan
+        user.aadhar = aadhar
+        user.user_doj = doj
+        user.last_qualification = qualification
+        user.workExperice = experience
         update(user)
     }
 

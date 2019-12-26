@@ -9,6 +9,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Button
@@ -21,16 +22,26 @@ import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.fragment_profile_information.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.database.MDatabase
+import orionedutech.`in`.lmstrainerapp.database.dao.UserDao
 import orionedutech.`in`.lmstrainerapp.fragments.BaseFragment
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
 import orionedutech.`in`.lmstrainerapp.mToast.showToast
+import orionedutech.`in`.lmstrainerapp.network.NetworkOps
+import orionedutech.`in`.lmstrainerapp.network.Urls
+import orionedutech.`in`.lmstrainerapp.network.progress
+import orionedutech.`in`.lmstrainerapp.network.response
 import java.util.*
+import java.util.concurrent.CountDownLatch
 import kotlin.collections.ArrayList
 
 
@@ -45,7 +56,7 @@ class ProfileInformationFragment : BaseFragment() {
     lateinit var dobET: TextInputEditText
     lateinit var submit: MaterialButton
     lateinit var editButton: TextView
-    lateinit var animation:LottieAnimationView
+    lateinit var animation: LottieAnimationView
     var arraylist: ArrayList<TextInputEditText> = ArrayList()
 
     var arraylistLines: ArrayList<ImageView> = ArrayList()
@@ -57,6 +68,10 @@ class ProfileInformationFragment : BaseFragment() {
     var email = ""
     var phoneNumber = ""
     var center = ""
+    var trainer_id = ""
+    var db: MDatabase? = null
+    var userDao: UserDao? = null
+    var busy = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -78,18 +93,21 @@ class ProfileInformationFragment : BaseFragment() {
 
         animation = view.lottie
 
-        arraylist.addAll(arrayListOf(nameET, phoneET, emailET, centerET))
+        arraylist.addAll(arrayListOf(nameET, phoneET, emailET))
         disableETs()
+        db = MDatabase(context!!)
+        userDao = db!!.getUserDao()
+        trainer_id = getTrainerID()
         setProfileDataFromDB()
         arraylistLines.addAll(
             arrayListOf(
                 view.line1,
                 view.line2,
                 view.line3,
-                view.line4,
-                view.line5
+                view.line4
             )
         )
+
         editButton = view.edit
         editButton.setOnClickListener {
             if (!editing) {
@@ -173,8 +191,8 @@ class ProfileInformationFragment : BaseFragment() {
                 DatePickerDialog.OnDateSetListener { view, year1, monthOfYear, dayOfMonth ->
                     // Display Selected date in textbox
                     mLog.i(TAG, "$dayOfMonth ${monthOfYear + 1}, $year1")
-                    dobET.setText(String.format("%d-%d%d", dayOfMonth, (monthOfYear + 1), year1))
-                    dob = String.format("%d-%d%d", dayOfMonth, (monthOfYear + 1), year1)
+                    dobET.setText(String.format("%d-%d-%d", dayOfMonth, (monthOfYear + 1), year1))
+                    dob = String.format("%d-%d-%d", dayOfMonth, (monthOfYear + 1), year1)
                 },
                 year,
                 month,
@@ -197,36 +215,142 @@ class ProfileInformationFragment : BaseFragment() {
         }
 
         submit.setOnClickListener {
-            if(name.isNotBlank()&&dob.isNotBlank()&&email.isNotBlank()&&phoneNumber.isNotBlank()&&center.isNotBlank()) {
-                submit.text = ""
-                animation.visibility = VISIBLE
-                animation.playAnimation()
-                //make network call here
+            if (!busy) {
+                busy = true
+                if (name.isNotBlank() && dob.isNotBlank() && email.isNotBlank() && phoneNumber.isNotBlank()) {
+                    submit.text = ""
+                    animation.visibility = VISIBLE
+                    animation.playAnimation()
+                    //make network call here
+                    val json = JSONObject()
+                    json.put("user_id", trainer_id)
+                    json.put("user_name", name)
+                    json.put("user_dob", dob)
+                    json.put("user_email", email)
+                    json.put("user_ph", phoneNumber)
+                  //  json.put("user_center", center)
+                    json.put("user_pan", "")
+                    json.put("user_aadhar", "")
+                    json.put("user_doj", "")
+                    json.put("user_qualification", "")
+                    json.put("user_exp", "")
 
-            }else{
-                showToast(context,"Please fill all fields")
+                    mLog.i(TAG, "json ${json.toString()}")
+                    NetworkOps.post(
+                        Urls.profileUpdate,
+                        json.toString(),
+                        context,
+                        object : response {
+                            override fun onInternetfailure() {
+                            busy = false
+                            }
+
+                            override fun onrespose(string: String?) {
+                                mLog.i(TAG,"reponse profile update $string")
+                                if (string.isNullOrEmpty()) {
+                                    onfailure()
+                                    return
+                                }
+                                val jsonObject = JSONObject(string)
+                                if (jsonObject.length() == 0) {
+                                    onfailure()
+                                    return
+                                }
+                                if (jsonObject.getString("success") == "1") {
+                                    CoroutineScope(IO).launch {
+                                        delay(2500)
+                                        userDao!!.updateProfileInfo(
+                                            name,
+                                            phoneNumber,
+                                            center,
+                                            email,
+                                            dob
+                                        )
+                                        setProfileDataFromDB()
+                                        disableETs()
+                                        if(activity==null){
+                                            return@launch
+                                        }
+                                        activity!!.runOnUiThread {
+                                            showToast(context, "data updated successfully")
+                                            submit.text = "Update Info"
+                                            animation.cancelAnimation()
+                                            animation.visibility = GONE
+                                            editButton.setTextColor(
+                                                ContextCompat.getColor(
+                                                    context!!,
+                                                    R.color.default_text
+                                                )
+                                            )
+                                            submit.isEnabled = false
+                                            busy = false
+                                        }
+
+
+                                    }
+                                } else {
+                                    onfailure()
+                                }
+                            }
+
+                            override fun onfailure() {
+                                activity!!.runOnUiThread {
+                                    showToast(context, "failed")
+                                    animation.visibility = GONE
+                                    animation.cancelAnimation()
+                                    submit.text = "Update info"
+                                    busy = false
+                                    //make network call here
+
+                                }
+                            }
+                        }) { _, _, _ -> }
+
+                } else {
+                    showToast(context, "Please fill all fields")
+                }
             }
+
         }
         return view
     }
+
+    private fun getTrainerID(): String {
+        val cl = CountDownLatch(1)
+        var id = ""
+        CoroutineScope(IO).launch {
+            id = userDao!!.getUserID()
+            cl.countDown()
+        }
+        cl.await()
+        return id
+    }
+
 
     private fun setProfileDataFromDB() {
         launch {
             context?.let {
 
-                val dao = MDatabase(it).getUserDao()
-                val name = dao.getadminName()
-                val phone = dao.getPhone()
-                val email = dao.getEmail()
-                val center = dao.getCenterName()
-                val dob = dao.getDob()
-                mLog.i(TAG, "$name $phone $email $center $dob")
+                val nameStr = userDao!!.getadminName()
+                val phoneStr = userDao!!.getPhone()
+                val emailStr = userDao!!.getEmail()
+                val centerStr = userDao!!.getCenterName()
+                val dobStr = userDao!!.getDob()
+                mLog.i(TAG, "$nameStr $phoneStr $emailStr $centerStr $dobStr")
+
                 withContext(Main) {
-                    nameET.setText(name)
-                    phoneET.setText(phone)
-                    emailET.setText(email)
-                    centerET.setText(center)
-                    dobET.setText(dob)
+
+                    nameET.setText(nameStr)
+                    phoneET.setText(phoneStr)
+                    emailET.setText(emailStr)
+                    centerET.setText(centerStr)
+                    dobET.setText(dobStr)
+                    name = nameStr
+                    phoneNumber = phoneStr
+                    email = emailStr
+                    center = centerStr
+                    dob = dobStr
+
                 }
 
             }
@@ -234,23 +358,35 @@ class ProfileInformationFragment : BaseFragment() {
     }
 
     private fun disableETs() {
-        dobET.isClickable = true
-        arraylist.forEach {
-            it.isEnabled = false
+        if(activity==null){
+            return
         }
-        arraylistLines.forEach {
-            it.imageTintList = colorStateListBlue
+        activity!!.runOnUiThread {
+            dobET.isClickable = true
+            arraylist.forEach {
+                it.isEnabled = false
+            }
+            arraylistLines.forEach {
+                it.imageTintList = colorStateListBlue
+            }
         }
+
     }
 
     private fun enableETs() {
-        dobET.isClickable = true
-        arraylist.forEach {
-            it.isEnabled = true
+        if(activity==null){
+            return
         }
-        arraylistLines.forEach {
-            it.imageTintList = colorStateListGreen
+        activity!!.runOnUiThread {
+            dobET.isClickable = true
+            arraylist.forEach {
+                it.isEnabled = true
+            }
+            arraylistLines.forEach {
+                it.imageTintList = colorStateListGreen
+            }
         }
+
     }
 
 }

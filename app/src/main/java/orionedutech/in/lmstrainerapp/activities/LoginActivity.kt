@@ -61,12 +61,12 @@ class LoginActivity : BaseActivity() {
         )!!
         notOk.setBounds(0, 0, ok.intrinsicWidth, ok.intrinsicHeight)
 
-    /*    if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
             email.setText(getString(R.string.demo_user))
             password.setText(getString(R.string.demo_user_pass))
             emailText = (getString(R.string.demo_user))
             passwordText = (getString(R.string.demo_user_pass))
-        }*/
+        }
         if(loginPrefs.getBoolean("logged_out",false)){
             val mail = loginPrefs.getString("username","")
             val pass = loginPrefs.getString("password","")

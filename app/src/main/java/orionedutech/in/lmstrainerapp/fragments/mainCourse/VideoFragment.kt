@@ -38,6 +38,7 @@ import kotlinx.android.synthetic.main.fragment_video.view.*
 import org.json.JSONObject
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.activities.TrainerActivity
+import orionedutech.`in`.lmstrainerapp.interfaces.PauseInterface
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
 import orionedutech.`in`.lmstrainerapp.mToast.showToast
@@ -48,7 +49,7 @@ import kotlin.concurrent.fixedRateTimer
 /**
  * A simple [Fragment] subclass.
  */
-class VideoFragment : Fragment() {
+class VideoFragment : Fragment(), PauseInterface.Pause {
     private lateinit var playerV: PlayerView
     private lateinit var player: ExoPlayer
     private var playWhenReady = true
@@ -96,7 +97,6 @@ class VideoFragment : Fragment() {
             WindowManager.LayoutParams.FLAG_SECURE
         )
         val view = inflater.inflate(R.layout.fragment_video, container, false)
-
         val bundle = arguments
         playerV = view.playerView
         playerV.defaultArtwork = ContextCompat.getDrawable(context!!, R.drawable.exo_icon_play)
@@ -116,7 +116,7 @@ class VideoFragment : Fragment() {
         unitID = bundle.getString("unit_id")!!
         subUnitID = bundle.getString("subunit_id")!!
         mLog.i(TAG, " $mediaUrl")
-        // mediaUrl = "https://orionedutech.co.in/cglms_real/uploads/courses/units/lessons/6CMTdz7txu.mp4"
+        // mediaUrl = "https://orionedutech.co.in/cglms/uploads/courses/units/lessons/20YSmeb7fI.mp4"
         videoPref = activity!!.getSharedPreferences("videoPref", Context.MODE_PRIVATE)
 
         controls = view.controlview
@@ -135,7 +135,7 @@ class VideoFragment : Fragment() {
             activity!!.overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left)
 
         }
-
+        PauseInterface.classInstance!!.setListener(this)
         playbackStateListener = PlaybackStateListener()
         currentAudioLevel = 0f
         view.back.setOnClickListener {
@@ -448,6 +448,13 @@ class VideoFragment : Fragment() {
                 maxPlayedPositionMs.coerceAtLeast(player.currentPosition)
             player.seekTo(windowIndex, positionMs.coerceAtMost(maxPlayedPositionMs))
             return true
+        }
+    }
+
+    override fun pause() {
+        if(player != null) {
+            mLog.i(TAG,"called")
+            player.playWhenReady = !player.playWhenReady
         }
     }
 
