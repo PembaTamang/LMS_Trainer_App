@@ -80,7 +80,7 @@ class VideoFragment : Fragment(), PauseInterface.Pause {
     var centerID = ""
     var batchID = ""
     var courseID = ""
-    var storageID = " "
+    var storageID = ""
     var moduleID = ""
     var unitID = ""
     var subUnitID = ""
@@ -99,7 +99,6 @@ class VideoFragment : Fragment(), PauseInterface.Pause {
         playerV.defaultArtwork = ContextCompat.getDrawable(context!!, R.drawable.exo_icon_play)
         buffering = view.lottie
         screenName = view.heading
-
         mediaUrl = bundle!!.getString("url")!!
         screenName.text = bundle.getString("name")!!
         chapterid = bundle.getString("chapter_id")!!
@@ -113,9 +112,10 @@ class VideoFragment : Fragment(), PauseInterface.Pause {
         unitID = bundle.getString("unit_id")!!
         subUnitID = bundle.getString("subunit_id")!!
         mLog.i(TAG, " $mediaUrl")
-        // mediaUrl = "https://orionedutech.co.in/cglms/uploads/courses/units/lessons/20YSmeb7fI.mp4"
-        videoPref = activity!!.getSharedPreferences("videoPref", Context.MODE_PRIVATE)
 
+        //mediaUrl = "https://orionedutech.co.in/cglms/uploads/courses/units/lessons/20YSmeb7fI.mp4"
+
+        videoPref = activity!!.getSharedPreferences("videoPref", Context.MODE_PRIVATE)
         controls = view.controlview
         currentTime = controls.current_time
         totalTime = controls.total_time
@@ -166,8 +166,7 @@ class VideoFragment : Fragment(), PauseInterface.Pause {
                 activity!!.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
                 fullScreenPlayerView = PlayerView(context)
                 val fullvideoContainer = FrameLayout(context!!)
-                fullscreendialog =
-                    object : Dialog(context!!, android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
+                fullscreendialog = object : Dialog(context!!, android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
                         override fun onBackPressed() {
                             activity!!.requestedOrientation =
                                 ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -176,6 +175,7 @@ class VideoFragment : Fragment(), PauseInterface.Pause {
                             super.onBackPressed()
                         }
                     }
+
                 fullScreenPlayerView.setControlDispatcher(PositionLimitingControlDispatcher())
                 fullvideoContainer.addView(fullScreenPlayerView)
                 fullscreendialog.addContentView(
@@ -187,7 +187,6 @@ class VideoFragment : Fragment(), PauseInterface.Pause {
                 )
                 fullscreendialog.show()
                 PlayerView.switchTargetView(player, playerV, fullScreenPlayerView)
-
             }
 
         }
@@ -210,9 +209,7 @@ class VideoFragment : Fragment(), PauseInterface.Pause {
         currentAudioLevel = player.audioComponent!!.volume
         val mediaSource = buildMediaSource(uri)
         player.addListener(playbackStateListener)
-
         player.playWhenReady = playWhenReady
-
         controls.setControlDispatcher(PositionLimitingControlDispatcher())
         player.prepare(mediaSource, false, false)
 
@@ -432,10 +429,6 @@ class VideoFragment : Fragment(), PauseInterface.Pause {
         fun reset() {
             maxPlayedPositionMs = 0
         }
-
-        // Note: This implementation assumes single window content. You might need to do
-        // something more complicated, depending on your use case.
-
         override fun dispatchSeekTo(
             player: Player,
             windowIndex: Int,
