@@ -198,6 +198,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                         }
                         lastFrag = DashFragment::javaClass.name
                         checkDashBoard()
+
                         return true
                     }
                     R.id.profile -> {
@@ -220,6 +221,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                             lastpop = false
                             uncheckAll()
                             mLog.i(TAG, "profile clicked")
+
                         }
                         return true
                     }

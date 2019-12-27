@@ -3,12 +3,14 @@ package orionedutech.`in`.lmstrainerapp.fragments.scoreCard
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,7 +22,6 @@ import com.mikhaellopez.circularprogressbar.CircularProgressBar
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.fragment_score_list.view.*
 import kotlinx.android.synthetic.main.fragment_score_list.view.name
-import kotlinx.android.synthetic.main.nav_header_main.view.*
 import org.json.JSONObject
 import orionedutech.`in`.lmstrainerapp.R
 import orionedutech.`in`.lmstrainerapp.adapters.recyclerviews.ScoreListAdapter
@@ -46,7 +47,8 @@ class ScoreListFragment : Fragment() {
     lateinit var time: TextView
     lateinit var totalQ: TextView
     lateinit var rightans: TextView
-    lateinit var dates: TextView
+    lateinit var startDate: TextView
+    lateinit var endDate : TextView
     lateinit var percentageTV: TextView
     lateinit var progressBar: CircularProgressBar
     lateinit var recyclerView: ShimmerRecyclerView
@@ -79,7 +81,8 @@ class ScoreListFragment : Fragment() {
         time = view.time
         totalQ = view.totalQ
         rightans = view.rightAns
-        dates = view.dates
+        startDate = view.dates
+        endDate = view.textView4
         profileImage = view.imageView8
         percentageTV = view.progressTV
         progressBar = view.circularProgressBar
@@ -113,8 +116,8 @@ class ScoreListFragment : Fragment() {
                 if (scoredata.success == "1") {
                     val assessmentTitle = scoredata.assesment_name
                     val samay = scoredata.assesment_time
-                    val startDate = scoredata.assesment_start_date
-                    val endDate = scoredata.assesment_end_date
+                    val startDateStr = scoredata.assesment_start_date
+                    val endDateStr = scoredata.assesment_end_date
                     val totalQues = scoredata.assesment_total_questions
                     val correct = scoredata.assesment_total_questions_right
                     var percentage  = scoredata.assesment_percentage
@@ -130,9 +133,12 @@ class ScoreListFragment : Fragment() {
                         name.text = naam
                         time.text = String.format("Time : %s minutes",samay)
                         totalQ.text = String.format("Total Questions : %s ",totalQues)
-                        rightans.text = String.format("Right Answers : %d ",correct)
-                        rightans.setTextColor(ContextCompat.getColor(context!!,R.color.green))
-                        dates.text = String.format("Start and End Date :  %s - %s",startDate,endDate)
+                        val text = String.format("Right Answers : %d ",correct)
+                        val spannableString  = SpannableString(text)
+                        spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(context!!,R.color.green)), text.indexOf(":"),text.length , 0)
+                        rightans.text = spannableString
+                        startDate.text = String.format("Start Date :  %s",startDateStr)
+                        endDate.text = String.format("End Date :  %s",endDateStr)
                         percentage = percentage.replace(",","")
                         progressBar.progress = percentage.toFloat()
                         percentageTV.text = String.format(" %s %%",percentage)

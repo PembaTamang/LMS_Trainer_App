@@ -9,7 +9,7 @@
         <item
             android:id="@+id/batch_creation"
             android:icon="@drawable/ic_batch_creation_icon"
-            android:title="Batches List" />
+            android:title="Batch List" />
 
         <item
             android:id="@+id/course"

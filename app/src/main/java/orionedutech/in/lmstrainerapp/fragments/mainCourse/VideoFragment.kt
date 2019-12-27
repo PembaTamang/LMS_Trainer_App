@@ -92,10 +92,7 @@ class VideoFragment : Fragment(), PauseInterface.Pause {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        activity!!.window.setFlags(
-            WindowManager.LayoutParams.FLAG_SECURE,
-            WindowManager.LayoutParams.FLAG_SECURE
-        )
+        activity!!.window.setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE)
         val view = inflater.inflate(R.layout.fragment_video, container, false)
         val bundle = arguments
         playerV = view.playerView
@@ -216,7 +213,7 @@ class VideoFragment : Fragment(), PauseInterface.Pause {
 
         player.playWhenReady = playWhenReady
 
-       // controls.setControlDispatcher(PositionLimitingControlDispatcher())
+        controls.setControlDispatcher(PositionLimitingControlDispatcher())
         player.prepare(mediaSource, false, false)
 
 
@@ -438,6 +435,7 @@ class VideoFragment : Fragment(), PauseInterface.Pause {
 
         // Note: This implementation assumes single window content. You might need to do
         // something more complicated, depending on your use case.
+
         override fun dispatchSeekTo(
             player: Player,
             windowIndex: Int,
