@@ -4,24 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.assessmentquestionTypes.AssessmentMCQFragment">
-
-
+    tools:context=".fragments.activityquestionTypes.ActivityFTBFragment">
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/sl"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/circle"
+        android:background="@drawable/green_round"
         android:paddingStart="8dp"
         android:paddingTop="2dp"
         android:paddingEnd="8dp"
-        android:textSize="12sp"
-        android:textAppearance="@style/Baloo"
-        android:gravity="center"
         android:paddingBottom="2dp"
         android:text="1"
+        android:textAppearance="@style/Baloo"
+        android:textSize="12sp"
+        android:gravity="center"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -32,8 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="Question"
+        android:text="Fill in the blanks"
         android:textAppearance="@style/Baloo"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,23 +42,32 @@
         android:id="@+id/hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="fill in the blanks"
         android:textSize="12sp"
         android:textAppearance="@style/OpenSansRegular"
-        android:text="Please choose one answer from the choices below"
         app:layout_constraintStart_toStartOf="@+id/question"
         app:layout_constraintTop_toBottomOf="@+id/question" />
 
-    <RadioGroup
-        android:id="@+id/container11"
+
+    <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/hint" />
+        app:layout_constraintTop_toBottomOf="@+id/hint">
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

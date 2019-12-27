@@ -97,6 +97,9 @@ class CourseFragment : BaseFragment() {
         courseContainer = view.materialCardView2
         animation = view.anim
 
+        view.back.setOnClickListener {
+            activity!!.onBackPressed()
+        }
         batchAdapter =
             BatchSpinAdapter(context!!, android.R.layout.simple_list_item_1, batchList, 0)
         courseAdapter =

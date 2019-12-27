@@ -106,9 +106,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         profilePref = getSharedPreferences("profile", Context.MODE_PRIVATE)
         versionPref = getSharedPreferences("appversion", Context.MODE_PRIVATE)
         loginPrefs = getSharedPreferences("login", Context.MODE_PRIVATE)
-        notification.setOnClickListener {
-            mLog.i(TAG, "clicked")
-        }
+
         setSupportActionBar(toolbar)
         toolbar.title = ""
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
@@ -144,17 +142,12 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             mi.title = mNewTitle
 
         }
-
-
         val mi = m.getItem(m.size() - 1)
         val font: Typeface? = ResourcesCompat.getFont(
             this,
             R.font.opensans_bold
         )
-        /*  val font1: Typeface? = ResourcesCompat.getFont(
-              this,
-              R.font.opensans_regular
-          )*/
+
         val mNewTitle = SpannableString(mi.toString())
         mNewTitle.setSpan(
             font?.let { CustomTypefaceSpan("", it) },
@@ -162,12 +155,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             mNewTitle.length,
             Spannable.SPAN_INCLUSIVE_INCLUSIVE
         )
-        /* val mNewTitle = SpannableString(StringBuilder().append(mi.toString()).append(resources.getString(R.string.version_number)))
 
-         mNewTitle.setSpan(font?.let { CustomTypefaceSpan("", it)}, 0, mNewTitle.indexOf("t"), Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-         mNewTitle.setSpan(font1?.let { CustomTypefaceSpan("", it)},  mNewTitle.indexOf("t")+1,mNewTitle.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-         mNewTitle.setSpan(RelativeSizeSpan(0.7f),  mNewTitle.indexOf("t")+1,mNewTitle.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
- */
         mi.title = mNewTitle
 
         addDash()
@@ -231,7 +219,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                             ft.commit()
                             lastpop = false
                             uncheckAll()
-
                             mLog.i(TAG, "profile clicked")
                         }
                         return true
@@ -657,8 +644,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 }
             }
         }
-
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
     }
 
 }

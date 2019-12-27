@@ -106,7 +106,7 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
     override fun answer(questionID: String, answerID: String) {
         lastAnswerID = answerID
         lastQuestionID = questionID
-        mLog.i(TAG, "answerValue ${getAnswerValue(questionID, answerID)}")
+
     }
 
 
@@ -136,8 +136,8 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
         mLog.i(TAG, "chapterID $chapterID")
         activityAnswerPref = getSharedPreferences("activityanswers", Context.MODE_PRIVATE)
 
-        if(activityAnswerPref.getString("chapterID","")==chapterID){
-            mLog.i(TAG,"offline quesitons")
+        if (activityAnswerPref.getString("chapterID", "") == chapterID) {
+            mLog.i(TAG, "offline quesitons")
             runOnUiThread {
                 animation.visibility = GONE
                 animation.cancelAnimation()
@@ -147,46 +147,46 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
                 activityIDS = getActivityIDsByChapterID(chapterID)
 
                 activityIDS.forEach {
-                    if(isActivityCompleted(it,chapterID)){
-                        mLog.i(TAG,"skipping index $activityIndex")
-                        if(activityIndex < activityIDS.size){
-                        activityIndex+=1
+                    if (isActivityCompleted(it, chapterID)) {
+                        mLog.i(TAG, "skipping index $activityIndex")
+                        if (activityIndex < activityIDS.size) {
+                            activityIndex += 1
                         }
                     }
                 }
 
-                if(activityIndex < activityIDS.size){
-                mLog.i(TAG, "activity id size : ${activityIDS.size}")
-                activityQuestionsID = getQuestionsIdsByActivity(activityIDS[activityIndex])
-                updateCounters()
-                showActivityViews()
-                }else{
+                if (activityIndex < activityIDS.size) {
+                    mLog.i(TAG, "activity id size : ${activityIDS.size}")
+                    activityQuestionsID = getQuestionsIdsByActivity(activityIDS[activityIndex])
+                    updateCounters()
+                    showActivityViews()
+                } else {
                     topStatus.visibility = GONE
                     MaterialAlertDialogBuilder(this).setTitle("Alert")
                         .setCancelable(false)
                         .setMessage("All the activities have been completed, now go to the next chapter.")
-                        .setPositiveButton("Exit"){
-                            dialogInterface, i ->
+                        .setPositiveButton("Exit") { dialogInterface, i ->
                             dialogInterface.dismiss()
                             finish()
+
                         }.create().show()
                 }
 
             }
-        }else{
-            mLog.i(TAG,"questions from network")
+        } else {
+            mLog.i(TAG, "questions from network")
 
             Handler().postDelayed({
                 getActivityData(chapterID)
-                activityAnswerPref.edit().putString("chapterID",chapterID).apply()
+                activityAnswerPref.edit().putString("chapterID", chapterID).apply()
             }, 500)
         }
 
-     /*   Handler().postDelayed({
-            getActivityData(chapterID)
-            activityAnswerPref.edit().putString("chapterID",chapterID).apply()
-        }, 500)
-*/
+        /*   Handler().postDelayed({
+               getActivityData(chapterID)
+               activityAnswerPref.edit().putString("chapterID",chapterID).apply()
+           }, 500)
+   */
         nextQuestion.setOnClickListener {
 
             topStatus.visibility = GONE
@@ -252,14 +252,14 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
     }
 
     private fun getActivityIDsByChapterID(chapterID: String): ArrayList<String> {
-      val countDown = CountDownLatch(1)
-       var list : ArrayList<String> = ArrayList()
-        CoroutineScope(IO).launch{
-        list = activityDao!!.getActivityIDs(chapterID) as ArrayList<String>
+        val countDown = CountDownLatch(1)
+        var list: ArrayList<String> = ArrayList()
+        CoroutineScope(IO).launch {
+            list = activityDao!!.getActivityIDs(chapterID) as ArrayList<String>
             countDown.countDown()
         }
         countDown.await()
-        mLog.i(TAG,"activity ids size : ${list.size}")
+        mLog.i(TAG, "activity ids size : ${list.size}")
         return list
     }
 
@@ -311,15 +311,25 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
     private fun processAnswer(isLast: Boolean) {
 
         //add last answer and question value here
+        mLog.i(TAG, "process called")
 
         mLog.i(TAG, "last answer ID : $lastAnswerID   is last : $isLast")
         val answerJson = JSONObject()
         val answer = getAnswerValue(lastQuestionID, lastAnswerID)
+        mLog.i(TAG, "answer $answer")
         answerJson.put(lastAnswerID, answer)
         answerJson.put("answer", getAnswerString(lastAnswerID))
         answerJson.put("correctAnswer", getCorrectAnsString(lastQuestionID))
         answerJson.put("question", getQuestionString(lastQuestionID))
         answerJson.put("status", getAnswerValue(lastQuestionID, lastAnswerID))
+
+        mLog.i(TAG, "answer string ${getAnswerString(lastAnswerID)}")
+        mLog.i(TAG, "correct answer string ${getCorrectAnsString(lastQuestionID)}")
+        mLog.i(TAG, "question string ${getQuestionString(lastQuestionID)}")
+        mLog.i(TAG, "status ${getAnswerValue(lastQuestionID, lastAnswerID)}")
+
+
+
         totalQuestions++
         when (answer) {
             "0" -> incorrectAnswers++
@@ -335,6 +345,7 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
         val ans = getAnsString()
         if (ans.isNullOrEmpty()) {
             mLog.i(TAG, "answer error from function")
+            showToast("answer error")
             return
         }
         //  var snackbar: Snackbar? = null
@@ -370,9 +381,10 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
 
             }
             "Thik chaina" -> {
-
+/*
                 val correctAns =
-                    getCorrectAnsString(activityQuestionsID[if (isLast) questionIndex - 1 else questionIndex])
+                    getCorrectAnsString(activityQuestionsID[if (isLast) questionIndex - 1 else questionIndex])*/
+                val correctAns = getCorrectAnsString(lastQuestionID)
                 val dialogueView = LayoutInflater.from(this)
                     .inflate(R.layout.wrong_answer_alert, null, false)
                 val builder = MaterialAlertDialogBuilder(this, R.style.mAlertDialogTheme1)
@@ -431,7 +443,7 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
             completedActivitiesDao!!.insert(
                 CompletedActivity(
                     activityIDS[activityIndex],
-                   chapterID
+                    chapterID
                 )
             )
             withContext(Main) {
@@ -506,7 +518,7 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
         var value: String = ""
         CoroutineScope(IO).launch {
             applicationContext?.let {
-                value = answersDao!!.getCorrectAnsString(qid, "1")
+                value = answersDao!!.getCorrectAnsString(qid, "1", activityIDS[activityIndex])
                 countDownLatch.countDown()
             }
         }
@@ -518,41 +530,39 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
     private fun over() {
         allover = true
 
-      /*  mainContainer.put("data", mainJson)
-        mLog.i(TAG, "json : $mainContainer")
-        //show answers in answer fragment
-        val data = Gson().fromJson(mainContainer.toString(), ActivityAnswersModel::class.java)
+        /*  mainContainer.put("data", mainJson)
+          mLog.i(TAG, "json : $mainContainer")
+          //show answers in answer fragment
+          val data = Gson().fromJson(mainContainer.toString(), ActivityAnswersModel::class.java)
 
-        MaterialAlertDialogBuilder(this).setTitle("All activities are over.")
+          MaterialAlertDialogBuilder(this).setTitle("All activities are over.")
+              .setCancelable(false)
+              .setMessage("Press ok to view your result")
+              .setPositiveButton("ok") { dialogInterface, i ->
+                  dialogInterface.dismiss()
+                  hideActivityViews()
+                  ft = supportFragmentManager.beginTransaction()
+                  ft!!.setCustomAnimations(
+                      R.anim.enter_from_right,
+                      R.anim.exit_to_left,
+                      R.anim.enter_from_left,
+                      R.anim.exit_to_right
+                  )
+                  val fragment = AnswersFragment()
+                  val bundle = Bundle()
+                  bundle.putParcelable("data", data)
+                  fragment.arguments = bundle
+                  ft!!.replace(R.id.trainerAcitivityContainer, fragment, "tag")
+                  ft!!.commit()
+
+              }.create().show()*/
+        MaterialAlertDialogBuilder(this).setTitle("Alert")
             .setCancelable(false)
-            .setMessage("Press ok to view your result")
-            .setPositiveButton("ok") { dialogInterface, i ->
+            .setMessage("All the activities have been completed, now go to the next chapter.")
+            .setPositiveButton("Ok") { dialogInterface, i ->
                 dialogInterface.dismiss()
-                hideActivityViews()
-                ft = supportFragmentManager.beginTransaction()
-                ft!!.setCustomAnimations(
-                    R.anim.enter_from_right,
-                    R.anim.exit_to_left,
-                    R.anim.enter_from_left,
-                    R.anim.exit_to_right
-                )
-                val fragment = AnswersFragment()
-                val bundle = Bundle()
-                bundle.putParcelable("data", data)
-                fragment.arguments = bundle
-                ft!!.replace(R.id.trainerAcitivityContainer, fragment, "tag")
-                ft!!.commit()
-
-            }.create().show()*/
-
-        MaterialAlertDialogBuilder(this).setTitle("All activities are over.")
-            .setCancelable(false)
-            .setMessage("Press ok to exit")
-            .setPositiveButton("ok") { dialogInterface, i ->
-                dialogInterface.dismiss()
-               finish()
+                finish()
             }.create().show()
-
 
     }
 
@@ -567,6 +577,7 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
         )
 
         lastQType = getQuestionsTypeByID(aid, qid)
+        mLog.i(TAG, "Qtype $lastQType")
         when (lastQType) {
             "1" -> {
                 val fragment = ActivityMCQFragment()
@@ -580,13 +591,16 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
                 updateCounters()
 
             }
-            "2" -> {
-
-                mToast.showToast(this, "new undefined data")
-
-            }
             else -> {
-
+                val fragment = ActivityMCQFragment()
+                val bundle = Bundle()
+                bundle.putString("qid", qid)
+                bundle.putString("aid", aid)
+                bundle.putString("sl", (sl + 1).toString())
+                fragment.arguments = bundle
+                ft!!.replace(R.id.trainerAcitivityContainer, fragment, "tag")
+                ft!!.commit()
+                updateCounters()
             }
         }
     }
@@ -610,7 +624,7 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
         CoroutineScope(IO).launch {
             applicationContext?.let {
                 activity = activityDao!!.getActivityName(activityID)
-                mLog.i(TAG,"activity name : $activity")
+                mLog.i(TAG, "activity name : $activity")
                 countDownLatch.countDown()
             }
         }
@@ -651,6 +665,7 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
         }
         val json = JSONObject()
         json.put("chapter_id", chapterID)
+        // json.put("chapter_id", "75")
         NetworkOps.post(Urls.trainingActivity, json.toString(), this, object : response {
             override fun onInternetfailure() {
                 if (isFinishing) {
@@ -723,24 +738,24 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
                             }
                         }
                         CoroutineScope(IO).launch {
-                            applicationContext?.let {
-                                questionsDao!!.insert(RoomQuestions.toMutableList())
+                            questionsDao!!.insert(RoomQuestions.toMutableList())
                                 answersDao!!.insert(RoomAnswers.toMutableList())
                                 activityDao!!.insert(RoomActivities.toMutableList())
-                            }
-                        }
-                        runOnUiThread {
-                            animation.visibility = GONE
-                            animation.cancelAnimation()
-                            lowerStatus.visibility = GONE
-                            topStatus.text = "Press start to begin"
-                            mLog.i(TAG, "activity id size : ${activityIDS.size}")
-                            activityQuestionsID = getQuestionsIdsByActivity(activityIDS[activityIndex])
-                            heading.text = getActivitName(activityIDS[activityIndex])
-                            updateCounters()
-                            showActivityViews()
+                                withContext(Main) {
+                                        animation.visibility = GONE
+                                        animation.cancelAnimation()
+                                        lowerStatus.visibility = GONE
+                                        topStatus.text = "Press start to begin"
+                                        mLog.i(TAG, "activity id size : ${activityIDS.size}")
+                                        activityQuestionsID =
+                                            getQuestionsIdsByActivity(activityIDS[activityIndex])
+                                        heading.text = getActivitName(activityIDS[activityIndex])
+                                        updateCounters()
+                                        showActivityViews()
+                                }
 
                         }
+
                     }
                 } else {
                     runOnUiThread {
@@ -822,7 +837,7 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
         val q = questionIndex
         acount.text = String.format("%d/%d", (a + 1), activityIDS.size)
         qcount.text = String.format("%d/%d", (q + 1), activityQuestionsID.size)
-        mLog.i(TAG,"activity id list size ${activityIDS.size} index $activityIndex")
+        mLog.i(TAG, "activity id list size ${activityIDS.size} index $activityIndex")
         heading.text = getActivitName(activityIDS[activityIndex])
 
     }
@@ -847,7 +862,6 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
     }
 
 
-
     fun addBorderandMargin(show: Boolean) {
         mLog.i(TAG, "show $show")
         fragContainer.background =
@@ -869,7 +883,8 @@ class TrainerActivity : AppCompatActivity(), ActivityAnswer {
         var value: String = ""
         CoroutineScope(IO).launch {
             applicationContext?.let {
-                value = answersDao!!.getAnswerValue(questionID, answerID)
+                value =
+                    answersDao!!.getAnswerValue(questionID, answerID, activityIDS[activityIndex])
                 countDownLatch.countDown()
             }
         }

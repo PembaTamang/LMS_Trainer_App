@@ -87,7 +87,7 @@ class BatchFragment : Fragment() {
                 val animator =
                     ObjectAnimator.ofInt(ascending, "level", 0, 10000).setDuration(500)
                 animator.start()
-                batchName.setCompoundDrawablesWithIntrinsicBounds(null, null, descending, null)
+                batchName.setCompoundDrawablesWithIntrinsicBounds(null, null, ascending, null)
                 ascendingNames.set(false)
                 //sort by descending names
                 CoroutineScope(IO).launch {
@@ -104,7 +104,7 @@ class BatchFragment : Fragment() {
                 val animator =
                     ObjectAnimator.ofInt(descending, "level", 0, 10000).setDuration(500)
                 animator.start()
-                batchName.setCompoundDrawablesWithIntrinsicBounds(null, null, ascending, null)
+                batchName.setCompoundDrawablesWithIntrinsicBounds(null, null, descending, null)
                 ascendingNames.set(true)
                 //sort by ascending names
                 CoroutineScope(IO).launch {
@@ -120,17 +120,20 @@ class BatchFragment : Fragment() {
             }
         }
 
-
+        val ascending1 =
+            context?.let { ContextCompat.getDrawable(it, R.drawable.animated_ascending) }
+        val descending1 =
+            context?.let { ContextCompat.getDrawable(it, R.drawable.animated_descending) }
         val ascendingCenters = AtomicBoolean(true)
         batchCenter.setOnClickListener {
             if (ascendingCenters.get()) {
                 val animator =
-                    ObjectAnimator.ofInt(ascending, "level", 0, 10000).setDuration(500)
+                    ObjectAnimator.ofInt(ascending1, "level", 0, 10000).setDuration(500)
                 animator.start()
                 batchCenter.setCompoundDrawablesWithIntrinsicBounds(
                     null,
                     null,
-                    descending,
+                    ascending1,
                     null
                 )
                 ascendingCenters.set(false)
@@ -147,12 +150,12 @@ class BatchFragment : Fragment() {
                 }
             } else {
                 val animator =
-                    ObjectAnimator.ofInt(descending, "level", 0, 10000).setDuration(500)
+                    ObjectAnimator.ofInt(descending1, "level", 0, 10000).setDuration(500)
                 animator.start()
                 batchCenter.setCompoundDrawablesWithIntrinsicBounds(
                     null,
                     null,
-                    ascending,
+                    descending1,
                     null
                 )
                 ascendingCenters.set(true)
@@ -170,17 +173,20 @@ class BatchFragment : Fragment() {
             }
         }
 
-
+        val ascending2 =
+            context?.let { ContextCompat.getDrawable(it, R.drawable.animated_ascending) }
+        val descending2 =
+            context?.let { ContextCompat.getDrawable(it, R.drawable.animated_descending) }
         val ascendingCourses = AtomicBoolean(true)
         batchCourse.setOnClickListener {
             if (ascendingCourses.get()) {
                 val animator =
-                    ObjectAnimator.ofInt(ascending, "level", 0, 10000).setDuration(500)
+                    ObjectAnimator.ofInt(ascending2, "level", 0, 10000).setDuration(500)
                 animator.start()
                 batchCourse.setCompoundDrawablesWithIntrinsicBounds(
                     null,
                     null,
-                    descending,
+                    ascending2,
                     null
                 )
                 ascendingCourses.set(false)
@@ -197,12 +203,12 @@ class BatchFragment : Fragment() {
                 }
             } else {
                 val animator =
-                    ObjectAnimator.ofInt(descending, "level", 0, 10000).setDuration(500)
+                    ObjectAnimator.ofInt(descending2, "level", 0, 10000).setDuration(500)
                 animator.start()
                 batchCourse.setCompoundDrawablesWithIntrinsicBounds(
                     null,
                     null,
-                    ascending,
+                    descending2,
                     null
                 )
                 ascendingCourses.set(true)
@@ -219,16 +225,20 @@ class BatchFragment : Fragment() {
 
             }
         }
+        val ascending3 =
+            context?.let { ContextCompat.getDrawable(it, R.drawable.animated_ascending) }
+        val descending3 =
+            context?.let { ContextCompat.getDrawable(it, R.drawable.animated_descending) }
         val ascendingNos = AtomicBoolean(true)
         nosTV.setOnClickListener {
             if (ascendingNos.get()) {
                 val animator =
-                    ObjectAnimator.ofInt(ascending, "level", 0, 10000).setDuration(500)
+                    ObjectAnimator.ofInt(ascending3, "level", 0, 10000).setDuration(500)
                 animator.start()
                 nosTV.setCompoundDrawablesWithIntrinsicBounds(
                     null,
                     null,
-                    descending,
+                    ascending3,
                     null
                 )
                 ascendingNos.set(false)
@@ -245,12 +255,12 @@ class BatchFragment : Fragment() {
                 }
             } else {
                 val animator =
-                    ObjectAnimator.ofInt(descending, "level", 0, 10000).setDuration(500)
+                    ObjectAnimator.ofInt(descending3, "level", 0, 10000).setDuration(500)
                 animator.start()
                 nosTV.setCompoundDrawablesWithIntrinsicBounds(
                     null,
                     null,
-                    ascending,
+                    descending3,
                     null
                 )
                 ascendingNos.set(true)

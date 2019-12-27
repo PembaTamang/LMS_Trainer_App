@@ -189,7 +189,7 @@ class AssignmentFragment : BaseFragment(), RecyclerItemClick {
         view.course.setOnClickListener {
             if (ascendingCourses.get()) {
                 val animator =
-                    ObjectAnimator.ofInt(ascendingBatch, "level", 0, 10000).setDuration(500)
+                    ObjectAnimator.ofInt(ascendingCourse, "level", 0, 10000).setDuration(500)
                 animator.start()
                 view.course.setCompoundDrawablesWithIntrinsicBounds(null, null, ascendingCourse, null)
                 ascendingCourses.set(false)
@@ -207,7 +207,7 @@ class AssignmentFragment : BaseFragment(), RecyclerItemClick {
 
             } else {
                 val animator =
-                    ObjectAnimator.ofInt(descendingBatch, "level", 0, 10000).setDuration(500)
+                    ObjectAnimator.ofInt(descendingCourse, "level", 0, 10000).setDuration(500)
                 animator.start()
                 view.course.setCompoundDrawablesWithIntrinsicBounds(
                     null,

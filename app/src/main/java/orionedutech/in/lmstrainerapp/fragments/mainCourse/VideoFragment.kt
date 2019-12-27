@@ -216,7 +216,7 @@ class VideoFragment : Fragment(), PauseInterface.Pause {
 
         player.playWhenReady = playWhenReady
 
-        controls.setControlDispatcher(PositionLimitingControlDispatcher())
+       // controls.setControlDispatcher(PositionLimitingControlDispatcher())
         player.prepare(mediaSource, false, false)
 
 
@@ -454,7 +454,7 @@ class VideoFragment : Fragment(), PauseInterface.Pause {
     override fun pause() {
         if(player != null) {
             mLog.i(TAG,"called")
-            player.playWhenReady = !player.playWhenReady
+            player.playWhenReady = false
         }
     }
 
