@@ -6,8 +6,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import orionedutech.`in`.lmstrainerapp.mLog
 import orionedutech.`in`.lmstrainerapp.mLog.TAG
 
-class ViewPagerAdapter(fm: FragmentManager?) :
-    FragmentPagerAdapter(fm!!, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+class ViewPagerAdapter(fm: FragmentManager?) : FragmentPagerAdapter(fm!!, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     override fun getItem(position: Int): Fragment {
         mLog.i(TAG, "position $position")
         return if (position == 0) {

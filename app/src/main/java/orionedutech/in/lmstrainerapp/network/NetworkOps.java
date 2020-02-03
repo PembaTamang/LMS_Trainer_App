@@ -1,20 +1,16 @@
 package orionedutech.in.lmstrainerapp.network;
 
 import android.content.Context;
-import android.os.Handler;
 import android.view.View;
 import android.webkit.MimeTypeMap;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-
 import io.github.lizhangqu.coreprogress.ProgressHelper;
 import io.github.lizhangqu.coreprogress.ProgressListener;
 import okhttp3.Call;
@@ -25,11 +21,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-
 import orionedutech.in.lmstrainerapp.mLog;
-import static orionedutech.in.lmstrainerapp.mLog.TAG;
-import static orionedutech.in.lmstrainerapp.MUtilsKt.showToast;
 import static orionedutech.in.lmstrainerapp.MUtilsKt.isConnected;
+import static orionedutech.in.lmstrainerapp.MUtilsKt.showToast;
+import static orionedutech.in.lmstrainerapp.mLog.TAG;
 
 public class NetworkOps {
     public static void get(String url, final Context context, final response resp) {
@@ -265,7 +260,7 @@ public class NetworkOps {
 
             client.newCall(request).enqueue(new Callback() {
                 @Override
-                public void onFailure(@NotNull Call call, IOException e) {
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
                     myres.onfailure();
                     mLog.i(TAG, "network call onFailure: " + e.getMessage() + "\n" + e.getCause() + "\n" + e.getStackTrace());
                 }
@@ -283,14 +278,9 @@ public class NetworkOps {
                         mLog.i(TAG, "response: success");
                     } else {
                         myres.onfailure();
-
                         mLog.i(TAG, "response:  server side error");
-
                     }
                 }
             });
-
-
-
     }
 }

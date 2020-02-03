@@ -1,24 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    app:cardElevation="0dp">
+    android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="8dp">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/sl"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:gravity="center"
-            android:padding="4dp"
             android:text="SL"
             android:textAppearance="@style/OpenSansSemiBold"
             android:textSize="12sp"
@@ -26,31 +22,30 @@
             app:layout_constraintEnd_toStartOf="@+id/name"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/name" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/name"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:drawablePadding="4dp"
             android:gravity="center"
-            android:padding="4dp"
-            android:text="Batch Name"
+            android:text="Batch \n Name"
+            android:textAlignment="center"
             android:textAppearance="@style/OpenSansSemiBold"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/batch"
             app:layout_constraintEnd_toStartOf="@+id/batch"
             app:layout_constraintHorizontal_weight="0.5"
             app:layout_constraintStart_toEndOf="@+id/sl"
-            app:layout_constraintTop_toTopOf="@+id/batch" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/batch"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:drawablePadding="4dp"
-            android:padding="4dp"
-            android:text="Center Name"
+            android:text="Center\n Name \n Name"
             android:gravity="center"
             android:textAppearance="@style/OpenSansSemiBold"
             android:textSize="12sp"
@@ -63,9 +58,8 @@
         <TextView
             android:id="@+id/course"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:gravity="center"
-            android:padding="4dp"
             android:text="Course"
             android:textAppearance="@style/OpenSansSemiBold"
             android:textSize="12sp"
@@ -73,13 +67,12 @@
             app:layout_constraintEnd_toStartOf="@+id/nostds"
             app:layout_constraintHorizontal_weight="0.5"
             app:layout_constraintStart_toEndOf="@+id/batch"
-            app:layout_constraintTop_toTopOf="@+id/nostds" />
+            app:layout_constraintTop_toTopOf="@id/sl" />
 
         <TextView
             android:id="@+id/nostds"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="4dp"
             android:text="1"
             android:gravity="center"
             android:textAlignment="gravity"
@@ -88,7 +81,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="0.5"
             app:layout_constraintStart_toEndOf="@+id/course"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/sl" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

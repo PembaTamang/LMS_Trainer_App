@@ -134,6 +134,7 @@ class PasswordResetFragment : BaseFragment() {
                 val userID = dao.getUserID()
                 if(oldpassword.isBlank()||newPassword.isBlank()||newPassword1.isBlank()){
                     mToast.showToast(context,"please fill all fields")
+                    busy = false
                   return@launch
                 }
 

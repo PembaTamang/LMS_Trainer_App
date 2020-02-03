@@ -233,6 +233,7 @@ class CourseFragment : BaseFragment() {
             fragment.arguments = bundle
 
             val ft = activity?.supportFragmentManager!!.beginTransaction()
+
             ft.setCustomAnimations(
                 R.anim.enter_from_right,
                 R.anim.exit_to_left,
@@ -361,7 +362,7 @@ class CourseFragment : BaseFragment() {
             disableSpinners()
         }
         val json = JSONObject()
-        json.put("course_id", selectedCourseID)
+        json.put("course_id",selectedCourseID)
         json.put("course_links_to", "1")
         NetworkOps.post(Urls.courseLinkedModules, json.toString(), context, object : response {
             override fun onInternetfailure() {
@@ -434,6 +435,7 @@ class CourseFragment : BaseFragment() {
             showWaitAnimation()
             disableSpinners()
         }
+
         val json = JSONObject()
         json.put("module_id", courseModuleId)
         NetworkOps.post(Urls.moduleLinkedChapters, json.toString(), context, object : response {
@@ -460,7 +462,7 @@ class CourseFragment : BaseFragment() {
                     getStudentList.isEnabled = true
                     chapterContainer.visibility = VISIBLE
                     chapterSpinner.onItemSelectedListener = null
-                    selectedChapterID = chapterList[0].chapter_id
+                    selectedChapterID = chapterList[0].chapter_id //setting first item as selected
                     chapterAdapter.notifyDataSetChanged()
                     enableSpinners()
                     hideAnimation()

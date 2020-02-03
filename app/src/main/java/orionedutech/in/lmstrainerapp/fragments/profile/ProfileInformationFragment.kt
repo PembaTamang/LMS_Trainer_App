@@ -93,7 +93,7 @@ class ProfileInformationFragment : BaseFragment() {
 
         animation = view.lottie
 
-        arraylist.addAll(arrayListOf(nameET, phoneET, emailET))
+        arraylist.addAll(arrayListOf(nameET, phoneET, emailET, centerET))
         disableETs()
         db = MDatabase(context!!)
         userDao = db!!.getUserDao()
@@ -101,10 +101,7 @@ class ProfileInformationFragment : BaseFragment() {
         setProfileDataFromDB()
         arraylistLines.addAll(
             arrayListOf(
-                view.line1,
-                view.line2,
-                view.line3,
-                view.line4
+                view.line1, view.line2, view.line3, view.line4,view.line5
             )
         )
 
@@ -137,6 +134,7 @@ class ProfileInformationFragment : BaseFragment() {
             }
 
         })
+
         emailET.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
             }
@@ -149,6 +147,7 @@ class ProfileInformationFragment : BaseFragment() {
             }
 
         })
+
         phoneET.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
             }
@@ -175,8 +174,6 @@ class ProfileInformationFragment : BaseFragment() {
 
         })
 
-
-
         dobET.setOnClickListener {
             //show date dialogue
             mLog.i(TAG, "clicked")
@@ -184,7 +181,6 @@ class ProfileInformationFragment : BaseFragment() {
             val year = c.get(Calendar.YEAR)
             val month = c.get(Calendar.MONTH)
             val day = c.get(Calendar.DAY_OF_MONTH)
-
             val dpd = DatePickerDialog(
                 activity!!,
                 R.style.DateDialogTheme,
@@ -202,8 +198,6 @@ class ProfileInformationFragment : BaseFragment() {
             dpd.show()
             val negButton: Button = dpd.getButton(DialogInterface.BUTTON_NEGATIVE)
             negButton.setBackgroundColor(ContextCompat.getColor(context!!, R.color.blue))
-
-
             val pButton: Button = dpd.getButton(DatePickerDialog.BUTTON_POSITIVE)
             pButton.setBackgroundColor(ContextCompat.getColor(context!!, R.color.blue))
             val params = LinearLayout.LayoutParams(
@@ -223,30 +217,29 @@ class ProfileInformationFragment : BaseFragment() {
                     animation.playAnimation()
                     //make network call here
                     val json = JSONObject()
-                    json.put("user_id", trainer_id)
-                    json.put("user_name", name)
-                    json.put("user_dob", dob)
-                    json.put("user_email", email)
-                    json.put("user_ph", phoneNumber)
-                  //  json.put("user_center", center)
+                    json.put("user_id",trainer_id)
+                    json.put("user_name",name)
+                    json.put("user_dob",dob)
+                    json.put("user_email",email)
+                    json.put("user_ph",phoneNumber)
                     json.put("user_pan", "")
                     json.put("user_aadhar", "")
                     json.put("user_doj", "")
                     json.put("user_qualification", "")
                     json.put("user_exp", "")
 
-                    mLog.i(TAG, "json ${json.toString()}")
+                    mLog.i(TAG, "json $json")
                     NetworkOps.post(
                         Urls.profileUpdate,
                         json.toString(),
                         context,
                         object : response {
                             override fun onInternetfailure() {
-                            busy = false
+                                busy = false
                             }
 
                             override fun onrespose(string: String?) {
-                                mLog.i(TAG,"reponse profile update $string")
+                                mLog.i(TAG, "reponse profile update $string")
                                 if (string.isNullOrEmpty()) {
                                     onfailure()
                                     return
@@ -269,7 +262,7 @@ class ProfileInformationFragment : BaseFragment() {
                                         setProfileDataFromDB()
                                         disableETs()
                                         editing = false
-                                        if(activity==null){
+                                        if (activity == null) {
                                             return@launch
                                         }
                                         activity!!.runOnUiThread {
@@ -338,9 +331,7 @@ class ProfileInformationFragment : BaseFragment() {
                 val centerStr = userDao!!.getCenterName()
                 val dobStr = userDao!!.getDob()
                 mLog.i(TAG, "$nameStr $phoneStr $emailStr $centerStr $dobStr")
-
                 withContext(Main) {
-
                     nameET.setText(nameStr)
                     phoneET.setText(phoneStr)
                     emailET.setText(emailStr)
@@ -359,7 +350,7 @@ class ProfileInformationFragment : BaseFragment() {
     }
 
     private fun disableETs() {
-        if(activity==null){
+        if (activity == null) {
             return
         }
         activity!!.runOnUiThread {
@@ -367,6 +358,7 @@ class ProfileInformationFragment : BaseFragment() {
             arraylist.forEach {
                 it.isEnabled = false
             }
+
             arraylistLines.forEach {
                 it.imageTintList = colorStateListBlue
             }
@@ -375,7 +367,7 @@ class ProfileInformationFragment : BaseFragment() {
     }
 
     private fun enableETs() {
-        if(activity==null){
+        if (activity == null) {
             return
         }
         activity!!.runOnUiThread {

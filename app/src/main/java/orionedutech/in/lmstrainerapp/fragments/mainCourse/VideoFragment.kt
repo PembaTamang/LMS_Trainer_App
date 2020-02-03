@@ -195,10 +195,8 @@ class VideoFragment : Fragment(), PauseInterface.Pause {
     }
 
     private fun buildMediaSource(uri: Uri): MediaSource? {
-        val dataSourceFactory: DataSource.Factory =
-            DefaultDataSourceFactory(context, "exoplayer-codelab")
-        return ProgressiveMediaSource.Factory(dataSourceFactory)
-            .createMediaSource(uri)
+        val dataSourceFactory: DataSource.Factory = DefaultDataSourceFactory(context, "exoplayer-codelab")
+        return ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
     }
 
     private fun initializePlayer() {
@@ -217,22 +215,20 @@ class VideoFragment : Fragment(), PauseInterface.Pause {
     }
 
     private fun updateUI() {
-        if (player != null) {
-            val current = player.contentPosition
-            val total = player.duration
-            currentTime.text = String.format(
-                Locale.getDefault(),
-                "%02d:%02d",
-                current / 1000 / 60,
-                (current / 1000 % 60).toInt()
-            )
-            totalTime.text = String.format(
-                Locale.getDefault(),
-                "%02d:%02d",
-                total / 1000 / 60,
-                (total / 1000 % 60).toInt()
-            )
-        }
+        val current = player.contentPosition
+        val total = player.duration
+        currentTime.text = String.format(
+            Locale.getDefault(),
+            "%02d:%02d",
+            current / 1000 / 60,
+            (current / 1000 % 60).toInt()
+        )
+        totalTime.text = String.format(
+            Locale.getDefault(),
+            "%02d:%02d",
+            total / 1000 / 60,
+            (total / 1000 % 60).toInt()
+        )
     }
 
     override fun onStart() {
@@ -293,7 +289,6 @@ class VideoFragment : Fragment(), PauseInterface.Pause {
     override fun onPause() {
         super.onPause()
         if (Util.SDK_INT < 24) {
-
             releasePlayer()
         }
     }
@@ -429,24 +424,17 @@ class VideoFragment : Fragment(), PauseInterface.Pause {
         fun reset() {
             maxPlayedPositionMs = 0
         }
-        override fun dispatchSeekTo(
-            player: Player,
-            windowIndex: Int,
-            positionMs: Long
-        ): Boolean {
+        override fun dispatchSeekTo(player: Player, windowIndex: Int, positionMs: Long): Boolean {
             mLog.i(TAG, "called")
-            maxPlayedPositionMs =
-                maxPlayedPositionMs.coerceAtLeast(player.currentPosition)
+            maxPlayedPositionMs = maxPlayedPositionMs.coerceAtLeast(player.currentPosition)
             player.seekTo(windowIndex, positionMs.coerceAtMost(maxPlayedPositionMs))
             return true
         }
     }
 
     override fun pause() {
-        if(player != null) {
-            mLog.i(TAG,"called")
-            player.playWhenReady = false
-        }
+        mLog.i(TAG,"called")
+        player.playWhenReady = false
     }
 
 
